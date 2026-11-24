@@ -484,8 +484,7 @@ const L = [
   ["verse",    "Spider-Verse (Animado)",   "Miles Morales · Tierra-1610",        "#f472b6"],
   ["ssu",      "Universo Sony (SSU)",      "Venom, Morbius, Kraven, Noir",      "#a3e635"],
   ["xorig",    "Universo X-Men",           "Tronco común hasta cambiar el pasado en 1973", "#2dd4bf"],
-  ["xmod",     "X-Men · Línea Modificada", "Tierra-10005 revisada tras 1973", "#22d3ee"],
-  ["xdp",      "Deadpool y Logan",         "Deadpool en línea revisada · Logan alterno", "#fb923c"],
+  ["xmod",     "X-Men · Línea Modificada", "Línea modificada, Deadpool y Logan", "#22d3ee"],
   ["ff2005",   "4 Fantásticos (2005)",     "Línea 1 · 2005 y 2007 (Sin cruce)",  "#34d399"],
   ["ff2015",   "4 Fantásticos (2015)",     "Línea 2 · Reboot (Sin cruce)",       "#4ade80"],
   ["ff828",    "4 Fantásticos (Tierra-828)","Línea 3 · First Steps (Sin cruce)", "#facc15"],
@@ -500,9 +499,8 @@ const FORKS = [
   { fromLane:"mcu",   fromTitle:"Spider-Man: No Way Home",    toLane:"raimi", toTitle:"Cruce en No Way Home" },
   { fromLane:"mcu",   fromTitle:"Spider-Man: No Way Home",    toLane:"webb",  toTitle:"Cruce en No Way Home" },
   { fromLane:"xorig", fromTitle:"X-Men: Days of Future Past", toLane:"xmod",  toTitle:"X-Men: Apocalypse" },
-  { fromLane:"xmod",  fromTitle:"X-Men: Dark Phoenix",        toLane:"xdp",   toTitle:"Deadpool" },
-  { fromLane:"mcu",   fromTitle:"Deadpool & Wolverine",       toLane:"blade", toTitle:"Blade en El Vacío" },
-  { fromLane:"mcu",   fromTitle:"Deadpool & Wolverine",       toLane:"dd03",  toTitle:"Elektra en El Vacío" }
+  { fromLane:"xmod",  fromTitle:"Deadpool & Wolverine",       toLane:"blade", toTitle:"Blade en El Vacío" },
+  { fromLane:"xmod",  fromTitle:"Deadpool & Wolverine",       toLane:"dd03",  toTitle:"Elektra en El Vacío" }
 ];
 
 // Formato: [lane, year, title, kind, review, imgUrl]
@@ -640,7 +638,7 @@ const E = [
 
   // --- UNIVERSO X-MEN (TRONCO COMÚN HASTA 1973) ---
   ["xorig",1962,"X-Men: First Class","F","Reseña: En 1962, durante la Guerra Fría, Charles Xavier y Erik Lehnsherr unen fuerzas para reclutar jóvenes mutantes y detener a Sebastian Shaw."],
-  ["xorig",1973,"X-Men: Days of Future Past","FB","Reseña: En 1973 la conciencia de Logan viaja al pasado: aquí se bifurca la línea temporal y nace la línea revisada."],
+  ["xorig",1973,"X-Men: Days of Future Past","FB","Reseña: En 1973 la conciencia de Logan viaja al pasado: aquí se bifurca la línea temporal y nace la línea modificada."],
   ["xorig",1979,"X-Men Origins: Wolverine","F","Reseña: Explora el pasado de Logan y Victor Creed, su paso por el programa Equipo X y el experimento del adamantium."],
   ["xorig",2000,"X-Men","F","Reseña: Estrenada en 2000, Charles Xavier y sus X-Men defienden a Rogue mientras Magneto planea transformar a los líderes mundiales."],
   ["xorig",2003,"X2: X-Men United","F","Reseña: En 2003, tras un ataque a la Casa Blanca, William Stryker lanza una ofensiva contra la mansión de Xavier."],
@@ -648,16 +646,14 @@ const E = [
   ["xorig",2013,"The Wolverine","F","Reseña: En 2013, Logan viaja a Japón y se ve envuelto en intrigas familiares y corporativas."],
   ["xorig",2023,"DOFP: Futuro Apocalíptico","FB","Reseña: En el futuro de 2023 dominado por los Centinelas, esta rama corre hacia su extinción hasta que la conciencia de Logan es enviada a 1973."],
 
-  // --- X-MEN: LÍNEA MODIFICADA (TRAS EL VIAJE DE LOGAN EN 1973) ---
-  ["xmod",1983,"X-Men: Apocalypse","F","Reseña: En 1983, en la línea temporal revisada tras 1973, despierta Apocalipsis y se consolida el nuevo elenco joven de los X-Men."],
-  ["xmod",1992,"X-Men: Dark Phoenix","FB","Reseña: En 1992, Jean Grey absorbe una fuerza cósmica que desata su lado más oscuro dentro de la línea revisada, conectando con la rama de Deadpool."],
+  // --- X-MEN · LÍNEA MODIFICADA (INCLUYE DEADPOOL Y LOGAN) ---
+  ["xmod",1983,"X-Men: Apocalypse","F","Reseña: En 1983, en la línea modificada tras 1973, despierta Apocalipsis y se consolida el nuevo elenco joven de los X-Men."],
+  ["xmod",1992,"X-Men: Dark Phoenix","F","Reseña: En 1992, Jean Grey absorbe una fuerza cósmica que desata su lado más oscuro dentro de la línea modificada."],
+  ["xmod",2016,"Deadpool","F","Reseña: En 2016, dentro de la línea modificada, Wade Wilson obtiene factor curativo y se convierte en Deadpool."],
+  ["xmod",2018,"Deadpool 2","FB","Reseña: En 2018, en la misma línea modificada, Wade visita la Mansión X y cruza caminos con los jóvenes X-Men, además de involucrarse con el futuro de Cable."],
   ["xmod",2020,"The New Mutants","F","Reseña: Cinco jóvenes mutantes permanecen encerrados en una instalación aislada dentro de esta rama."],
-
-  // --- DEADPOOL (LÍNEA REVISADA) Y LOGAN (FUTURO ALTERNO) ---
-  ["xdp",2016,"Deadpool","F","Reseña: En 2016, dentro de la línea temporal revisada tras Dark Phoenix y 1973, Wade Wilson obtiene factor curativo y se convierte en Deadpool."],
-  ["xdp",2018,"Deadpool 2","FB","Reseña: En 2018, en la misma línea temporal revisada, Wade visita la Mansión X y cruza caminos con los jóvenes X-Men de Apocalipsis y Dark Phoenix, además de involucrarse con el futuro de Cable."],
-  ["xdp",2024,"Deadpool & Wolverine","FB","Reseña: En 2024, Wade Wilson es reclutado por la TVA y se une a una variante de Wolverine en el Vacío."],
-  ["xdp",2029,"Logan","FB","Reseña: En 2029, un Logan envejecido protege a la joven mutante Laura en una realidad/futuro alterno catalogado aparte de la línea principal revisada."],
+  ["xmod",2024,"Deadpool & Wolverine","FB","Reseña: En 2024, Wade Wilson es reclutado por la TVA y se une a una variante de Wolverine en el Vacío."],
+  ["xmod",2029,"Logan","FB","Reseña: En 2029, un Logan envejecido protege a la joven mutante Laura en el cierre de esta etapa."],
 
   // --- 4 FANTÁSTICOS: 3 LÍNEAS SEPARADAS ---
   ["ff2005",2005,"Fantastic Four (2005)","F","Reseña: En 2005, Reed Richards, Sue Storm, Johnny Storm y Ben Grimm obtienen superpoderes tras una tormenta cósmica y enfrentan a Víctor von Doom. (Línea 1 independiente)."],
