@@ -53,17 +53,12 @@ header p{margin:6px 0 0;color:var(--mut)}
   transition:.15s;
 }
 .action-btn:hover{background:#1e293b}
-.action-btn.show-hidden{
+.action-btn.show-hidden,.action-btn.paste{
   background:#1e3a8a;
   border-color:#60a5fa;
   color:#eff6ff;
 }
-.action-btn.paste{
-  background:#1e3a8a;
-  border-color:#60a5fa;
-  color:#eff6ff;
-}
-.action-btn.paste:hover{background:#1d4ed8}
+.action-btn.paste:hover,.action-btn.show-hidden:hover{background:#1d4ed8}
 .action-btn.upload{
   background:#14532d;
   border-color:#4ade80;
@@ -90,7 +85,7 @@ header p{margin:6px 0 0;color:var(--mut)}
   font-weight:600;
   box-shadow:0 0 10px color-mix(in srgb,var(--c) 55%,transparent);
 }
-#filters button:focus-visible,.cover-card:focus-visible,.action-btn:focus-visible{
+#filters button:focus-visible,.cover-card:focus-visible,.action-btn:focus-visible,.url-input:focus-visible{
   outline:2px solid #fff;
   outline-offset:2px;
 }
@@ -207,7 +202,6 @@ header p{margin:6px 0 0;color:var(--mut)}
   pointer-events:none;
 }
 
-/* CUADRADO / TARJETA DE PORTADA */
 .cover-card{
   --k:var(--c);
   position:relative;
@@ -320,7 +314,7 @@ header p{margin:6px 0 0;color:var(--mut)}
   margin-top:2px;
 }
 
-/* MINI VENTANA (MODAL) DE RESEÑA / DESCRIPCIÓN */
+/* MINI VENTANA (MODAL) */
 #modalBackdrop{
   position:fixed;
   inset:0;
@@ -334,7 +328,7 @@ header p{margin:6px 0 0;color:var(--mut)}
 }
 #modalBox{
   width:100%;
-  max-width:540px;
+  max-width:560px;
   background:#0d1322;
   border:1.5px solid var(--accent,#60a5fa);
   border-radius:14px;
@@ -345,7 +339,7 @@ header p{margin:6px 0 0;color:var(--mut)}
   position:relative;
   width:100%;
   aspect-ratio:16 / 9;
-  max-height:260px;
+  max-height:250px;
   background:#060811;
   overflow:hidden;
 }
@@ -392,7 +386,7 @@ header p{margin:6px 0 0;color:var(--mut)}
   color:#fff;
 }
 .modal-review{
-  margin:12px 0 16px;
+  margin:12px 0;
   color:#dbeafe;
   font-size:14px;
   line-height:1.55;
@@ -400,6 +394,21 @@ header p{margin:6px 0 0;color:var(--mut)}
   padding:12px 14px;
   border-radius:8px;
   border-left:3px solid var(--accent,#60a5fa);
+}
+.url-row{
+  display:flex;
+  gap:8px;
+  margin-bottom:12px;
+}
+.url-input{
+  flex:1;
+  min-width:0;
+  background:#070b14;
+  border:1px solid #334155;
+  color:#f8fafc;
+  border-radius:8px;
+  padding:6px 10px;
+  font-size:12px;
 }
 .modal-actions{
   display:flex;
@@ -416,7 +425,7 @@ footer{padding:12px 22px 28px;color:var(--mut);font-size:12px;max-width:98ch}
 <header>
   <div class="head-txt">
     <h1>Marvel: Cuadrícula Cronológica del Multiverso</h1>
-    <p>Cada título está en su año cronológico y, si varios ocurren en el mismo año y universo, se muestran uno al lado del otro en orden. Usa <strong>🙈</strong> para ocultar títulos o haz clic en cualquiera para ver su reseña.</p>
+    <p>Cada título está en su año cronológico con su fila por universo. Haz clic en una portada para ver su reseña, pegar/escribir una URL, pegar una imagen con <code>Ctrl+V</code> / <code>Cmd+V</code> o subir un archivo.</p>
   </div>
   <div class="controls-bar">
     <button id="btnShowHidden" class="action-btn show-hidden hide" type="button">Mostrar ocultas (0)</button>
@@ -435,7 +444,7 @@ footer{padding:12px 22px 28px;color:var(--mut);font-size:12px;max-width:98ch}
   </div>
 </div>
 
-<!-- MINI VENTANA (MODAL) DE DESCRIPCIÓN / RESEÑA -->
+<!-- MINI VENTANA (MODAL) -->
 <div id="modalBackdrop" class="hide" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div id="modalBox">
     <div class="modal-hero">
@@ -446,6 +455,10 @@ footer{padding:12px 22px 28px;color:var(--mut);font-size:12px;max-width:98ch}
       <div id="modalMeta" class="modal-meta"></div>
       <h2 id="modalTitle" class="modal-title"></h2>
       <p id="modalReview" class="modal-review"></p>
+      <div class="url-row">
+        <input id="modalUrlInput" class="url-input" type="url" placeholder="Pega o escribe aquí la URL de la portada (https://...)">
+        <button id="modalSaveUrl" class="action-btn" type="button">Guardar URL</button>
+      </div>
       <div class="modal-actions">
         <button id="modalHide" class="action-btn" type="button">🙈 Ocultar título</button>
         <button id="modalPaste" class="action-btn paste" type="button">📋 Pegar portada</button>
@@ -456,7 +469,7 @@ footer{padding:12px 22px 28px;color:var(--mut);font-size:12px;max-width:98ch}
   </div>
 </div>
 
-<footer>Las portadas personalizadas y los títulos ocultos se guardan en <code>localStorage</code>. También puedes usar <code>Ctrl+V</code> / <code>Cmd+V</code> para pegar una imagen o URL sobre la tarjeta activa.</footer>
+<footer>Puedes colocar URLs directamente en el 6.º elemento de cada entrada de <code>E</code> o pegarlas desde la mini ventana de cada título. Las portadas guardadas se conservan en <code>localStorage</code>.</footer>
 
 <script>
 const STORAGE_KEY = "marvel_multiverse_custom_covers_v1";
@@ -492,7 +505,7 @@ const FORKS = [
   { fromLane:"mcu",   fromTitle:"Deadpool & Wolverine",       toLane:"dd03",  toTitle:"Elektra en El Vacío" }
 ];
 
-// Orden de aparición cronológica dentro de su año [lane, year, title, kind, review, imgUrl]
+// Formato: [lane, year, title, kind, review, imgUrl]
 const E = [
   // --- MCU · SAGRADA LÍNEA ---
   ["mcu",1943,"Captain America: The First Avenger","F","Reseña: Steve Rogers, un joven frágil de Brooklyn, se somete a un experimento con el suero del supersoldado para combatir a Hydra y a Cráneo Rojo durante la Segunda Guerra Mundial, convirtiéndose en el primer Vengador."],
@@ -751,6 +764,8 @@ const modalImg = document.getElementById("modalImg");
 const modalMeta = document.getElementById("modalMeta");
 const modalTitle = document.getElementById("modalTitle");
 const modalReview = document.getElementById("modalReview");
+const modalUrlInput = document.getElementById("modalUrlInput");
+const modalSaveUrl = document.getElementById("modalSaveUrl");
 const modalClose = document.getElementById("modalClose");
 const modalHide = document.getElementById("modalHide");
 const modalPaste = document.getElementById("modalPaste");
@@ -775,6 +790,8 @@ function refreshImagesForKey(key, item){
   (imgsByKey.get(key) || []).forEach(img => { img.src = src; });
   if(selectedItem && itemKey(selectedItem) === key && !modalBackdrop.classList.contains("hide")){
     modalImg.src = src;
+    const savedVal = customCovers[key] || item[5] || "";
+    modalUrlInput.value = savedVal.startsWith("data:") ? "" : savedVal;
     modalReset.classList.toggle("hide", !customCovers[key]);
   }
 }
@@ -791,6 +808,7 @@ function isValidImageUrl(str){
   const trimmed = String(str || "").trim();
   if(!trimmed) return false;
   if(/^data:image\//i.test(trimmed)) return true;
+  if(/^\.{0,2}\//.test(trimmed)) return true;
   try {
     const u = new URL(trimmed);
     return u.protocol === "http:" || u.protocol === "https:";
@@ -833,12 +851,7 @@ async function pasteCoverFor(target){
       }
     } catch {}
   }
-  const manual = prompt("Pega aquí la URL de la imagen (o haz clic en la portada y pulsa Ctrl+V / Cmd+V para pegar una imagen copiada):");
-  if(manual && isValidImageUrl(manual)){
-    applyCoverData(target, manual.trim());
-  } else if(manual !== null){
-    alert("No se detectó una URL válida. También puedes copiar una imagen y pulsar Ctrl+V / Cmd+V.");
-  }
+  modalUrlInput.focus();
 }
 
 function triggerUploadFor(e){
@@ -862,8 +875,8 @@ fileInput.addEventListener("change", () => {
 document.addEventListener("paste", ev => {
   const target = hoveredItem || selectedItem;
   if(!target) return;
-  const tag = document.activeElement && document.activeElement.tagName;
-  if(tag === "INPUT" || tag === "TEXTAREA") return;
+  const active = document.activeElement;
+  if(active && (active.tagName === "TEXTAREA" || (active.tagName === "INPUT" && active.type !== "url"))) return;
 
   const cd = ev.clipboardData;
   if(!cd) return;
@@ -882,9 +895,20 @@ document.addEventListener("paste", ev => {
   const text = (cd.getData("text/plain") || "").trim();
   if(isValidImageUrl(text)){
     ev.preventDefault();
+    if(active === modalUrlInput) modalUrlInput.value = text;
     applyCoverData(target, text);
   }
 });
+
+modalSaveUrl.onclick = () => {
+  if(!selectedItem) return;
+  const val = modalUrlInput.value.trim();
+  if(!isValidImageUrl(val)){
+    alert("Introduce una URL válida (http://, https:// o ruta local).");
+    return;
+  }
+  applyCoverData(selectedItem, val);
+};
 
 function updateHiddenButton(){
   const count = hiddenItems.size;
@@ -918,6 +942,7 @@ function openReviewModal(cardEl, e){
   const k = itemKey(e);
   const yrLabel = yr >= 9000 ? "Próximamente" : String(yr);
   const typeLabel = kind.includes("S") ? "Serie / Especial" : "Película";
+  const currentUrl = customCovers[k] || e[5] || "";
 
   modalBox.style.setProperty("--accent", color);
   modalImg.src = getPosterSrc(e);
@@ -925,6 +950,7 @@ function openReviewModal(cardEl, e){
   modalMeta.textContent = `${yrLabel} · ${typeLabel} · ${laneName} (${sub})`;
   modalTitle.textContent = title;
   modalReview.textContent = review || "Sin reseña disponible.";
+  modalUrlInput.value = currentUrl.startsWith("data:") ? "" : currentUrl;
   modalReset.classList.toggle("hide", !customCovers[k]);
 
   modalBackdrop.classList.remove("hide");
@@ -972,7 +998,6 @@ btnClearAll.onclick = () => {
 const years = [...new Set(E.map(e => e[1]))].sort((a,b) => a - b);
 const activeLanes = new Set(L.map(x => x[0]));
 
-// Calcular ancho mínimo de cada columna de año según el máximo de tarjetas visibles en el mismo año y universo
 function computeColumnWidths(){
   return years.map(y => {
     let maxInCol = 1;
@@ -981,7 +1006,6 @@ function computeColumnWidths(){
       const count = E.filter(e => e[0] === id && e[1] === y && !hiddenItems.has(itemKey(e))).length;
       if(count > maxInCol) maxInCol = count;
     });
-    // 152px por tarjeta + 10px entre tarjetas + 16px de padding lateral
     return Math.max(176, maxInCol * 152 + (maxInCol - 1) * 10 + 18);
   });
 }
