@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0b0b0d;--panel:#141418;--fg:#ececf0;--mut:#9a9aa8;--red:#d6202b;--col:148px;--lab:180px}
+:root{--bg:#0b0b0d;--panel:#141418;--fg:#ececf0;--mut:#9a9aa8;--red:#d6202b;--col:148px;--lab:186px}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
 header{padding:18px 20px 6px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px}
@@ -68,7 +68,7 @@ footer{padding:12px 20px 28px;color:var(--mut);font-size:12px;max-width:98ch}
 <header>
   <div class="head-txt">
     <h1>Marvel: línea de tiempo del multiverso</h1>
-    <p>Cada entrada incluye una imagen (puedes poner URLs reales en el campo <code>img</code> de cada elemento o usar las portadas generadas automáticamente). El símbolo ⑂ indica ramas y cruces entre universos.</p>
+    <p>Tierra-616 reúne las producciones canon del MCU (cine, Disney+, Netflix y Agent Carter), mientras que la fila de estatus ambiguo agrupa otras series de TV y One-Shots. El símbolo ⑂ indica ramas y cruces entre universos.</p>
   </div>
   <div class="view-switch" role="group" aria-label="Cambiar vista">
     <button id="btnGrid" class="view-btn" type="button" aria-pressed="false">Vista cuadrícula</button>
@@ -85,8 +85,8 @@ footer{padding:12px 20px 28px;color:var(--mut);font-size:12px;max-width:98ch}
 
 <script>
 const L=[
-["mcu","MCU · Tierra-616","Sagrada Línea","#a78bfa"],
-["mcunet","MCU · Defensores y TV","Sagrada Línea / TV","#818cf8"],
+["mcu","MCU · Tierra-616","Canon principal (Cine, D+, Netflix, Carter)","#a78bfa"],
+["tvamb","MCU · TV / Ambiguo","Estatus ambiguo (S.H.I.E.L.D., TV y One-Shots)","#818cf8"],
 ["rama","Ramas Marvel Studios","Multiverso / Ramas","#e879f9"],
 ["xo","X-Men Fox","Tierra-10005 (Original)","#14b8a6"],
 ["xn","X-Men Fox","Tierra-10005 (Nueva línea)","#67e8f9"],
@@ -102,8 +102,9 @@ const L=[
 
 // Formato: [lane, year, title, kind, desc, imgUrl]
 const E=[
-// --- MCU TIERRA-616 ---
+// --- MCU TIERRA-616 (CANON PRINCIPAL: CINE, DISNEY+, NETFLIX Y AGENT CARTER) ---
 ["mcu",1942,"Captain America: The First Avenger","F","Steve Rogers se convierte en el Capitán América durante la Segunda Guerra Mundial."],
+["mcu",1946,"Agent Carter (T1 y T2)","S","Peggy Carter trabaja en la SSR y combate amenazas de Leviathan."],
 ["mcu",1995,"Captain Marvel","F","Carol Danvers descubre sus poderes y el conflicto entre Kree y Skrulls."],
 ["mcu",2010,"Iron Man","F","Tony Stark construye su primera armadura y anuncia al mundo que es Iron Man."],
 ["mcu",2010,"Iron Man 2","F","Tony enfrenta a Ivan Vanko y a las presiones del gobierno."],
@@ -116,17 +117,30 @@ const E=[
 ["mcu",2014,"Guardians of the Galaxy","F","Peter Quill y un grupo de inadaptados protegen una Gema del Infinito."],
 ["mcu",2014,"Guardians of the Galaxy Vol. 2","F","Los Guardianes descubren el verdadero origen de Quill."],
 ["mcu",2014,"I Am Groot","S","Cortos centrados en las aventuras de Baby Groot."],
+["mcu",2014,"Daredevil (T1)","S","Matt Murdock comienza su cruzada nocturna contra Wilson Fisk."],
+["mcu",2014,"Jessica Jones (T1)","S","Jessica Jones enfrenta el control mental de Kilgrave."],
 ["mcu",2015,"Avengers: Age of Ultron","F","La creación de Ultron lleva a la batalla de Sokovia y a la aparición de Visión."],
 ["mcu",2015,"Ant-Man","F","Scott Lang asume el manto de Ant-Man junto a Hank Pym."],
+["mcu",2015,"Daredevil (T2)","S","La llegada de Punisher y Elektra complica la situación de Matt."],
+["mcu",2015,"Luke Cage (T1)","S","Luke Cage protege Harlem con su piel impenetrable."],
 ["mcu",2016,"Captain America: Civil War","F","Los Vengadores se dividen por los Acuerdos de Sokovia."],
 ["mcu",2016,"Black Widow","F","Natasha Romanoff enfrenta su pasado tras Civil War."],
 ["mcu",2016,"Black Panther","F","T'Challa asume el trono de Wakanda."],
 ["mcu",2016,"Spider-Man: Homecoming","F","Peter Parker equilibra su vida escolar con ser un héroe bajo la tutela de Tony."],
 ["mcu",2016,"Doctor Strange","F","Stephen Strange se convierte en el Hechicero Supremo de la Tierra."],
+["mcu",2016,"Iron Fist (T1)","S","Danny Rand regresa a Nueva York como el Puño de Hierro."],
+["mcu",2016,"The Defenders","S","Daredevil, Jessica Jones, Luke Cage e Iron Fist unen fuerzas contra La Mano."],
+["mcu",2016,"The Punisher (T1)","S","Frank Castle investiga la conspiración detrás de la muerte de su familia."],
+["mcu",2016,"Jessica Jones (T2)","S","Jessica investiga su propio origen y experimento."],
 ["mcu",2017,"Eyes of Wakanda","S","Serie animada oficial de Marvel Studios sobre guerreros de Wakanda."],
 ["mcu",2017,"Thor: Ragnarok","F","Thor y Hulk luchan en Sakaar mientras Hela amenaza Asgard."],
+["mcu",2017,"Luke Cage (T2)","S","Nuevos desafíos de poder en Harlem."],
+["mcu",2017,"Iron Fist (T2)","S","Colleen Wing y Danny Rand asumen nuevos roles."],
+["mcu",2017,"Daredevil (T3)","S","Matt Murdock regresa más oscuro para enfrentar el regreso de Fisk."],
+["mcu",2017,"The Punisher (T2)","S","Frank Castle protege a una joven mientras enfrenta a Billy Russo."],
 ["mcu",2018,"Ant-Man and the Wasp","F","Scott y Hope intentan rescatar a Janet van Dyne del Reino Cuántico."],
 ["mcu",2018,"Avengers: Infinity War","F","Thanos reúne las Gemas del Infinito y borra la mitad de la vida."],
+["mcu",2018,"Jessica Jones (T3)","S","Última temporada de Jessica Jones junto a Trish Walker."],
 ["mcu",2023,"Avengers: Endgame","FB","Viaje en el tiempo para revertir el chasquido; abre líneas temporales alternas."],
 ["mcu",2023,"WandaVision","S","Wanda Maximoff crea una realidad televisiva en Westview."],
 ["mcu",2023,"Eternals","F","Los Eternos salen de las sombras ante la amenaza de los Desviantes."],
@@ -165,37 +179,23 @@ const E=[
 ["mcu",9000,"Black Panther 3 / Doctor Strange 3 / Eternals 2 / X-Men","F","Próximas entregas cinematográficas del MCU."],
 ["mcu",9000,"Nova / Serie Wakanda / Wonder Man (T2)","S","Próximas series en desarrollo."],
 
-// --- MCU · DEFENSORES, TV Y ONE-SHOTS ---
-["mcunet",1946,"Agent Carter: One-Shot","S","Corto que muestra los primeros pasos de Peggy Carter tras la guerra."],
-["mcunet",1946,"Agent Carter (T1 y T2)","S","Peggy Carter trabaja en la SSR y combate amenazas de Leviathan."],
-["mcunet",2010,"The Consultant: One-Shot","S","Phil Coulson y Jasper Sitwell manipulan la situación de Emil Blonsky."],
-["mcunet",2011,"A Funny Thing Happened on the Way to Thor's Hammer","S","Phil Coulson interviene en un atraco de camino a Nuevo México."],
-["mcunet",2012,"Item 47: One-Shot","S","Una pareja encuentra un arma Chitauri tras la batalla de Nueva York."],
-["mcunet",2013,"All Hail The King: One-Shot","S","Trevor Slattery descubre la verdad detrás del Mandarín."],
-["mcunet",2014,"Agents of S.H.I.E.L.D. (T1)","S","El equipo de Coulson opera en medio de la caída de S.H.I.E.L.D."],
-["mcunet",2014,"Daredevil (T1)","S","Matt Murdock comienza su cruzada nocturna contra Wilson Fisk."],
-["mcunet",2014,"Jessica Jones (T1)","S","Jessica Jones enfrenta el control mental de Kilgrave."],
-["mcunet",2015,"Agents of S.H.I.E.L.D. (T2)","S","Reconstrucción de S.H.I.E.L.D. y aparición de los Inhumanos."],
-["mcunet",2015,"Daredevil (T2)","S","La llegada de Punisher y Elektra complica la situación de Matt."],
-["mcunet",2015,"Luke Cage (T1)","S","Luke Cage protege Harlem con su piel impenetrable."],
-["mcunet",2016,"Agents of S.H.I.E.L.D. (T3 y T4)","S","Temporadas marcadas por Hive, Ghost Rider y el Framework."],
-["mcunet",2016,"Agents of S.H.I.E.L.D.: Slingshot","S","Miniserie digital centrada en Yo-Yo Rodríguez."],
-["mcunet",2016,"Iron Fist (T1)","S","Danny Rand regresa a Nueva York como el Puño de Hierro."],
-["mcunet",2016,"The Defenders","S","Daredevil, Jessica Jones, Luke Cage e Iron Fist unen fuerzas contra La Mano."],
-["mcunet",2016,"The Punisher (T1)","S","Frank Castle investiga la conspiración detrás de la muerte de su familia."],
-["mcunet",2016,"Jessica Jones (T2)","S","Jessica investiga su propio origen y experimento."],
-["mcunet",2017,"Luke Cage (T2)","S","Nuevos desafíos de poder en Harlem."],
-["mcunet",2017,"Iron Fist (T2)","S","Colleen Wing y Danny Rand asumen nuevos roles."],
-["mcunet",2017,"Daredevil (T3)","S","Matt Murdock regresa más oscuro para enfrentar el regreso de Fisk."],
-["mcunet",2017,"The Punisher (T2)","S","Frank Castle protege a una joven mientras enfrenta a Billy Russo."],
-["mcunet",2017,"Inhumans","S","La familia real de Attilan se traslada a la Tierra."],
-["mcunet",2017,"Runaways (T1 y T2)","S","Un grupo de adolescentes descubre que sus padres forman parte de una organización secreta."],
-["mcunet",2017,"Cloak & Dagger (T1 y T2)","S","Tandy y Tyrone desarrollan poderes vinculados en Nueva Orleans."],
-["mcunet",2018,"Runaways (T3)","S","Los jóvenes enfrentan a Morgan le Fay y cruces mágicos."],
-["mcunet",2018,"Jessica Jones (T3)","S","Última temporada de Jessica Jones junto a Trish Walker."],
-["mcunet",2020,"Agents of S.H.I.E.L.D. (T5)","SB","Viajes espaciales y temporales que generan ramificaciones."],
-["mcunet",2022,"Runaways (T3 - Final)","S","Epílogo ambientado en el futuro cercano."],
-["mcunet",2023,"Agents of S.H.I.E.L.D. (T6 y T7)","SB","Saltos en el tiempo de S.H.I.E.L.D. para salvar la línea temporal."],
+// --- MCU · TV / ESTATUS AMBIGUO ---
+["tvamb",1946,"Agent Carter: One-Shot","S","Corto que muestra los primeros pasos de Peggy Carter tras la guerra."],
+["tvamb",2010,"The Consultant: One-Shot","S","Phil Coulson y Jasper Sitwell manipulan la situación de Emil Blonsky."],
+["tvamb",2011,"A Funny Thing Happened on the Way to Thor's Hammer","S","Phil Coulson interviene en un atraco de camino a Nuevo México."],
+["tvamb",2012,"Item 47: One-Shot","S","Una pareja encuentra un arma Chitauri tras la batalla de Nueva York."],
+["tvamb",2013,"All Hail The King: One-Shot","S","Trevor Slattery descubre la verdad detrás del Mandarín."],
+["tvamb",2014,"Agents of S.H.I.E.L.D. (T1)","S","El equipo de Coulson opera en medio de la caída de S.H.I.E.L.D."],
+["tvamb",2015,"Agents of S.H.I.E.L.D. (T2)","S","Reconstrucción de S.H.I.E.L.D. y aparición de los Inhumanos."],
+["tvamb",2016,"Agents of S.H.I.E.L.D. (T3 y T4)","S","Temporadas marcadas por Hive, Ghost Rider y el Framework."],
+["tvamb",2016,"Agents of S.H.I.E.L.D.: Slingshot","S","Miniserie digital centrada en Yo-Yo Rodríguez."],
+["tvamb",2017,"Inhumans","S","La familia real de Attilan se traslada a la Tierra."],
+["tvamb",2017,"Runaways (T1 y T2)","S","Un grupo de adolescentes descubre que sus padres forman parte de una organización secreta."],
+["tvamb",2017,"Cloak & Dagger (T1 y T2)","S","Tandy y Tyrone desarrollan poderes vinculados en Nueva Orleans."],
+["tvamb",2018,"Runaways (T3)","S","Los jóvenes enfrentan a Morgan le Fay y cruces mágicos."],
+["tvamb",2020,"Agents of S.H.I.E.L.D. (T5)","SB","Viajes espaciales y temporales que generan ramificaciones."],
+["tvamb",2022,"Runaways (T3 - Final)","S","Epílogo ambientado en el futuro cercano."],
+["tvamb",2023,"Agents of S.H.I.E.L.D. (T6 y T7)","SB","Saltos en el tiempo de S.H.I.E.L.D. para salvar la línea temporal."],
 
 // --- RAMAS OFICIALES MARVEL STUDIOS ---
 ["rama",2023,"Loki (T1 y T2)","SB","Loki escapa en 2012 y termina sosteniendo el multiverso en el árbol temporal."],
@@ -277,7 +277,6 @@ const E=[
 const laneMap=Object.fromEntries(L.map(x=>[x[0],x]));
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[m]);
 
-// Genera una imagen/portada SVG automática si el ítem no tiene URL propia en e[5]
 function getPoster(e){
   if(e[5]) return e[5];
   const [laneId, yr, title, kind] = e;
@@ -301,7 +300,6 @@ function getPoster(e){
   return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
 }
 
-// --- VISTA CUADRÍCULA ---
 const years=[...new Set(E.map(e=>e[1]))].sort((a,b)=>a-b);
 const g=document.getElementById("grid"), vis=document.getElementById("visual"), info=document.getElementById("info"), fl=document.getElementById("filters");
 g.style.gridTemplateColumns=`var(--lab) repeat(${years.length},var(--col))`;
@@ -347,10 +345,9 @@ L.forEach(([id,n,s,c])=>{
   fl.append(f);
 });
 
-// --- VISTA INFOGRAFÍA (TARJETAS EN ORDEN CRONOLÓGICO) ---
 const sortedE=[...E].sort((a,b)=>a[1]-b[1]);
 sortedE.forEach(e=>{
-  const [id, y, title, kind, , ] = e;
+  const [id, y, title, kind] = e;
   const [, , earthLabel, c] = laneMap[id] || ["","","Tierra","#a78bfa"];
   const card=mk("button","v-card");
   card.type="button";
@@ -359,7 +356,7 @@ sortedE.forEach(e=>{
 
   const top=mk("div","v-top");
   top.append(mk("div","v-year",y>=9000?"FUTURO":String(y)));
-  const isAlt = id!=="mcu" && id!=="mcunet";
+  const isAlt = id!=="mcu";
   top.append(mk("div","v-earth"+(isAlt?" alt":""),earthLabel.toUpperCase()));
 
   const stemTop=mk("div","v-stem");
@@ -384,7 +381,6 @@ sortedE.forEach(e=>{
   vis.append(card);
 });
 
-// --- CAMBIO DE VISTA ---
 const btnGrid=document.getElementById("btnGrid"), btnVisual=document.getElementById("btnVisual");
 btnVisual.onclick=()=>{
   btnVisual.setAttribute("aria-pressed","true");
