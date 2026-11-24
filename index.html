@@ -7,19 +7,25 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0b0b0d;--panel:#141418;--fg:#ececf0;--mut:#9a9aa8;--red:#d6202b;--col:132px;--lab:176px}
+:root{--bg:#0b0b0d;--panel:#141418;--fg:#ececf0;--mut:#9a9aa8;--red:#d6202b;--col:148px;--lab:180px}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
-header{padding:18px 20px 6px}
+header{padding:18px 20px 6px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px}
+.head-txt{max-width:75ch}
 h1{margin:0;font:700 26px/1.1 Oswald,Impact,sans-serif;letter-spacing:.02em}
-header p{margin:6px 0 0;color:var(--mut);max-width:70ch}
+header p{margin:6px 0 0;color:var(--mut)}
+.view-switch{display:flex;gap:6px}
+.view-btn{border:1px solid #3a3a45;background:#16161c;color:var(--fg);padding:6px 12px;border-radius:8px;font:500 13px system-ui,sans-serif;cursor:pointer}
+.view-btn[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:#fff}
 #filters{display:flex;flex-wrap:wrap;gap:6px;padding:10px 20px}
 #filters button{border:1px solid var(--c);background:transparent;color:var(--fg);padding:4px 10px;border-radius:999px;font:inherit;font-size:12px;cursor:pointer}
 #filters button[aria-pressed=true]{background:var(--c);color:#000}
-#filters button:focus-visible,.chip:focus-visible{outline:2px solid #fff;outline-offset:2px}
+#filters button:focus-visible,.chip:focus-visible,.v-card:focus-visible,.view-btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
 #info{margin:0 20px 10px;padding:10px 14px;background:var(--panel);border-left:3px solid var(--red);min-height:44px;color:var(--mut)}
 #info b{color:var(--fg)}
-#wrap{overflow:auto;max-height:calc(100vh - 210px);min-height:420px;border-top:1px solid #26262e}
+#wrap{overflow:auto;max-height:calc(100vh - 225px);min-height:430px;border-top:1px solid #26262e}
+
+/* VISTA CUADRÍCULA */
 #grid{display:grid;width:max-content;min-width:100%}
 .corner,.yr{position:sticky;top:0;z-index:4;background:var(--bg);height:74px;display:flex;align-items:center;justify-content:center}
 .corner{left:0;z-index:6;justify-content:flex-start;padding-left:20px;color:var(--mut);font-size:12px}
@@ -28,117 +34,370 @@ header p{margin:6px 0 0;color:var(--mut);max-width:70ch}
 .yr.soon span{font-size:11px}
 .lab{position:sticky;left:0;z-index:3;background:var(--bg);padding:12px 10px 12px 20px;border-left:5px solid var(--c);font:500 14px/1.25 Oswald,sans-serif;display:flex;flex-direction:column;justify-content:flex-start}
 .lab small{font:12px/1.3 system-ui,sans-serif;color:var(--mut);margin-top:3px}
-.cell{padding:10px 5px;border-bottom:1px solid #1c1c22;position:relative;display:flex;flex-direction:column;gap:5px;min-height:62px}
+.cell{padding:10px 5px;border-bottom:1px solid #1c1c22;position:relative;display:flex;flex-direction:column;gap:6px;min-height:62px}
 .cell::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--c);opacity:.35}
-.chip{--k:var(--c);text-align:left;font:inherit;font-size:12px;line-height:1.25;color:var(--fg);background:color-mix(in srgb,var(--k) 20%,#0b0b0d);border:0;border-left:3px solid var(--k);padding:5px 7px;cursor:pointer;border-radius:0 4px 4px 0}
+.chip{--k:var(--c);text-align:left;font:inherit;font-size:12px;line-height:1.25;color:var(--fg);background:color-mix(in srgb,var(--k) 20%,#0b0b0d);border:0;border-left:3px solid var(--k);padding:5px 7px;cursor:pointer;border-radius:0 4px 4px 0;display:flex;align-items:center;gap:6px}
+.chip img{width:28px;height:20px;object-fit:cover;border-radius:2px;flex:0 0 auto;border:1px solid rgba(255,255,255,.15)}
 .chip.s{font-style:italic}
-.chip.s::before{content:"serie · ";color:var(--mut);font-style:normal;font-size:11px}
-.chip.b::after{content:" ⑂";color:#ffc233;font-weight:700}
+.chip.b .tag-b::after{content:" ⑂";color:#ffc233;font-weight:700}
 .chip:hover,.chip.on{background:color-mix(in srgb,var(--k) 45%,#0b0b0d)}
+
+/* VISTA VISUAL TIPO INFOGRAFÍA (TARJETAS CON IMAGEN) */
+#visual{display:flex;align-items:stretch;width:max-content;padding:24px 20px 32px;gap:0;background:radial-gradient(circle at top,#181820 0%,#0b0b0d 70%)}
+.v-card{--k:var(--c);width:210px;flex:0 0 210px;display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer;background:transparent;border:0;color:var(--fg);padding:0 6px}
+.v-top{min-height:66px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:6px}
+.v-year{font:700 18px/1 Oswald,sans-serif;color:#fff;letter-spacing:.03em}
+.v-earth{margin-top:3px;font:700 11px/1.1 Oswald,sans-serif;letter-spacing:.05em;padding:2px 6px;border-radius:3px;background:#facc15;color:#000}
+.v-earth.alt{background:#38bdf8;color:#051018}
+.v-stem{width:2px;height:14px;background:rgba(255,255,255,.45)}
+.v-media{width:100%;height:118px;position:relative;overflow:hidden;border-radius:6px;border:2px solid color-mix(in srgb,var(--k) 70%,#fff);box-shadow:0 8px 20px rgba(0,0,0,.55);background:#15151a}
+.v-media img{width:100%;height:100%;object-fit:cover;display:block}
+.v-badge{position:absolute;top:6px;left:6px;background:rgba(11,11,13,.82);color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;border:1px solid rgba(255,255,255,.15)}
+.v-branch{position:absolute;top:6px;right:6px;background:#ffc233;color:#000;font-weight:700;font-size:11px;padding:1px 5px;border-radius:4px}
+.v-bottom{min-height:74px;display:flex;flex-direction:column;align-items:center;padding-top:0}
+.v-title{margin-top:6px;font:700 14px/1.15 Oswald,sans-serif;letter-spacing:.02em;text-transform:uppercase;color:#fff}
+.v-sub{margin-top:2px;font-size:11px;color:var(--mut)}
+.v-card.on .v-media{outline:3px solid #fff;transform:translateY(-3px);transition:.15s}
+.v-card:hover .v-media{transform:translateY(-2px);transition:.15s}
+
 .hide{display:none!important}
-footer{padding:12px 20px 28px;color:var(--mut);font-size:12px;max-width:90ch}
+footer{padding:12px 20px 28px;color:var(--mut);font-size:12px;max-width:98ch}
 </style>
 </head>
 <body>
 <header>
-<h1>Marvel: línea de tiempo del multiverso</h1>
-<p>Cada fila es una Tierra o una rama. Las columnas siguen el orden cronológico dentro de la historia, no el de estreno. El símbolo ⑂ marca ramas y cruces entre universos.</p>
+  <div class="head-txt">
+    <h1>Marvel: línea de tiempo del multiverso</h1>
+    <p>Cada entrada incluye una imagen (puedes poner URLs reales en el campo <code>img</code> de cada elemento o usar las portadas generadas automáticamente). El símbolo ⑂ indica ramas y cruces entre universos.</p>
+  </div>
+  <div class="view-switch" role="group" aria-label="Cambiar vista">
+    <button id="btnGrid" class="view-btn" type="button" aria-pressed="false">Vista cuadrícula</button>
+    <button id="btnVisual" class="view-btn" type="button" aria-pressed="true">Vista infografía (tarjetas)</button>
+  </div>
 </header>
 <div id="filters" role="group" aria-label="Mostrar u ocultar líneas"></div>
-<div id="info" aria-live="polite">Toca una película o serie para ver detalles.</div>
-<div id="wrap"><div id="grid"></div></div>
-<footer>Los años posteriores a 2023 en el MCU son aproximados y se pueden editar en el arreglo <code>E</code> del código. Kind: F película, S serie, y la letra B marca una rama. Las series de ABC y Netflix quedan fuera por su estatus incierto.</footer>
+<div id="info" aria-live="polite">Toca cualquier tarjeta o película/serie para ver los detalles cronológicos.</div>
+<div id="wrap">
+  <div id="visual" class=""></div>
+  <div id="grid" class="hide"></div>
+</div>
+<footer>Consejo: en el arreglo <code>E</code>, el 5.º elemento es la descripción y el 6.º elemento (opcional) es la URL de una imagen personalizada (<code>"https://..."</code>). Si se deja vacío, se genera automáticamente una portada con el título, año y universo.</footer>
+
 <script>
 const L=[
-["mcu","MCU","Tierra-616","#a78bfa"],
-["rama","Ramas del MCU","Loki, What If, Tierra-838","#e879f9"],
-["xo","X-Men Fox","Línea original","#14b8a6"],
-["xn","X-Men Fox","Nueva línea tras DOFP","#67e8f9"],
-["xd","Deadpool y Logan","Ramas sueltas","#fb923c"],
+["mcu","MCU · Tierra-616","Sagrada Línea","#a78bfa"],
+["mcunet","MCU · Defensores y TV","Sagrada Línea / TV","#818cf8"],
+["rama","Ramas Marvel Studios","Multiverso / Ramas","#e879f9"],
+["xo","X-Men Fox","Tierra-10005 (Original)","#14b8a6"],
+["xn","X-Men Fox","Tierra-10005 (Nueva línea)","#67e8f9"],
+["xd","Deadpool y Logan","Tierra-10005 / Variantes","#fb923c"],
 ["raimi","Spider-Man Raimi","Tierra-96283","#ef4444"],
 ["webb","Spider-Man Webb","Tierra-120703","#60a5fa"],
-["ssu","Universo Sony","Venom y compañía","#a3e635"],
-["verse","Spider-Verse","Animado, Tierra-1610","#f472b6"],
-["ffox","4 Fantásticos Fox","2005, 2007 y 2015","#34d399"],
-["f828","4 Fantásticos MCU","Tierra-828","#facc15"]
+["ssu","Universo Sony","Universo Sony","#a3e635"],
+["verse","Spider-Verse","Tierra-1610","#f472b6"],
+["ffox","4 Fantásticos Fox","Tierra-121698","#34d399"],
+["f828","4 Fantásticos MCU","Tierra-828","#facc15"],
+["legado","Otros universos (Vacío)","Universos de legado","#f87171"]
 ];
+
+// Formato: [lane, year, title, kind, desc, imgUrl]
 const E=[
-["mcu",1942,"Capitán América: El primer vengador","F"],
-["mcu",1946,"Agent Carter","S"],
-["mcu",1995,"Capitana Marvel","F"],
-["mcu",2010,"Iron Man","F"],
-["mcu",2011,"Iron Man 2","F"],["mcu",2011,"El increíble Hulk","F"],["mcu",2011,"Thor","F"],
-["mcu",2012,"Los Vengadores","F","Aquí empieza la rama: Loki escapa con el Teseracto en el viaje en el tiempo de Endgame."],
-["mcu",2013,"Thor: El mundo oscuro","F"],["mcu",2013,"Iron Man 3","F"],
-["mcu",2014,"Capitán América: El soldado de invierno","F"],["mcu",2014,"Guardianes de la Galaxia","F"],["mcu",2014,"Guardianes de la Galaxia 2","F"],
-["mcu",2015,"Los Vengadores: Age of Ultron","F"],["mcu",2015,"Ant-Man","F"],
-["mcu",2016,"Capitán América: Civil War","F"],["mcu",2016,"Viuda Negra","F"],["mcu",2016,"Black Panther","F"],["mcu",2016,"Spider-Man: Homecoming","F"],["mcu",2016,"Doctor Strange","F"],
-["mcu",2017,"Thor: Ragnarok","F"],
-["mcu",2018,"Ant-Man y la Avispa","F"],["mcu",2018,"Vengadores: Infinity War","F"],
-["mcu",2023,"Vengadores: Endgame","FB","Viaje en el tiempo (Time Heist): cada salto al pasado abre líneas alternas."],
-["mcu",2023,"WandaVision","S"],
-["mcu",2024,"Falcon y el Soldado de Invierno","S"],["mcu",2024,"Spider-Man: Lejos de casa","F"],["mcu",2024,"Shang-Chi","F"],["mcu",2024,"Eternals","F"],["mcu",2024,"Hawkeye","S"],
-["mcu",2024,"Spider-Man: No Way Home","FB","Se rompe el hechizo del multiverso. Llegan los Spider-Man de Raimi y Webb y regresan a sus Tierras. Peter es olvidado por todos."],
-["mcu",2025,"Moon Knight","S"],["mcu",2025,"Ms. Marvel","S"],["mcu",2025,"She-Hulk","S"],
-["mcu",2025,"Doctor Strange en el multiverso de la locura","FB","Visita la Tierra-838 (Illuminati) y otras Tierras."],
-["mcu",2025,"Thor: Love and Thunder","F"],["mcu",2025,"Black Panther: Wakanda Forever","F"],["mcu",2025,"Ant-Man y la Avispa: Quantumania","F"],
-["mcu",2025,"Werewolf by Night","S"],["mcu",2025,"Your Friendly Neighborhood Spider-Man","S"],["mcu",2025,"Secret Invasion","S"],
-["mcu",2026,"Guardianes de la Galaxia 3","F"],["mcu",2026,"The Marvels","F"],["mcu",2026,"Echo","S"],["mcu",2026,"Agatha","S"],
-["mcu",2026,"Capitán América: Brave New World","F"],["mcu",2026,"Thunderbolts*","F","La escena post-créditos acerca a los 4 Fantásticos de la Tierra-828."],
-["mcu",2026,"Ironheart","S"],["mcu",2026,"Daredevil: Born Again","S"],
-["mcu",2026,"Deadpool y Lobezno","FB","La TVA poda la Tierra-10005 (Fox). Wade y un Wolverine variante cruzan al MCU."],
-["mcu",2026,"Spider-Man: Brand New Day","F","Estrenada en julio de 2026. Marvel dice que ocurre antes de Doomsday."],
-["mcu",9000,"Avengers: Doomsday","FB","Estreno 18 dic 2026. Reúne personajes de varias Tierras. Los X-Men de Fox están confirmados. Lo demás son rumores."],
-["mcu",9000,"Avengers: Secret Wars","F","Estreno 17 dic 2027."],
-["rama",2011,"What If…? (T1 a T3)","S","Series animadas con Tierras alternas."],
-["rama",2012,"Loki (T1 y T2)","SB","La TVA poda la línea de Loki. La línea sagrada se rompe y el multiverso se abre."],
-["rama",2025,"Tierra-838: Illuminati","FB","Doctor Strange 2."],
-["xo",1979,"X-Men Orígenes: Wolverine","F","Abarca desde 1845 hasta 1979."],
-["xo",2000,"X-Men","F"],["xo",2003,"X2","F"],["xo",2006,"X-Men: La decisión final","F"],["xo",2013,"Lobezno inmortal","F"],
-["xo",2023,"DOFP: el futuro oscuro","FB","Los Centinelas devastan el mundo. Este futuro se borra cuando Wolverine cambia 1973."],
-["xn",1962,"X-Men: Primera generación","F"],
-["xn",1973,"X-Men: Días del futuro pasado","FB","Wolverine cambia el pasado y nace la nueva línea."],
-["xn",1983,"X-Men: Apocalipsis","F"],["xn",1992,"X-Men: Dark Phoenix","F"],["xn",2020,"Los nuevos mutantes","F"],["xn",2023,"Nuevo futuro (final de DOFP)","F"],
-["xd",2016,"Deadpool","F"],["xd",2018,"Deadpool 2","F","Cable viaja en el tiempo y Wade cambia las cosas."],
-["xd",2026,"Deadpool y Lobezno","FB","El cruce con el MCU. Tierra-10005."],
-["xd",2029,"Logan","FB","Rama aparte. Su encaje exacto con la nueva línea es ambiguo."],
-["raimi",2002,"Spider-Man","F"],["raimi",2004,"Spider-Man 2","F"],["raimi",2007,"Spider-Man 3","F"],
-["raimi",2024,"No Way Home: cruce a la 616","FB"],
-["webb",2012,"The Amazing Spider-Man","F"],["webb",2014,"The Amazing Spider-Man 2","F"],
-["webb",2024,"No Way Home: cruce a la 616","FB"],
-["ssu",1933,"Spider-Noir","S","Serie ambientada en los años 30."],
-["ssu",2003,"Madame Web","F"],["ssu",2018,"Venom","F"],["ssu",2020,"Morbius","F"],["ssu",2021,"Venom: Habrá matanza","F"],
-["ssu",2024,"Venom: El último baile","FB","Eddie cruza brevemente al MCU y regresa."],["ssu",2024,"Kraven el cazador","F"],
-["verse",2018,"Spider-Man: Un nuevo universo","F"],["verse",2023,"Spider-Man: Cruzando el multiverso","F"],
-["verse",9000,"Beyond the Spider-Verse","F","Pendiente."],
-["ffox",2005,"Los 4 Fantásticos","F","Tierra-121698."],["ffox",2007,"Los 4 Fantásticos y Silver Surfer","F"],["ffox",2015,"Los 4 Fantásticos (reboot)","F","Otra línea distinta."],
-["f828",1965,"Los 4 Fantásticos: Primeros pasos","F","Tierra-828."],
-["f828",9000,"Llegan a la Tierra-616","FB","Doom y Franklin. Conectan con Doomsday."]
+// --- MCU TIERRA-616 ---
+["mcu",1942,"Captain America: The First Avenger","F","Steve Rogers se convierte en el Capitán América durante la Segunda Guerra Mundial."],
+["mcu",1995,"Captain Marvel","F","Carol Danvers descubre sus poderes y el conflicto entre Kree y Skrulls."],
+["mcu",2010,"Iron Man","F","Tony Stark construye su primera armadura y anuncia al mundo que es Iron Man."],
+["mcu",2010,"Iron Man 2","F","Tony enfrenta a Ivan Vanko y a las presiones del gobierno."],
+["mcu",2010,"The Incredible Hulk","F","Bruce Banner intenta curarse de la radiación gamma."],
+["mcu",2011,"Thor","F","Thor es desterrado a la Tierra y aprende el significado de ser digno."],
+["mcu",2012,"The Avengers","FB","Los héroes se unen contra Loki; en el atraco del tiempo de Endgame nace una rama."],
+["mcu",2013,"Iron Man 3","F","Tony lidia con las secuelas de Nueva York y el Mandarín."],
+["mcu",2013,"Thor: The Dark World","F","Malekith amenaza los Nueve Reinos con el Éter."],
+["mcu",2014,"Captain America: The Winter Soldier","F","S.H.I.E.L.D. es infiltrada por Hydra y reaparece Bucky Barnes."],
+["mcu",2014,"Guardians of the Galaxy","F","Peter Quill y un grupo de inadaptados protegen una Gema del Infinito."],
+["mcu",2014,"Guardians of the Galaxy Vol. 2","F","Los Guardianes descubren el verdadero origen de Quill."],
+["mcu",2014,"I Am Groot","S","Cortos centrados en las aventuras de Baby Groot."],
+["mcu",2015,"Avengers: Age of Ultron","F","La creación de Ultron lleva a la batalla de Sokovia y a la aparición de Visión."],
+["mcu",2015,"Ant-Man","F","Scott Lang asume el manto de Ant-Man junto a Hank Pym."],
+["mcu",2016,"Captain America: Civil War","F","Los Vengadores se dividen por los Acuerdos de Sokovia."],
+["mcu",2016,"Black Widow","F","Natasha Romanoff enfrenta su pasado tras Civil War."],
+["mcu",2016,"Black Panther","F","T'Challa asume el trono de Wakanda."],
+["mcu",2016,"Spider-Man: Homecoming","F","Peter Parker equilibra su vida escolar con ser un héroe bajo la tutela de Tony."],
+["mcu",2016,"Doctor Strange","F","Stephen Strange se convierte en el Hechicero Supremo de la Tierra."],
+["mcu",2017,"Eyes of Wakanda","S","Serie animada oficial de Marvel Studios sobre guerreros de Wakanda."],
+["mcu",2017,"Thor: Ragnarok","F","Thor y Hulk luchan en Sakaar mientras Hela amenaza Asgard."],
+["mcu",2018,"Ant-Man and the Wasp","F","Scott y Hope intentan rescatar a Janet van Dyne del Reino Cuántico."],
+["mcu",2018,"Avengers: Infinity War","F","Thanos reúne las Gemas del Infinito y borra la mitad de la vida."],
+["mcu",2023,"Avengers: Endgame","FB","Viaje en el tiempo para revertir el chasquido; abre líneas temporales alternas."],
+["mcu",2023,"WandaVision","S","Wanda Maximoff crea una realidad televisiva en Westview."],
+["mcu",2023,"Eternals","F","Los Eternos salen de las sombras ante la amenaza de los Desviantes."],
+["mcu",2024,"Shang-Chi and the Legend of the Ten Rings","F","Shang-Chi enfrenta el legado de su padre y los Diez Anillos."],
+["mcu",2024,"The Falcon and the Winter Soldier","S","Sam Wilson y Bucky Barnes asumen el legado del escudo."],
+["mcu",2024,"Peter's To-Do List","S","Corto previo a los eventos europeos de Far From Home."],
+["mcu",2024,"Spider-Man: Far From Home","F","Peter viaja a Europa tras el regreso de todos."],
+["mcu",2024,"Spider-Man: No Way Home","FB","El hechizo fractura el multiverso y trae a los Spider-Man de Raimi y Webb."],
+["mcu",2024,"Doctor Strange in the Multiverse of Madness","FB","Viaje multiversal junto a America Chavez, incluyendo la Tierra-838."],
+["mcu",2024,"Hawkeye","S","Clint Barton entrena a Kate Bishop en Nueva York."],
+["mcu",2025,"Moon Knight","S","Marc Spector y Steven Grant lidian con el avatar de Khonshu."],
+["mcu",2025,"Black Panther: Wakanda Forever","F","Wakanda enfrenta a Namor y Talokan tras la partida de T'Challa."],
+["mcu",2025,"Echo","S","Maya Lopez regresa a su hogar y conecta con su linaje."],
+["mcu",2025,"She-Hulk: Attorney at Law","S","Jennifer Walters ejerce como abogada sobrehumana."],
+["mcu",2025,"Ms. Marvel","S","Kamala Khan descubre un brazalete cósmico en Jersey City."],
+["mcu",2025,"Ironheart","S","Riri Williams desarrolla su propia armadura inspirada en Stark."],
+["mcu",2025,"Werewolf by Night","S","Especial centrado en cazadores de monstruos."],
+["mcu",2025,"Thor: Love and Thunder","F","Thor y Jane Foster como Mighty Thor enfrentan a Gorr."],
+["mcu",2025,"Secret Invasion","S","Nick Fury enfrenta una infiltración secreta de los Skrulls."],
+["mcu",2025,"The Guardians of the Galaxy Holiday Special","S","Especial navideño con los Guardianes en la Tierra."],
+["mcu",2026,"The Marvels","FB","Carol, Kamala y Monica intercambian lugares; Monica queda en otro universo."],
+["mcu",2026,"Wonder Man (T1)","S","Simon Williams en el mundo de Hollywood y los poderes."],
+["mcu",2026,"Ant-Man and the Wasp: Quantumania","F","La familia Lang entra al Reino Cuántico y enfrenta a Kang."],
+["mcu",2026,"Guardians of the Galaxy Vol. 3","F","Misión final del equipo para salvar a Rocket."],
+["mcu",2026,"Agatha All Along","S","Agatha Harkness emprende la Senda de las Brujas."],
+["mcu",2027,"Captain America: Brave New World","F","Sam Wilson como Capitán América ante una nueva amenaza global."],
+["mcu",2027,"Daredevil: Born Again (T1)","S","Matt Murdock y Wilson Fisk chocan nuevamente en Hell's Kitchen."],
+["mcu",2027,"Thunderbolts*","F","Un grupo de antihéroes se reúne; su escena final conecta con los 4 Fantásticos."],
+["mcu",2027,"Daredevil: Born Again (T2)","S","Segunda temporada de Daredevil: Born Again."],
+["mcu",2027,"The Punisher: One Last Kill","S","Frank Castle regresa a la acción."],
+["mcu",2027,"VisionQuest","S","Continuación de la historia de Visión."],
+["mcu",2028,"Spider-Man: Brand New Day","F","Nueva etapa de Peter Parker tras ser olvidado por el mundo."],
+["mcu",2028,"Avengers: Doomsday","FB","Gran cruce multiversal con Doctor Doom y personajes de distintas Tierras."],
+["mcu",9000,"Avengers: Secret Wars","FB","Cierre de la Saga del Multiverso (próximamente)."],
+["mcu",9000,"Armor Wars / Blade Reboot / Shang-Chi 2","F","Proyectos futuros del MCU en desarrollo."],
+["mcu",9000,"Black Panther 3 / Doctor Strange 3 / Eternals 2 / X-Men","F","Próximas entregas cinematográficas del MCU."],
+["mcu",9000,"Nova / Serie Wakanda / Wonder Man (T2)","S","Próximas series en desarrollo."],
+
+// --- MCU · DEFENSORES, TV Y ONE-SHOTS ---
+["mcunet",1946,"Agent Carter: One-Shot","S","Corto que muestra los primeros pasos de Peggy Carter tras la guerra."],
+["mcunet",1946,"Agent Carter (T1 y T2)","S","Peggy Carter trabaja en la SSR y combate amenazas de Leviathan."],
+["mcunet",2010,"The Consultant: One-Shot","S","Phil Coulson y Jasper Sitwell manipulan la situación de Emil Blonsky."],
+["mcunet",2011,"A Funny Thing Happened on the Way to Thor's Hammer","S","Phil Coulson interviene en un atraco de camino a Nuevo México."],
+["mcunet",2012,"Item 47: One-Shot","S","Una pareja encuentra un arma Chitauri tras la batalla de Nueva York."],
+["mcunet",2013,"All Hail The King: One-Shot","S","Trevor Slattery descubre la verdad detrás del Mandarín."],
+["mcunet",2014,"Agents of S.H.I.E.L.D. (T1)","S","El equipo de Coulson opera en medio de la caída de S.H.I.E.L.D."],
+["mcunet",2014,"Daredevil (T1)","S","Matt Murdock comienza su cruzada nocturna contra Wilson Fisk."],
+["mcunet",2014,"Jessica Jones (T1)","S","Jessica Jones enfrenta el control mental de Kilgrave."],
+["mcunet",2015,"Agents of S.H.I.E.L.D. (T2)","S","Reconstrucción de S.H.I.E.L.D. y aparición de los Inhumanos."],
+["mcunet",2015,"Daredevil (T2)","S","La llegada de Punisher y Elektra complica la situación de Matt."],
+["mcunet",2015,"Luke Cage (T1)","S","Luke Cage protege Harlem con su piel impenetrable."],
+["mcunet",2016,"Agents of S.H.I.E.L.D. (T3 y T4)","S","Temporadas marcadas por Hive, Ghost Rider y el Framework."],
+["mcunet",2016,"Agents of S.H.I.E.L.D.: Slingshot","S","Miniserie digital centrada en Yo-Yo Rodríguez."],
+["mcunet",2016,"Iron Fist (T1)","S","Danny Rand regresa a Nueva York como el Puño de Hierro."],
+["mcunet",2016,"The Defenders","S","Daredevil, Jessica Jones, Luke Cage e Iron Fist unen fuerzas contra La Mano."],
+["mcunet",2016,"The Punisher (T1)","S","Frank Castle investiga la conspiración detrás de la muerte de su familia."],
+["mcunet",2016,"Jessica Jones (T2)","S","Jessica investiga su propio origen y experimento."],
+["mcunet",2017,"Luke Cage (T2)","S","Nuevos desafíos de poder en Harlem."],
+["mcunet",2017,"Iron Fist (T2)","S","Colleen Wing y Danny Rand asumen nuevos roles."],
+["mcunet",2017,"Daredevil (T3)","S","Matt Murdock regresa más oscuro para enfrentar el regreso de Fisk."],
+["mcunet",2017,"The Punisher (T2)","S","Frank Castle protege a una joven mientras enfrenta a Billy Russo."],
+["mcunet",2017,"Inhumans","S","La familia real de Attilan se traslada a la Tierra."],
+["mcunet",2017,"Runaways (T1 y T2)","S","Un grupo de adolescentes descubre que sus padres forman parte de una organización secreta."],
+["mcunet",2017,"Cloak & Dagger (T1 y T2)","S","Tandy y Tyrone desarrollan poderes vinculados en Nueva Orleans."],
+["mcunet",2018,"Runaways (T3)","S","Los jóvenes enfrentan a Morgan le Fay y cruces mágicos."],
+["mcunet",2018,"Jessica Jones (T3)","S","Última temporada de Jessica Jones junto a Trish Walker."],
+["mcunet",2020,"Agents of S.H.I.E.L.D. (T5)","SB","Viajes espaciales y temporales que generan ramificaciones."],
+["mcunet",2022,"Runaways (T3 - Final)","S","Epílogo ambientado en el futuro cercano."],
+["mcunet",2023,"Agents of S.H.I.E.L.D. (T6 y T7)","SB","Saltos en el tiempo de S.H.I.E.L.D. para salvar la línea temporal."],
+
+// --- RAMAS OFICIALES MARVEL STUDIOS ---
+["rama",2023,"Loki (T1 y T2)","SB","Loki escapa en 2012 y termina sosteniendo el multiverso en el árbol temporal."],
+["rama",2024,"What If…? (T1)","SB","Realidades alternativas narradas por El Vigilante."],
+["rama",2025,"What If…? (T2)","SB","Nuevas historias y variantes del multiverso."],
+["rama",2026,"Your Friendly Neighborhood Spider-Man (T1)","SB","Línea alternativa animada con Norman Osborn como mentor."],
+["rama",2026,"What If…? (T3)","SB","Tercera temporada de realidades alternativas."],
+["rama",2026,"Marvel Zombies","SB","Rama animada derivada del universo zombi."],
+["rama",2027,"Your Friendly Neighborhood Spider-Man (T2)","SB","Segunda temporada animada."],
+["rama",2028,"Your Friendly Neighborhood Spider-Man (T3)","SB","Tercera temporada animada."],
+
+// --- X-MEN FOX (LÍNEA ORIGINAL) ---
+["xo",1979,"X-Men Origins: Wolverine","F","Orígenes de Logan y Victor Creed hasta 1979."],
+["xo",1990,"X-Men","F","Los X-Men protegen a Rogue y enfrentan a Magneto."],
+["xo",2003,"X2: X-Men United","F","William Stryker ataca la mansión de Xavier."],
+["xo",2006,"X-Men: The Last Stand","F","La cura mutante y la aparición de Fénix."],
+["xo",2013,"The Wolverine","F","Logan viaja a Japón y pierde temporalmente sus garras de adamantium."],
+["xo",2023,"DOFP: Futuro Apocalíptico","FB","Los Centinelas dominan el futuro; Logan viaja a 1973 para reescribirlo."],
+
+// --- X-MEN FOX (NUEVA LÍNEA TRAS DOFP) ---
+["xn",1962,"X-Men: First Class","F","Charles Xavier y Erik Lehnsherr fundan el equipo en los años 60."],
+["xn",1973,"X-Men: Days of Future Past","FB","La intervención en 1973 crea una nueva línea temporal."],
+["xn",1983,"X-Men: Apocalypse","F","Apocalipsis despierta en los años 80."],
+["xn",1992,"X-Men: Dark Phoenix","F","Jean Grey pierde el control ante una fuerza cósmica."],
+["xn",2022,"The New Mutants","F","Cinco jóvenes mutantes son retenidos en instalaciones aisladas."],
+
+// --- DEADPOOL Y LOGAN ---
+["xd",2016,"Deadpool","F","Wade Wilson se convierte en Deadpool tras un experimento."],
+["xd",2018,"Deadpool 2","FB","Wade viaja en el tiempo con el dispositivo de Cable."],
+["xd",2019,"Logan","FB","Futuro crepuscular de Logan y Laura (Tierra-17315)."],
+["xd",2026,"Deadpool & Wolverine","FB","Tierra-10005. Wade y una variante de Wolverine cruzan al MCU con la TVA."],
+
+// --- SPIDER-MAN RAIMI ---
+["raimi",2002,"Spider-Man (Tobey Maguire)","F","Peter Parker obtiene sus poderes y enfrenta al Duende Verde."],
+["raimi",2004,"Spider-Man 2","F","Peter lucha contra el Doctor Octopus y sus dudas personales."],
+["raimi",2007,"Spider-Man 3","F","El simbionte, el Hombre de Arena y Harry Osborn."],
+["raimi",2024,"Cruce en No Way Home","FB","El Spider-Man de Raimi viaja a la Tierra-616."],
+
+// --- SPIDER-MAN WEBB ---
+["webb",2012,"The Amazing Spider-Man","F","Peter Parker investiga el pasado de sus padres y enfrenta a Electro/Lagarto."],
+["webb",2014,"The Amazing Spider-Man 2","F","Peter enfrenta a Electro y sufre la pérdida de Gwen Stacy."],
+["webb",2024,"Cruce en No Way Home","FB","El Spider-Man de Webb llega a la Tierra-616."],
+
+// --- UNIVERSO SONY (SSU) ---
+["ssu",1933,"Spider-Noir","S","Serie ambientada en el Nueva York de los años 30."],
+["ssu",2003,"Madame Web","F","Cassandra Webb descubre visiones del futuro."],
+["ssu",2023,"Venom","F","Eddie Brock se une al simbionte Venom."],
+["ssu",2024,"Kraven the Hunter","F","Orígenes de Sergei Kravinoff como cazador."],
+["ssu",2024,"Venom: Let There Be Carnage","FB","Enfrentamiento contra Carnage y cruce breve al MCU."],
+["ssu",2024,"Morbius","FB","Michael Morbius adquiere habilidades vampíricas."],
+["ssu",2025,"Venom: The Last Dance","FB","Eddie y Venom enfrentan una cacería interdimensional."],
+["ssu",9000,"Silk / Venom Animado","S","Proyectos ligados al universo Spider-Man."],
+
+// --- SPIDER-VERSE ---
+["verse",2023,"Spider-Man: Into the Spider-Verse","FB","Tierra-1610. Miles Morales se convierte en Spider-Man."],
+["verse",2025,"Spider-Man: Across the Spider-Verse","FB","Miles recorre el multiverso arácnido."],
+["verse",2025,"Spider-Man: Beyond the Spider-Verse","FB","Conclusión de la trilogía animada de Miles Morales."],
+["verse",9000,"Spider-Gwen / Spider-Punk","F","Spin-offs animados en desarrollo."],
+
+// --- 4 FANTÁSTICOS FOX ---
+["ffox",2005,"Fantastic Four (2005)","F","Reed, Sue, Johnny y Ben obtienen sus poderes tras una tormenta cósmica."],
+["ffox",2007,"Fantastic Four: Rise of the Silver Surfer","F","La llegada de Silver Surfer y Galactus."],
+["ffox",2026,"Johnny Storm en El Vacío","FB","Aparición en Deadpool & Wolverine."],
+
+// --- 4 FANTÁSTICOS MCU (TIERRA-828) ---
+["f828",1965,"Fantastic Four: First Steps","F","Tierra-828 retrofuturista de los años 60."],
+["f828",2028,"Cruce hacia Avengers: Doomsday","FB","Conexión de los 4 Fantásticos con Doomsday."],
+
+// --- OTROS UNIVERSOS DE LEGADO ---
+["legado",1998,"Blade","F","Eric Brooks lucha contra los vampiros."],
+["legado",2002,"Blade II","F","Blade forma una tregua temporal contra los Segadores."],
+["legado",2003,"Daredevil (Ben Affleck)","F","Versión cinematográfica de Matt Murdock."],
+["legado",2004,"The Punisher (Thomas Jane)","F","Frank Castle inicia su venganza."],
+["legado",2004,"Blade: Trinity","F","Blade enfrenta a Drácula junto a los Nightstalkers."],
+["legado",2005,"Elektra","F","Elektra Natchios enfrenta a La Mano."],
+["legado",2026,"Resistencia en El Vacío","FB","Blade y Elektra reaparecen en Deadpool & Wolverine."]
 ];
+
+const laneMap=Object.fromEntries(L.map(x=>[x[0],x]));
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[m]);
+
+// Genera una imagen/portada SVG automática si el ítem no tiene URL propia en e[5]
+function getPoster(e){
+  if(e[5]) return e[5];
+  const [laneId, yr, title, kind] = e;
+  const [, laneName, earthLabel, color] = laneMap[laneId] || ["","","","#a78bfa"];
+  const yrTxt = yr>=9000 ? "FUTURO" : String(yr);
+  const shortTitle = title.length>28 ? title.slice(0,26)+"…" : title;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 320 180">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#1a1a24"/>
+        <stop offset="100%" stop-color="#0b0b0e"/>
+      </linearGradient>
+    </defs>
+    <rect width="320" height="180" fill="url(#g)"/>
+    <rect x="0" y="0" width="320" height="6" fill="${color}"/>
+    <circle cx="275" cy="42" r="52" fill="${color}" opacity="0.14"/>
+    <text x="16" y="30" fill="${color}" font-family="Oswald,Arial,sans-serif" font-size="13" font-weight="700" letter-spacing="1">${esc(earthLabel.toUpperCase())}</text>
+    <text x="16" y="92" fill="#ffffff" font-family="Oswald,Arial,sans-serif" font-size="22" font-weight="700">${esc(shortTitle)}</text>
+    <text x="16" y="156" fill="#b8b8c6" font-family="system-ui,Arial,sans-serif" font-size="13">${esc(laneName)} · ${esc(yrTxt)} · ${kind.includes("S")?"SERIE/ESP":"PELÍCULA"}</text>
+  </svg>`;
+  return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+}
+
+// --- VISTA CUADRÍCULA ---
 const years=[...new Set(E.map(e=>e[1]))].sort((a,b)=>a-b);
-const g=document.getElementById("grid"),info=document.getElementById("info"),fl=document.getElementById("filters");
+const g=document.getElementById("grid"), vis=document.getElementById("visual"), info=document.getElementById("info"), fl=document.getElementById("filters");
 g.style.gridTemplateColumns=`var(--lab) repeat(${years.length},var(--col))`;
 const mk=(t,c,x)=>{const d=document.createElement(t);if(c)d.className=c;if(x!==undefined)d.textContent=x;return d};
-g.append(mk("div","corner","Universo"));
-years.forEach(y=>{const d=mk("div","yr"+(y>=9000?" soon":""));d.append(mk("span","",y>=9000?"Pronto":y));g.append(d)});
+g.append(mk("div","corner","Universo / Línea"));
+years.forEach(y=>{const d=mk("div","yr"+(y>=9000?" soon":""));d.append(mk("span","",y>=9000?"Futuro":y));g.append(d)});
+
 let cur=null;
+function selectItem(el, e, y){
+  if(cur) cur.classList.remove("on");
+  cur=el;
+  el.classList.add("on");
+  const [, laneName, earthLabel] = laneMap[e[0]] || ["","",""];
+  info.innerHTML="";
+  const t=mk("b","",e[2]+" · "+(y>=9000?"Próximamente":y)+" ("+earthLabel+" — "+laneName+")");
+  info.append(t,document.createTextNode(e[4]?" — "+e[4]:""));
+}
+
 L.forEach(([id,n,s,c])=>{
-const row=[];
-const lab=mk("div","lab");lab.style.setProperty("--c",c);lab.append(mk("span","",n),mk("small","",s));row.push(lab);
-years.forEach(y=>{
-const cell=mk("div","cell");cell.style.setProperty("--c",c);
-E.filter(e=>e[0]===id&&e[1]===y).forEach(e=>{
-const b=mk("button","chip"+(e[3][0]==="S"?" s":"")+(e[3].includes("B")?" b":""),e[2]);
-b.type="button";
-b.onclick=()=>{cur&&cur.classList.remove("on");cur=b;b.classList.add("on");
-info.innerHTML="";const t=mk("b","",e[2]+" · "+(y>=9000?"próximamente":y));info.append(t,document.createTextNode(e[4]?" — "+e[4]:""))};
-cell.append(b)});
-row.push(cell)});
-row.forEach(el=>{el.dataset.lane=id;g.append(el)});
-const f=mk("button","",n+" · "+s);f.style.setProperty("--c",c);f.type="button";f.setAttribute("aria-pressed","true");
-f.onclick=()=>{const on=f.getAttribute("aria-pressed")!=="true";f.setAttribute("aria-pressed",on);
-g.querySelectorAll(`[data-lane="${id}"]`).forEach(el=>el.classList.toggle("hide",!on))};
-fl.append(f)});
+  const row=[];
+  const lab=mk("div","lab");lab.style.setProperty("--c",c);lab.append(mk("span","",n),mk("small","",s));row.push(lab);
+  years.forEach(y=>{
+    const cell=mk("div","cell");cell.style.setProperty("--c",c);
+    E.filter(e=>e[0]===id&&e[1]===y).forEach(e=>{
+      const b=mk("button","chip"+(e[3].includes("S")?" s":"")+(e[3].includes("B")?" b":""));
+      b.type="button";
+      const im=document.createElement("img");im.src=getPoster(e);im.alt="";
+      const sp=mk("span","tag-b",e[2]);
+      b.append(im,sp);
+      b.onclick=()=>selectItem(b,e,y);
+      cell.append(b);
+    });
+    row.push(cell);
+  });
+  row.forEach(el=>{el.dataset.lane=id;g.append(el)});
+
+  const f=mk("button","",n);f.title=s;f.style.setProperty("--c",c);f.type="button";f.setAttribute("aria-pressed","true");
+  f.onclick=()=>{
+    const on=f.getAttribute("aria-pressed")!=="true";
+    f.setAttribute("aria-pressed",on);
+    document.querySelectorAll(`[data-lane="${id}"]`).forEach(el=>el.classList.toggle("hide",!on));
+  };
+  fl.append(f);
+});
+
+// --- VISTA INFOGRAFÍA (TARJETAS EN ORDEN CRONOLÓGICO) ---
+const sortedE=[...E].sort((a,b)=>a[1]-b[1]);
+sortedE.forEach(e=>{
+  const [id, y, title, kind, , ] = e;
+  const [, , earthLabel, c] = laneMap[id] || ["","","Tierra","#a78bfa"];
+  const card=mk("button","v-card");
+  card.type="button";
+  card.dataset.lane=id;
+  card.style.setProperty("--c",c);
+
+  const top=mk("div","v-top");
+  top.append(mk("div","v-year",y>=9000?"FUTURO":String(y)));
+  const isAlt = id!=="mcu" && id!=="mcunet";
+  top.append(mk("div","v-earth"+(isAlt?" alt":""),earthLabel.toUpperCase()));
+
+  const stemTop=mk("div","v-stem");
+
+  const media=mk("div","v-media");
+  const img=document.createElement("img");
+  img.src=getPoster(e);
+  img.alt=title;
+  img.loading="lazy";
+  media.append(img);
+  media.append(mk("span","v-badge",kind.includes("S")?"SERIE/ESP":"PELÍCULA"));
+  if(kind.includes("B")) media.append(mk("span","v-branch","⑂"));
+
+  const stemBot=mk("div","v-stem");
+
+  const bot=mk("div","v-bottom");
+  bot.append(mk("div","v-title",title));
+  bot.append(mk("div","v-sub",laneMap[id]?.[1]||""));
+
+  card.append(top, stemTop, media, stemBot, bot);
+  card.onclick=()=>selectItem(card,e,y);
+  vis.append(card);
+});
+
+// --- CAMBIO DE VISTA ---
+const btnGrid=document.getElementById("btnGrid"), btnVisual=document.getElementById("btnVisual");
+btnVisual.onclick=()=>{
+  btnVisual.setAttribute("aria-pressed","true");
+  btnGrid.setAttribute("aria-pressed","false");
+  vis.classList.remove("hide");
+  g.classList.add("hide");
+};
+btnGrid.onclick=()=>{
+  btnGrid.setAttribute("aria-pressed","true");
+  btnVisual.setAttribute("aria-pressed","false");
+  g.classList.remove("hide");
+  vis.classList.add("hide");
+};
 </script>
 </body>
 </html>
