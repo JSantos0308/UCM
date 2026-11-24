@@ -485,22 +485,22 @@ const L = [
   ["ssu",      "Universo Sony (SSU)",      "Venom, Morbius, Kraven, Noir",      "#a3e635"],
   ["xorig",    "Universo X-Men",           "Tronco común hasta cambiar el pasado en 1973", "#2dd4bf"],
   ["xmod",     "X-Men · Línea Modificada", "Línea modificada, Deadpool y Logan", "#22d3ee"],
-  ["ff2005",   "4 Fantásticos (2005)",     "Línea 1 · 2005 y 2007 (Sin cruce)",  "#34d399"],
+  ["ff2005",   "4 Fantásticos (2005)",     "Línea 1 · 2005, 2007 y El Vacío",    "#34d399"],
   ["ff2015",   "4 Fantásticos (2015)",     "Línea 2 · Reboot (Sin cruce)",       "#4ade80"],
   ["ff828",    "4 Fantásticos (Tierra-828)","Línea 3 · First Steps (Sin cruce)", "#facc15"],
   ["blade",    "Universo Blade",           "Trilogía de Wesley Snipes",          "#c084fc"],
-  ["dd03",     "Daredevil / Elektra",      "Línea 2003–2005 (Affleck/Garner)",  "#fb7185"],
-  ["pun04",    "The Punisher (2004)",      "Línea de Thomas Jane",               "#94a3b8"]
+  ["dd03",     "Daredevil / Elektra",      "Línea 2003–2005 (Affleck/Garner)",  "#fb7185"]
 ];
 
 const FORKS = [
-  { fromLane:"mcu",   fromTitle:"The Avengers",               toLane:"rama",  toTitle:"Loki (T1 y T2)" },
-  { fromLane:"mcu",   fromTitle:"Avengers: Endgame",          toLane:"rama",  toTitle:"What If…? (T1)" },
-  { fromLane:"mcu",   fromTitle:"Spider-Man: No Way Home",    toLane:"raimi", toTitle:"Cruce en No Way Home" },
-  { fromLane:"mcu",   fromTitle:"Spider-Man: No Way Home",    toLane:"webb",  toTitle:"Cruce en No Way Home" },
-  { fromLane:"xorig", fromTitle:"X-Men: Days of Future Past", toLane:"xmod",  toTitle:"X-Men: Apocalypse" },
-  { fromLane:"xmod",  fromTitle:"Deadpool & Wolverine",       toLane:"blade", toTitle:"Blade en El Vacío" },
-  { fromLane:"xmod",  fromTitle:"Deadpool & Wolverine",       toLane:"dd03",  toTitle:"Elektra en El Vacío" }
+  { fromLane:"mcu",   fromTitle:"The Avengers",               toLane:"rama",   toTitle:"Loki (T1 y T2)" },
+  { fromLane:"mcu",   fromTitle:"Avengers: Endgame",          toLane:"rama",   toTitle:"What If…? (T1)" },
+  { fromLane:"mcu",   fromTitle:"Spider-Man: No Way Home",    toLane:"raimi",  toTitle:"Cruce en No Way Home" },
+  { fromLane:"mcu",   fromTitle:"Spider-Man: No Way Home",    toLane:"webb",   toTitle:"Cruce en No Way Home" },
+  { fromLane:"xorig", fromTitle:"X-Men: Days of Future Past", toLane:"xmod",   toTitle:"X-Men: Apocalypse" },
+  { fromLane:"xmod",  fromTitle:"Deadpool & Wolverine",       toLane:"blade",  toTitle:"Blade en El Vacío" },
+  { fromLane:"xmod",  fromTitle:"Deadpool & Wolverine",       toLane:"dd03",   toTitle:"Elektra en El Vacío" },
+  { fromLane:"xmod",  fromTitle:"Deadpool & Wolverine",       toLane:"ff2005", toTitle:"Antorcha Humana en El Vacío" }
 ];
 
 // Formato: [lane, year, title, kind, review, imgUrl]
@@ -532,14 +532,14 @@ const E = [
   ["mcu",2016,"Doctor Strange","F","Reseña: Entre finales de 2016 y 2017, tras un accidente que arruina su carrera como neurocirujano, Stephen Strange viaja a Kamar-Taj y descubre las artes místicas."],
   ["mcu",2016,"Iron Fist (T1)","S","Reseña: Danny Rand regresa a Nueva York quince años después de ser dado por muerto, portando el poder del Puño de Hierro para reclamar su legado y combatir a La Mano."],
   ["mcu",2016,"The Defenders","S","Reseña: Daredevil, Jessica Jones, Luke Cage e Iron Fist unen fuerzas en Nueva York para frustrar los planes de La Mano."],
-  ["mcu",2016,"The Punisher (T1)","S","Reseña: Frank Castle destapa una conspiración militar y gubernamental vinculada con la emboscada en la que perdió a su familia."],
+  ["mcu",2016,"The Punisher (T1)","S","Reseña: Frank Castle (Jon Bernthal) destapa una conspiración militar y gubernamental vinculada con la emboscada en la que perdió a su familia dentro de la cronología oficial del UCM."],
   ["mcu",2016,"Jessica Jones (T2)","S","Reseña: Jessica investiga el origen de sus habilidades y los experimentos que la transformaron."],
   ["mcu",2017,"Eyes of Wakanda","S","Reseña: Serie animada oficial de Marvel Studios que sigue a guerreros de Wakanda a través de distintas épocas en misiones para recuperar artefactos de vibranium."],
   ["mcu",2017,"Thor: Ragnarok","F","Reseña: En 2017, atrapado en el planeta Sakaar sin su martillo, Thor debe aliarse con Hulk y Valquiria para regresar a Asgard y detener a su hermana Hela antes del Ragnarok."],
   ["mcu",2017,"Luke Cage (T2)","S","Reseña: Convertido en figura pública en Harlem, Luke Cage se enfrenta a nuevos rivales como Mariah Dillard y Bushmaster."],
   ["mcu",2017,"Iron Fist (T2)","S","Reseña: Con Danny Rand centrado en nuevas responsabilidades, Colleen Wing asume un papel clave en la protección de la ciudad."],
   ["mcu",2017,"Daredevil (T3)","S","Reseña: Matt Murdock se enfrenta al regreso calculador de Wilson Fisk mientras lucha por recuperar su identidad como Daredevil."],
-  ["mcu",2017,"The Punisher (T2)","S","Reseña: Frank Castle se ve arrastrado a una nueva cacería cuando protege a una joven con información comprometedora."],
+  ["mcu",2017,"The Punisher (T2)","S","Reseña: Frank Castle (Jon Bernthal) se ve arrastrado a una nueva cacería cuando protege a una joven con información comprometedora."],
   ["mcu",2018,"Ant-Man and the Wasp","F","Reseña: En 2018, Scott Lang y Hope van Dyne colaboran con Hank Pym para abrir un túnel cuántico estable y rescatar a Janet van Dyne del Reino Cuántico."],
   ["mcu",2018,"Avengers: Infinity War","FB","Reseña: En 2018, Thanos recorre el universo para reunir las seis Gemas del Infinito, obligando a los Vengadores y a los Guardianes de la Galaxia a una batalla desesperada."],
   ["mcu",2018,"Jessica Jones (T3)","S","Reseña: Jessica Jones y Trish Walker toman caminos divergentes mientras investigan a un asesino metahumano."],
@@ -568,13 +568,13 @@ const E = [
   ["mcu",2026,"Guardians of the Galaxy Vol. 3","F","Reseña: Peter Quill reúne a los Guardianes en una misión crítica para salvar la vida de Rocket y enfrentar el pasado de su creador."],
   ["mcu",2026,"Agatha All Along","S","Reseña: Privada de su magia, Agatha Harkness reúne a un aquelarre de brujas para recorrer la Senda de las Brujas."],
   ["mcu",2027,"Captain America: Brave New World","F","Reseña: Sam Wilson asume el manto del Capitán América en medio de tensiones geopolíticas y una conspiración global."],
-  ["mcu",2027,"Daredevil: Born Again (T1)","S","Reseña: Matt Murdock y Wilson Fisk vuelven a enfrentarse en un choque político y callejero por Nueva York."],
+  ["mcu",2027,"Daredevil: Born Again (T1)","S","Reseña: Matt Murdock y Wilson Fisk vuelven a enfrentarse en un choque político y callejero por Nueva York, con el regreso oficial de Frank Castle (Jon Bernthal)."],
   ["mcu",2027,"Thunderbolts*","F","Reseña: Un grupo de antihéroes y exoperativos es reunido en una misión de alto riesgo bajo el control de Valentina Allegra de Fontaine."],
   ["mcu",2027,"Wonder Man (T1)","S","Reseña: Simon Williams persigue su sueño como actor en Hollywood mientras lidia con habilidades extraordinarias."],
   ["mcu",2027,"Daredevil: Born Again (T2)","S","Reseña: Continúa el pulso entre la ley, la justicia vigilante y el poder en Nueva York."],
-  ["mcu",2027,"The Punisher: One Last Kill","S","Reseña: Frank Castle retoma su cruzada implacable en una nueva historia centrada en la venganza y la supervivencia."],
+  ["mcu",2027,"The Punisher: One Last Kill","S","Reseña: Especial en Disney+ protagonizado por Frank Castle (Jon Bernthal) en una nueva misión implacable dentro del UCM."],
   ["mcu",2027,"VisionQuest","S","Reseña: Serie centrada en el camino y la identidad de Visión."],
-  ["mcu",2028,"Spider-Man: Brand New Day","FB","Reseña: Situada en 2028 (presente cronológico tras No Way Home), Peter Parker continúa su vida en solitario tras ser olvidado por el mundo."],
+  ["mcu",2028,"Spider-Man: Brand New Day","FB","Reseña: Peter Parker (Tom Holland) continúa su camino en la pantalla grande junto a Frank Castle (Jon Bernthal)."],
   ["mcu",2028,"Avengers: Doomsday","FB","Reseña: Gran evento multiversal ambientado en 2028 con la llegada del Doctor Doom y el choque entre distintas realidades."],
   ["mcu",9000,"Avengers: Secret Wars","FB","Reseña: Clímax de la Saga del Multiverso donde convergen héroes y mundos de diferentes líneas temporales."],
   ["mcu",9000,"Armor Wars / Blade Reboot / Shang-Chi 2","F","Reseña: Próximos largometrajes previstos en la planificación de Marvel Studios."],
@@ -652,12 +652,13 @@ const E = [
   ["xmod",2016,"Deadpool","F","Reseña: En 2016, dentro de la línea modificada, Wade Wilson obtiene factor curativo y se convierte en Deadpool."],
   ["xmod",2018,"Deadpool 2","FB","Reseña: En 2018, en la misma línea modificada, Wade visita la Mansión X y cruza caminos con los jóvenes X-Men, además de involucrarse con el futuro de Cable."],
   ["xmod",2020,"The New Mutants","F","Reseña: Cinco jóvenes mutantes permanecen encerrados en una instalación aislada dentro de esta rama."],
-  ["xmod",2024,"Deadpool & Wolverine","FB","Reseña: En 2024, Wade Wilson es reclutado por la TVA y se une a una variante de Wolverine en el Vacío."],
+  ["xmod",2024,"Deadpool & Wolverine","FB","Reseña: En 2024, Wade Wilson es reclutado por la TVA y se une a una variante de Wolverine en el Vacío, cruzándose con figuras como la Antorcha Humana, Blade y Elektra."],
   ["xmod",2029,"Logan","FB","Reseña: En 2029, un Logan envejecido protege a la joven mutante Laura en el cierre de esta etapa."],
 
   // --- 4 FANTÁSTICOS: 3 LÍNEAS SEPARADAS ---
   ["ff2005",2005,"Fantastic Four (2005)","F","Reseña: En 2005, Reed Richards, Sue Storm, Johnny Storm y Ben Grimm obtienen superpoderes tras una tormenta cósmica y enfrentan a Víctor von Doom. (Línea 1 independiente)."],
   ["ff2007",2007,"Fantastic Four: Rise of the Silver Surfer","F","Reseña: En 2007, los Cuatro Fantásticos enfrentan la llegada de Silver Surfer y a Galactus. (Continúa la Línea 1 independiente)."],
+  ["ff2005",2024,"Antorcha Humana en El Vacío","FB","Reseña: Chris Evans retoma a Johnny Storm / Antorcha Humana (de la película de 2005) en El Vacío dentro de Deadpool & Wolverine (2024)."],
 
   ["ff2015",2015,"Fantastic Four (2015)","F","Reseña: En 2015, un grupo de jóvenes científicos viaja a Planet Zero y adquiere habilidades incontrolables. (Línea 2 independiente)."],
 
@@ -672,9 +673,7 @@ const E = [
 
   ["dd03",2003,"Daredevil (Ben Affleck)","F","Reseña: En 2003, el abogado ciego Matt Murdock combate el crimen de noche como Daredevil en Nueva York."],
   ["dd03",2005,"Elektra (Jennifer Garner)","F","Reseña: En 2005, resucitada tras los eventos de Daredevil, Elektra Natchios trabaja como asesina a sueldo y protege a una joven de La Mano."],
-  ["dd03",2024,"Elektra en El Vacío","FB","Reseña: Jennifer Garner reaparece como Elektra en el Vacío dentro de Deadpool & Wolverine (2024)."],
-
-  ["pun04",2004,"The Punisher (Thomas Jane)","F","Reseña: En 2004, tras la masacre de su familia, el exagente Frank Castle inicia una guerra personal contra Howard Saint."]
+  ["dd03",2024,"Elektra en El Vacío","FB","Reseña: Jennifer Garner reaparece como Elektra en el Vacío dentro de Deadpool & Wolverine (2024)."]
 ];
 
 let customCovers = {};
