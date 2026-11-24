@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Marvel: Cuadrícula del Multiverso con Portadas</title>
+<title>Marvel: Cuadrícula Cronológica del Multiverso</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap" rel="stylesheet">
 <style>
@@ -13,7 +13,8 @@
   --fg:#eef2ff;
   --mut:#94a3b8;
   --lab:196px;
-  --col:184px;
+  --card-w:152px;
+  --gap-x:10px;
 }
 *{box-sizing:border-box}
 body{
@@ -31,7 +32,7 @@ header{
   align-items:flex-end;
   gap:12px;
 }
-.head-txt{max-width:86ch}
+.head-txt{max-width:88ch}
 h1{
   margin:0;
   font:700 28px/1.1 Oswald,Impact,sans-serif;
@@ -52,6 +53,11 @@ header p{margin:6px 0 0;color:var(--mut)}
   transition:.15s;
 }
 .action-btn:hover{background:#1e293b}
+.action-btn.show-hidden{
+  background:#1e3a8a;
+  border-color:#60a5fa;
+  color:#eff6ff;
+}
 .action-btn.paste{
   background:#1e3a8a;
   border-color:#60a5fa;
@@ -181,10 +187,11 @@ header p{margin:6px 0 0;color:var(--mut)}
   border-bottom:1px solid rgba(148,163,184,.12);
   border-right:1px dashed rgba(148,163,184,.08);
   display:flex;
-  flex-direction:column;
+  flex-direction:row;
+  flex-wrap:nowrap;
   align-items:center;
-  justify-content:center;
-  gap:8px;
+  justify-content:flex-start;
+  gap:var(--gap-x);
   min-height:142px;
 }
 .grid-cell::before{
@@ -200,12 +207,13 @@ header p{margin:6px 0 0;color:var(--mut)}
   pointer-events:none;
 }
 
-/* CUADRADO / TARJETA DE PORTADA (ESTILO ÁRBOL RAMIFICADO) */
+/* CUADRADO / TARJETA DE PORTADA */
 .cover-card{
   --k:var(--c);
   position:relative;
   z-index:2;
-  width:158px;
+  width:var(--card-w);
+  flex:0 0 var(--card-w);
   background:rgba(11,15,26,.92);
   border:1.5px solid color-mix(in srgb,var(--k) 70%,#ffffff);
   border-radius:10px;
@@ -228,6 +236,11 @@ header p{margin:6px 0 0;color:var(--mut)}
   gap:4px;
   margin-bottom:4px;
 }
+.card-top-left{
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
 .card-yr{
   background:var(--k);
   color:#05070d;
@@ -242,6 +255,21 @@ header p{margin:6px 0 0;color:var(--mut)}
   border-radius:4px;
   font-size:10px;
   font-weight:700;
+}
+.hide-btn{
+  background:rgba(15,23,42,.9);
+  color:#cbd5e1;
+  border:1px solid rgba(148,163,184,.35);
+  border-radius:4px;
+  font-size:10px;
+  line-height:1;
+  padding:2px 5px;
+  cursor:pointer;
+}
+.hide-btn:hover{
+  background:#991b1b;
+  border-color:#fca5a5;
+  color:#fff;
 }
 .card-frame{
   position:relative;
@@ -387,10 +415,11 @@ footer{padding:12px 22px 28px;color:var(--mut);font-size:12px;max-width:98ch}
 <body>
 <header>
   <div class="head-txt">
-    <h1>Marvel: Cuadrícula del Multiverso con Portadas</h1>
-    <p>Cada fila es un universo o línea temporal y cada columna es un año, mostrando los cuadrados de portada del árbol. Haz clic en cualquier portada para abrir su mini ventana con la reseña/descripción.</p>
+    <h1>Marvel: Cuadrícula Cronológica del Multiverso</h1>
+    <p>Cada título está en su año cronológico y, si varios ocurren en el mismo año y universo, se muestran uno al lado del otro en orden. Usa <strong>🙈</strong> para ocultar títulos o haz clic en cualquiera para ver su reseña.</p>
   </div>
   <div class="controls-bar">
+    <button id="btnShowHidden" class="action-btn show-hidden hide" type="button">Mostrar ocultas (0)</button>
     <button id="btnClearAll" class="action-btn danger" type="button">Borrar portadas guardadas</button>
   </div>
 </header>
@@ -418,6 +447,7 @@ footer{padding:12px 22px 28px;color:var(--mut);font-size:12px;max-width:98ch}
       <h2 id="modalTitle" class="modal-title"></h2>
       <p id="modalReview" class="modal-review"></p>
       <div class="modal-actions">
+        <button id="modalHide" class="action-btn" type="button">🙈 Ocultar título</button>
         <button id="modalPaste" class="action-btn paste" type="button">📋 Pegar portada</button>
         <button id="modalUpload" class="action-btn upload" type="button">🖼 Subir archivo</button>
         <button id="modalReset" class="action-btn hide" type="button">Restaurar portada</button>
@@ -426,10 +456,11 @@ footer{padding:12px 22px 28px;color:var(--mut);font-size:12px;max-width:98ch}
   </div>
 </div>
 
-<footer>Las portadas pegadas o subidas se guardan en <code>localStorage</code>. También puedes pasar el cursor o hacer clic en una tarjeta y pulsar <code>Ctrl+V</code> / <code>Cmd+V</code> para pegar una imagen o URL.</footer>
+<footer>Las portadas personalizadas y los títulos ocultos se guardan en <code>localStorage</code>. También puedes usar <code>Ctrl+V</code> / <code>Cmd+V</code> para pegar una imagen o URL sobre la tarjeta activa.</footer>
 
 <script>
 const STORAGE_KEY = "marvel_multiverse_custom_covers_v1";
+const HIDDEN_KEY = "marvel_multiverse_hidden_items_v1";
 
 const L = [
   ["mcu",      "MCU · Sagrada Línea",      "Tom Holland · Los Vengadores (616)", "#60a5fa"],
@@ -461,179 +492,180 @@ const FORKS = [
   { fromLane:"mcu",   fromTitle:"Deadpool & Wolverine",       toLane:"dd03",  toTitle:"Elektra en El Vacío" }
 ];
 
-// Formato: [lane, year, title, kind, review, imgUrl]
+// Orden de aparición cronológica dentro de su año [lane, year, title, kind, review, imgUrl]
 const E = [
-  ["mcu",1942,"Captain America: The First Avenger","F","Reseña: Steve Rogers, un joven frágil de Brooklyn, se somete a un experimento con el suero del supersoldado para combatir a Hydra y a Cráneo Rojo durante la Segunda Guerra Mundial, convirtiéndose en el primer Vengador."],
-  ["mcu",1995,"Captain Marvel","F","Reseña: En los años 90, Vers / Carol Danvers queda atrapada en medio de una guerra galáctica entre los Kree y los Skrulls mientras recupera fragmentos de su pasado en la Tierra junto a un joven Nick Fury."],
-  ["mcu",2010,"Iron Man","F","Reseña: Tras ser secuestrado en Afganistán, el multimillonario inventor Tony Stark construye una armadura motorizada para escapar y decide redirigir su empresa y su vida como Iron Man."],
-  ["mcu",2010,"Iron Man 2","F","Reseña: Tony Stark resiste la presión gubernamental para entregar su tecnología mientras su salud empeora por el reactor arc y el científico ruso Ivan Vanko planea su venganza como Whiplash."],
-  ["mcu",2010,"The Incredible Hulk","F","Reseña: Bruce Banner vive oculto en busca de un antídoto contra la radiación gamma que desata a Hulk cuando pierde el control emocional, mientras es perseguido por el general Ross y Emil Blonsky."],
-  ["mcu",2011,"Thor","F","Reseña: Por su arrogancia, el príncipe asgardiano Thor es desterrado a la Tierra sin su martillo Mjölnir, donde aprende el valor de la humildad mientras su hermano Loki conspira en Asgard."],
-  ["mcu",2012,"The Avengers","FB","Reseña: Nick Fury reúne a Iron Man, Capitán América, Thor, Hulk, Viuda Negra y Ojo de Halcón para detener a Loki y a una invasión Chitauri sobre Nueva York. (En el atraco temporal de Endgame se abre una rama a partir de este evento)."],
-  ["mcu",2013,"Iron Man 3","F","Reseña: Marcado por los ataques de ansiedad tras la batalla de Nueva York, Tony Stark se enfrenta al terrorista conocido como el Mandarín y a los peligros del proyecto Extremis."],
-  ["mcu",2013,"Thor: The Dark World","F","Reseña: Thor debe proteger a Jane Foster cuando una antigua sustancia llamada el Éter despierta y Malekith intenta sumir los Nueve Reinos en la oscuridad."],
-  ["mcu",2014,"Captain America: The Winter Soldier","F","Reseña: Steve Rogers descubre que Hydra ha infiltrado S.H.I.E.L.D. desde dentro y se enfrenta a un letal asesino con brazo biónico conocido como el Soldado de Invierno."],
-  ["mcu",2014,"Guardians of the Galaxy","F","Reseña: El aventurero Peter Quill forma una alianza improbable con Gamora, Drax, Rocket y Groot para evitar que Ronan el Acusador use una Gema del Infinito para destruir Xandar."],
-  ["mcu",2014,"Guardians of the Galaxy Vol. 2","F","Reseña: Mientras los Guardianes recorren el cosmos, Peter Quill conoce a su padre celestial Ego y el grupo debe afrontar secretos familiares y traiciones."],
+  // --- MCU · SAGRADA LÍNEA ---
+  ["mcu",1943,"Captain America: The First Avenger","F","Reseña: Steve Rogers, un joven frágil de Brooklyn, se somete a un experimento con el suero del supersoldado para combatir a Hydra y a Cráneo Rojo durante la Segunda Guerra Mundial, convirtiéndose en el primer Vengador."],
+  ["mcu",1995,"Captain Marvel","F","Reseña: En 1995, Vers / Carol Danvers queda atrapada en medio de una guerra galáctica entre los Kree y los Skrulls mientras recupera fragmentos de su pasado en la Tierra junto a un joven Nick Fury."],
+  ["mcu",2008,"Iron Man","F","Reseña: En 2008, tras ser secuestrado en Afganistán, el multimillonario inventor Tony Stark construye una armadura motorizada para escapar y decide redirigir su empresa y su vida como Iron Man."],
+  ["mcu",2010,"Iron Man 2","F","Reseña: Situada en 2010 (tras los sucesos de 2008), Tony Stark resiste la presión gubernamental para entregar su tecnología mientras su salud empeora por el reactor arc y el científico ruso Ivan Vanko planea su venganza como Whiplash."],
+  ["mcu",2010,"The Incredible Hulk","F","Reseña: En la misma franja cronológica de 2010, Bruce Banner vive oculto en busca de un antídoto contra la radiación gamma que desata a Hulk cuando pierde el control emocional, mientras es perseguido por el general Ross y Emil Blonsky."],
+  ["mcu",2010,"Thor","F","Reseña: También en 2010, por su arrogancia, el príncipe asgardiano Thor es desterrado a la Tierra sin su martillo Mjölnir, donde aprende el valor de la humildad mientras su hermano Loki conspira en Asgard."],
+  ["mcu",2012,"The Avengers","FB","Reseña: En 2012, Nick Fury reúne a Iron Man, Capitán América, Thor, Hulk, Viuda Negra y Ojo de Halcón para detener a Loki y a una invasión Chitauri sobre Nueva York. (En Endgame se abre una rama a partir de este evento)."],
+  ["mcu",2013,"Thor: The Dark World","F","Reseña: En 2013, Thor debe proteger a Jane Foster cuando una antigua sustancia llamada el Éter despierta y Malekith intenta sumir los Nueve Reinos en la oscuridad."],
+  ["mcu",2013,"Iron Man 3","F","Reseña: Entre finales de 2013 y principios de 2014 (en época navideña tras Los Vengadores), Tony Stark enfrenta las secuelas de Nueva York, al terrorista conocido como el Mandarín y los peligros de Extremis."],
+  ["mcu",2014,"Captain America: The Winter Soldier","F","Reseña: En 2014, Steve Rogers descubre que Hydra ha infiltrado S.H.I.E.L.D. desde dentro y se enfrenta a un letal asesino con brazo biónico conocido como el Soldado de Invierno."],
+  ["mcu",2014,"Guardians of the Galaxy","F","Reseña: En 2014, Peter Quill forma una alianza improbable con Gamora, Drax, Rocket y Groot para evitar que Ronan el Acusador use una Gema del Infinito para destruir Xandar."],
+  ["mcu",2014,"Guardians of the Galaxy Vol. 2","F","Reseña: También en 2014, mientras los Guardianes recorren el cosmos, Peter Quill conoce a su padre celestial Ego y el grupo debe afrontar secretos familiares y traiciones."],
   ["mcu",2014,"I Am Groot","S","Reseña: Colección de cortos protagonizados por Baby Groot en situaciones cotidianas y disparatadas a lo largo de sus viajes cósmicos."],
-  ["mcu",2014,"Daredevil (T1)","S","Reseña: El abogado ciego Matt Murdock patrulla de noche el barrio neoyorquino de Hell's Kitchen como Daredevil para frenar el ascenso criminal de Wilson Fisk."],
+  ["mcu",2014,"Daredevil (T1)","S","Reseña: El abogado ciego Matt Murdock patrulla de noche Hell's Kitchen como Daredevil para frenar el ascenso criminal de Wilson Fisk."],
   ["mcu",2014,"Jessica Jones (T1)","S","Reseña: La investigadora privada Jessica Jones, con fuerza sobrehumana y un pasado traumático, intenta sobreponerse al control psicológico del manipulador Kilgrave."],
-  ["mcu",2015,"Avengers: Age of Ultron","F","Reseña: Un intento de Tony Stark y Bruce Banner por crear una defensa global automatizada da origen a Ultron, una inteligencia artificial que amenaza la supervivencia de la humanidad."],
-  ["mcu",2015,"Ant-Man","F","Reseña: El ladrón reformado Scott Lang recibe el traje que permite encogerse y multiplicar su fuerza para ayudar al doctor Hank Pym a evitar que una tecnología similar caiga en malas manos."],
+  ["mcu",2015,"Avengers: Age of Ultron","F","Reseña: En 2015, un intento de Tony Stark y Bruce Banner por crear una defensa global automatizada da origen a Ultron, una inteligencia artificial que amenaza la supervivencia de la humanidad."],
+  ["mcu",2015,"Ant-Man","F","Reseña: En 2015, el ladrón reformado Scott Lang recibe el traje que permite encogerse y multiplicar su fuerza para ayudar al doctor Hank Pym a evitar que una tecnología similar caiga en malas manos."],
   ["mcu",2015,"Daredevil (T2)","S","Reseña: Matt Murdock choca con los métodos letales de Frank Castle (Punisher) mientras reaparece Elektra y La Mano amplía su presencia en la ciudad."],
   ["mcu",2015,"Luke Cage (T1)","S","Reseña: Dotado de piel irrompible y gran fuerza tras un experimento, Luke Cage intenta llevar una vida discreta en Harlem hasta que la corrupción local lo obliga a defender el barrio."],
-  ["mcu",2016,"Captain America: Civil War","F","Reseña: Las consecuencias de las misiones de los Vengadores provocan los Acuerdos de Sokovia y dividen al equipo en dos bandos liderados por Capitán América e Iron Man."],
-  ["mcu",2016,"Black Widow","F","Reseña: Tras los sucesos de Civil War, Natasha Romanoff regresa a su pasado en la Habitación Roja para reunirse con su familia adoptiva y detener a Dreykov."],
-  ["mcu",2016,"Black Panther","F","Reseña: T'Challa vuelve a Wakanda para asumir el trono como rey y Black Panther, pero su liderazgo y la política de aislamiento del país son desafiados por Erik Killmonger."],
-  ["mcu",2016,"Spider-Man: Homecoming","FB","Reseña: Peter Parker (Tom Holland) intenta demostrar que está listo para ser más que un héroe local bajo la supervisión de Tony Stark mientras enfrenta al Buitre."],
-  ["mcu",2016,"Doctor Strange","F","Reseña: Tras un accidente que arruina su carrera como neurocirujano, Stephen Strange viaja a Kamar-Taj y descubre el mundo de las artes místicas y las dimensiones alternativas."],
+  ["mcu",2016,"Captain America: Civil War","F","Reseña: En 2016, las consecuencias de las misiones de los Vengadores provocan los Acuerdos de Sokovia y dividen al equipo en dos bandos liderados por Capitán América e Iron Man."],
+  ["mcu",2016,"Black Widow","F","Reseña: Tras los sucesos de Civil War en 2016, Natasha Romanoff regresa a su pasado en la Habitación Roja para reunirse con su familia adoptiva y detener a Dreykov."],
+  ["mcu",2016,"Black Panther","F","Reseña: En 2016, T'Challa vuelve a Wakanda para asumir el trono como rey y Black Panther, pero su liderazgo y la política de aislamiento del país son desafiados por Erik Killmonger."],
+  ["mcu",2016,"Spider-Man: Homecoming","FB","Reseña: En 2016, Peter Parker (Tom Holland) intenta demostrar que está listo para ser más que un héroe local bajo la supervisión de Tony Stark mientras enfrenta al Buitre."],
+  ["mcu",2016,"Doctor Strange","F","Reseña: Entre finales de 2016 y 2017, tras un accidente que arruina su carrera como neurocirujano, Stephen Strange viaja a Kamar-Taj y descubre las artes místicas."],
   ["mcu",2016,"Iron Fist (T1)","S","Reseña: Danny Rand regresa a Nueva York quince años después de ser dado por muerto, portando el poder del Puño de Hierro para reclamar su legado y combatir a La Mano."],
-  ["mcu",2016,"The Defenders","S","Reseña: Daredevil, Jessica Jones, Luke Cage e Iron Fist unen fuerzas por primera vez en Nueva York para frustrar los planes de La Mano."],
+  ["mcu",2016,"The Defenders","S","Reseña: Daredevil, Jessica Jones, Luke Cage e Iron Fist unen fuerzas en Nueva York para frustrar los planes de La Mano."],
   ["mcu",2016,"The Punisher (T1)","S","Reseña: Frank Castle destapa una conspiración militar y gubernamental vinculada con la emboscada en la que perdió a su familia."],
-  ["mcu",2016,"Jessica Jones (T2)","S","Reseña: Jessica investiga el origen de sus habilidades y los experimentos que la transformaron, poniendo a prueba sus relaciones personales."],
+  ["mcu",2016,"Jessica Jones (T2)","S","Reseña: Jessica investiga el origen de sus habilidades y los experimentos que la transformaron."],
   ["mcu",2017,"Eyes of Wakanda","S","Reseña: Serie animada oficial de Marvel Studios que sigue a guerreros de Wakanda a través de distintas épocas en misiones para recuperar artefactos de vibranium."],
-  ["mcu",2017,"Thor: Ragnarok","F","Reseña: Atrapado en el planeta Sakaar sin su martillo, Thor debe aliarse con Hulk y Valquiria para regresar a Asgard y detener a su hermana Hela antes del Ragnarok."],
-  ["mcu",2017,"Luke Cage (T2)","S","Reseña: Convertido en figura pública en Harlem, Luke Cage se enfrenta a nuevos rivales como Mariah Dillard y Bushmaster mientras lidia con el peso de su fama."],
-  ["mcu",2017,"Iron Fist (T2)","S","Reseña: Con Danny Rand centrado en nuevas responsabilidades, Colleen Wing asume un papel clave en la protección de Chinatown y Nueva York."],
-  ["mcu",2017,"Daredevil (T3)","S","Reseña: Tras sobrevivir al derrumbe de Midland Circle y perder la fe en su identidad como Daredevil, Matt Murdock se enfrenta al regreso calculador de Wilson Fisk."],
-  ["mcu",2017,"The Punisher (T2)","S","Reseña: Frank Castle se ve arrastrado a una nueva cacería cuando protege a una joven con información comprometedora y vuelve a cruzarse con Billy Russo."],
-  ["mcu",2018,"Ant-Man and the Wasp","F","Reseña: Scott Lang y Hope van Dyne colaboran con Hank Pym para abrir un túnel cuántico estable y rescatar a Janet van Dyne del Reino Cuántico."],
-  ["mcu",2018,"Avengers: Infinity War","FB","Reseña: Thanos recorre el universo para reunir las seis Gemas del Infinito, obligando a los Vengadores y a los Guardianes de la Galaxia a una batalla desesperada con consecuencias devastadoras."],
-  ["mcu",2018,"Jessica Jones (T3)","S","Reseña: Jessica Jones y Trish Walker toman caminos divergentes mientras investigan a un asesino metahumano despiadado en Nueva York."],
-  ["mcu",2023,"Avengers: Endgame","FB","Reseña: Cinco años después del chasquido de Thanos, los Vengadores restantes emprenden un atraco en el tiempo para recuperar las Gemas del Infinito y revertir lo ocurrido, generando ramas temporales."],
-  ["mcu",2023,"WandaVision","S","Reseña: Wanda Maximoff y Visión viven en un pueblo idílico que imita distintas épocas de la comedia televisiva, hasta que se revela el verdadero origen de esa realidad."],
-  ["mcu",2023,"Eternals","F","Reseña: Un grupo de seres inmortales enviados a la Tierra hace milenios debe reunirse para detener a los Desviantes y cuestionar su propio propósito."],
-  ["mcu",2024,"Shang-Chi and the Legend of the Ten Rings","F","Reseña: Shang-Chi se ve obligado a confrontar el pasado que intentó dejar atrás cuando es arrastrado de nuevo a la organización de los Diez Anillos liderada por su padre."],
-  ["mcu",2024,"The Falcon and the Winter Soldier","S","Reseña: Sam Wilson y Bucky Barnes colaboran a regañadientes mientras el legado del escudo del Capitán América queda en el centro de un conflicto global."],
+  ["mcu",2017,"Thor: Ragnarok","F","Reseña: En 2017, atrapado en el planeta Sakaar sin su martillo, Thor debe aliarse con Hulk y Valquiria para regresar a Asgard y detener a su hermana Hela antes del Ragnarok."],
+  ["mcu",2017,"Luke Cage (T2)","S","Reseña: Convertido en figura pública en Harlem, Luke Cage se enfrenta a nuevos rivales como Mariah Dillard y Bushmaster."],
+  ["mcu",2017,"Iron Fist (T2)","S","Reseña: Con Danny Rand centrado en nuevas responsabilidades, Colleen Wing asume un papel clave en la protección de la ciudad."],
+  ["mcu",2017,"Daredevil (T3)","S","Reseña: Matt Murdock se enfrenta al regreso calculador de Wilson Fisk mientras lucha por recuperar su identidad como Daredevil."],
+  ["mcu",2017,"The Punisher (T2)","S","Reseña: Frank Castle se ve arrastrado a una nueva cacería cuando protege a una joven con información comprometedora."],
+  ["mcu",2018,"Ant-Man and the Wasp","F","Reseña: En 2018, Scott Lang y Hope van Dyne colaboran con Hank Pym para abrir un túnel cuántico estable y rescatar a Janet van Dyne del Reino Cuántico."],
+  ["mcu",2018,"Avengers: Infinity War","FB","Reseña: En 2018, Thanos recorre el universo para reunir las seis Gemas del Infinito, obligando a los Vengadores y a los Guardianes de la Galaxia a una batalla desesperada."],
+  ["mcu",2018,"Jessica Jones (T3)","S","Reseña: Jessica Jones y Trish Walker toman caminos divergentes mientras investigan a un asesino metahumano."],
+  ["mcu",2023,"Avengers: Endgame","FB","Reseña: En 2023, cinco años después del chasquido de Thanos, los Vengadores restantes emprenden un atraco en el tiempo para recuperar las Gemas del Infinito y revertir lo ocurrido."],
+  ["mcu",2023,"WandaVision","S","Reseña: Tres semanas después de Endgame en 2023, Wanda Maximoff y Visión viven en un pueblo idílico que imita distintas épocas de la comedia televisiva."],
+  ["mcu",2024,"Shang-Chi and the Legend of the Ten Rings","F","Reseña: En 2024, Shang-Chi se ve obligado a confrontar el pasado que intentó dejar atrás cuando es arrastrado de nuevo a la organización de los Diez Anillos."],
+  ["mcu",2024,"The Falcon and the Winter Soldier","S","Reseña: En 2024, seis meses después de Endgame, Sam Wilson y Bucky Barnes colaboran mientras el legado del escudo del Capitán América queda en el centro del conflicto."],
   ["mcu",2024,"Peter's To-Do List","S","Reseña: Cortometraje que muestra los preparativos de Peter Parker antes de partir de viaje escolar a Europa en Far From Home."],
-  ["mcu",2024,"Spider-Man: Far From Home","F","Reseña: Durante un viaje escolar por Europa, Peter Parker (Tom Holland) es reclutado por Nick Fury y Mysterio para enfrentar amenazas elementales."],
-  ["mcu",2024,"Spider-Man: No Way Home","FB","Reseña: Tras revelarse la identidad de Peter Parker (Tom Holland), un hechizo de Doctor Strange altera el multiverso, atrayendo a los Spider-Man de Tobey Maguire y Andrew Garfield y a villanos de otras Tierras."],
-  ["mcu",2024,"Doctor Strange in the Multiverse of Madness","FB","Reseña: Stephen Strange y America Chavez huyen a través de distintas realidades —incluida la Tierra-838— para proteger el poder del multiverso."],
-  ["mcu",2024,"Hawkeye","S","Reseña: Clint Barton intenta pasar las fiestas en Nueva York con su familia pero debe aliarse con la arquera Kate Bishop para resolver asuntos de su pasado como Ronin."],
-  ["mcu",2025,"Moon Knight","S","Reseña: Steven Grant, un empleado de museo con lagunas mentales, descubre que comparte cuerpo con el mercenario Marc Spector y que ambos están ligados al dios lunar Khonshu."],
-  ["mcu",2025,"Black Panther: Wakanda Forever","F","Reseña: Tras la muerte del rey T'Challa, la reina Ramonda, Shuri y los líderes de Wakanda deben proteger su nación cuando surge una amenaza submarina liderada por Namor."],
-  ["mcu",2025,"Echo","S","Reseña: Maya Lopez regresa a su ciudad natal en Oklahoma para reconectar con sus raíces, su familia y el legado de sus ancestros."],
-  ["mcu",2025,"She-Hulk: Attorney at Law","S","Reseña: La abogada Jennifer Walters obtiene poderes gamma similares a los de Hulk y termina encabezando una división legal especializada en casos sobrehumanos."],
+  ["mcu",2024,"Spider-Man: Far From Home","F","Reseña: En 2024, durante un viaje escolar por Europa, Peter Parker (Tom Holland) es reclutado para enfrentar amenazas elementales y a Mysterio."],
+  ["mcu",2024,"Eternals","F","Reseña: En 2024, un grupo de seres inmortales enviados a la Tierra hace milenios debe reunirse para detener a los Desviantes."],
+  ["mcu",2024,"Spider-Man: No Way Home","FB","Reseña: A finales de 2024, tras revelarse la identidad de Peter Parker, un hechizo altera el multiverso atrayendo a los Spider-Man de Tobey Maguire y Andrew Garfield."],
+  ["mcu",2024,"Doctor Strange in the Multiverse of Madness","FB","Reseña: Tras No Way Home en 2024, Stephen Strange y America Chavez huyen a través de distintas realidades para proteger el poder del multiverso."],
+  ["mcu",2024,"Hawkeye","S","Reseña: En la Navidad de 2024, Clint Barton intenta pasar las fiestas en Nueva York con su familia pero debe aliarse con Kate Bishop."],
+  ["mcu",2025,"Moon Knight","S","Reseña: En 2025, Steven Grant descubre que comparte cuerpo con el mercenario Marc Spector y que ambos están ligados al dios lunar Khonshu."],
+  ["mcu",2025,"Black Panther: Wakanda Forever","F","Reseña: Tras la muerte del rey T'Challa, Shuri y los líderes de Wakanda deben proteger su nación cuando surge una amenaza submarina liderada por Namor."],
+  ["mcu",2025,"Echo","S","Reseña: Maya Lopez regresa a su ciudad natal en Oklahoma para reconectar con sus raíces y su familia."],
+  ["mcu",2025,"She-Hulk: Attorney at Law","S","Reseña: La abogada Jennifer Walters obtiene poderes gamma similares a los de Hulk y encabeza una división legal de casos sobrehumanos."],
   ["mcu",2025,"Ms. Marvel","S","Reseña: Kamala Khan, una joven fanática de los superhéroes en Jersey City, descubre un brazalete místico que despierta sus propios poderes."],
-  ["mcu",2025,"Ironheart","S","Reseña: La brillante joven inventora Riri Williams regresa a Chicago y perfecciona una armadura de alta tecnología inspirada en el legado de Tony Stark."],
-  ["mcu",2025,"Werewolf by Night","S","Reseña: Especial en blanco y negro ambientado en una reunión secreta de cazadores de monstruos tras la muerte de su líder."],
-  ["mcu",2025,"Thor: Love and Thunder","F","Reseña: Thor emprende un viaje para detener a Gorr el Carnicero de Dioses, reencontrándose con Jane Foster convertida en Mighty Thor y con Valquiria y Korg."],
-  ["mcu",2025,"Secret Invasion","S","Reseña: Nick Fury regresa a la Tierra para desarticular una infiltración encubierta de facciones Skrull en puestos clave del planeta."],
-  ["mcu",2025,"The Guardians of the Galaxy Holiday Special","S","Reseña: Mantis y Drax viajan a la Tierra en Navidad con el objetivo de conseguir el regalo perfecto que anime a Peter Quill."],
-  ["mcu",2026,"The Marvels","FB","Reseña: Carol Danvers, Kamala Khan y Monica Rambeau quedan entrelazadas cuánticamente al usar sus poderes, debiendo formar equipo para evitar una catástrofe espacial."],
-  ["mcu",2026,"Wonder Man (T1)","S","Reseña: Simon Williams persigue su sueño como actor en Hollywood mientras lidia con habilidades extraordinarias y los secretos de la industria."],
-  ["mcu",2026,"Ant-Man and the Wasp: Quantumania","F","Reseña: Scott Lang, Hope, Hank, Janet y Cassie son arrastrados al Reino Cuántico, donde se enfrentan a Kang el Conquistador."],
-  ["mcu",2026,"Guardians of the Galaxy Vol. 3","F","Reseña: Con el universo aún golpeado, Peter Quill reúne a los Guardianes en una misión crítica para salvar la vida de Rocket y enfrentar el pasado de su creador."],
-  ["mcu",2026,"Agatha All Along","S","Reseña: Privada de su magia, Agatha Harkness reúne a un aquelarre de brujas para recorrer la legendaria Senda de las Brujas."],
-  ["mcu",2027,"Captain America: Brave New World","F","Reseña: Sam Wilson asume oficialmente el manto del Capitán América en medio de tensiones geopolíticas y una conspiración de alcance global."],
-  ["mcu",2027,"Daredevil: Born Again (T1)","S","Reseña: Matt Murdock y Wilson Fisk vuelven a enfrentarse en un choque político y callejero por el futuro de Nueva York."],
+  ["mcu",2025,"Ironheart","S","Reseña: Riri Williams regresa a Chicago y perfecciona una armadura de alta tecnología inspirada en el legado de Tony Stark."],
+  ["mcu",2025,"Werewolf by Night","S","Reseña: Especial en blanco y negro ambientado en una reunión secreta de cazadores de monstruos."],
+  ["mcu",2025,"Thor: Love and Thunder","F","Reseña: Thor emprende un viaje para detener a Gorr el Carnicero de Dioses, reencontrándose con Jane Foster convertida en Mighty Thor."],
+  ["mcu",2025,"Secret Invasion","S","Reseña: Nick Fury regresa a la Tierra para desarticular una infiltración encubierta de facciones Skrull."],
+  ["mcu",2025,"The Guardians of the Galaxy Holiday Special","S","Reseña: Mantis y Drax viajan a la Tierra en Navidad para conseguir un regalo que anime a Peter Quill."],
+  ["mcu",2026,"The Marvels","FB","Reseña: Carol Danvers, Kamala Khan y Monica Rambeau quedan entrelazadas cuánticamente al usar sus poderes y deben formar equipo."],
+  ["mcu",2026,"Ant-Man and the Wasp: Quantumania","F","Reseña: Scott Lang, Hope, Hank, Janet y Cassie son arrastrados al Reino Cuántico, donde enfrentan a Kang el Conquistador."],
+  ["mcu",2026,"Guardians of the Galaxy Vol. 3","F","Reseña: Peter Quill reúne a los Guardianes en una misión crítica para salvar la vida de Rocket y enfrentar el pasado de su creador."],
+  ["mcu",2026,"Agatha All Along","S","Reseña: Privada de su magia, Agatha Harkness reúne a un aquelarre de brujas para recorrer la Senda de las Brujas."],
+  ["mcu",2027,"Captain America: Brave New World","F","Reseña: Sam Wilson asume el manto del Capitán América en medio de tensiones geopolíticas y una conspiración global."],
+  ["mcu",2027,"Daredevil: Born Again (T1)","S","Reseña: Matt Murdock y Wilson Fisk vuelven a enfrentarse en un choque político y callejero por Nueva York."],
   ["mcu",2027,"Thunderbolts*","F","Reseña: Un grupo de antihéroes y exoperativos es reunido en una misión de alto riesgo bajo el control de Valentina Allegra de Fontaine."],
-  ["mcu",2027,"Daredevil: Born Again (T2)","S","Reseña: Continúa el pulso entre la ley, la justicia vigilante y el poder en la ciudad de Nueva York."],
+  ["mcu",2027,"Wonder Man (T1)","S","Reseña: Simon Williams persigue su sueño como actor en Hollywood mientras lidia con habilidades extraordinarias."],
+  ["mcu",2027,"Daredevil: Born Again (T2)","S","Reseña: Continúa el pulso entre la ley, la justicia vigilante y el poder en Nueva York."],
   ["mcu",2027,"The Punisher: One Last Kill","S","Reseña: Frank Castle retoma su cruzada implacable en una nueva historia centrada en la venganza y la supervivencia."],
-  ["mcu",2027,"VisionQuest","S","Reseña: Serie centrada en el camino y la identidad de Visión tras los eventos previos del MCU."],
-  ["mcu",2028,"Spider-Man: Brand New Day","FB","Reseña: Peter Parker (Tom Holland) continúa su vida en solitario tras el olvido global de No Way Home, asumiendo una etapa más madura como héroe de Nueva York."],
-  ["mcu",2028,"Avengers: Doomsday","FB","Reseña: Gran evento cinematográfico de la Saga del Multiverso con la llegada del Doctor Doom y el choque entre distintas realidades."],
+  ["mcu",2027,"VisionQuest","S","Reseña: Serie centrada en el camino y la identidad de Visión."],
+  ["mcu",2028,"Spider-Man: Brand New Day","FB","Reseña: Situada en 2028 (presente cronológico tras No Way Home), Peter Parker continúa su vida en solitario tras ser olvidado por el mundo."],
+  ["mcu",2028,"Avengers: Doomsday","FB","Reseña: Gran evento multiversal ambientado en 2028 con la llegada del Doctor Doom y el choque entre distintas realidades."],
   ["mcu",9000,"Avengers: Secret Wars","FB","Reseña: Clímax de la Saga del Multiverso donde convergen héroes y mundos de diferentes líneas temporales."],
-  ["mcu",9000,"Armor Wars / Blade Reboot / Shang-Chi 2","F","Reseña: Próximos largometrajes previstos dentro del horizonte de desarrollo de Marvel Studios."],
+  ["mcu",9000,"Armor Wars / Blade Reboot / Shang-Chi 2","F","Reseña: Próximos largometrajes previstos en la planificación de Marvel Studios."],
   ["mcu",9000,"Black Panther 3 / Doctor Strange 3 / Eternals 2 / X-Men","F","Reseña: Futuras películas anunciadas o en planificación dentro del universo cinematográfico de Marvel."],
   ["mcu",9000,"Nova / Serie Wakanda / Wonder Man (T2)","S","Reseña: Próximas series y expansiones televisivas en desarrollo."],
 
   // --- TV / AMBIGUO ---
-  ["tvamb",1946,"Agent Carter: One-Shot","S","Reseña: Cortometraje que muestra a Peggy Carter lidiando con el machismo en la posguerra mientras asume una misión de campo."],
-  ["tvamb",2010,"The Consultant: One-Shot","S","Reseña: Phil Coulson y Jasper Sitwell idean un plan para evitar que Emil Blonsky sea liberado bajo custodia de S.H.I.E.L.D."],
-  ["tvamb",2011,"A Funny Thing Happened on the Way to Thor's Hammer","S","Reseña: Mientras viaja hacia Nuevo México, Phil Coulson detiene a dos ladrones en una gasolinera con su característico estilo calmado."],
-  ["tvamb",2012,"Item 47: One-Shot","S","Reseña: Una pareja desempleada encuentra un arma Chitauri abandonada tras la batalla de Nueva York y desata la atención de S.H.I.E.L.D."],
-  ["tvamb",2013,"All Hail The King: One-Shot","S","Reseña: Desde prisión, el actor Trevor Slattery recibe la visita de un documentalista y descubre las consecuencias reales de haber suplantado al Mandarín."],
-  ["tvamb",2014,"Agents of S.H.I.E.L.D. (T1)","S","Reseña: Phil Coulson lidera un pequeño equipo de agentes que viaja por el mundo investigando fenómenos extraordinarios mientras estalla la crisis de Hydra."],
-  ["tvamb",2015,"Agents of S.H.I.E.L.D. (T2)","S","Reseña: Con S.H.I.E.L.D. operando en la clandestinidad, Coulson reconstruye la agencia mientras surgen los primeros Inhumanos y Daisy Johnson descubre su origen."],
+  ["tvamb",1946,"Agent Carter: One-Shot","S","Reseña: Cortometraje ambientado en 1946 que muestra a Peggy Carter en la posguerra mientras asume una misión de campo."],
+  ["tvamb",2010,"The Consultant: One-Shot","S","Reseña: En 2010, Phil Coulson y Jasper Sitwell idean un plan para evitar que Emil Blonsky sea liberado bajo custodia de S.H.I.E.L.D."],
+  ["tvamb",2011,"A Funny Thing Happened on the Way to Thor's Hammer","S","Reseña: Mientras viaja hacia Nuevo México, Phil Coulson detiene a dos ladrones en una gasolinera."],
+  ["tvamb",2012,"Item 47: One-Shot","S","Reseña: Tras la batalla de Nueva York en 2012, una pareja encuentra un arma Chitauri y desata la atención de S.H.I.E.L.D."],
+  ["tvamb",2013,"All Hail The King: One-Shot","S","Reseña: Desde prisión, Trevor Slattery recibe la visita de un documentalista y descubre las consecuencias de haber suplantado al Mandarín."],
+  ["tvamb",2014,"Agents of S.H.I.E.L.D. (T1)","S","Reseña: Phil Coulson lidera un equipo de agentes que viaja por el mundo investigando fenómenos extraordinarios mientras estalla la crisis de Hydra."],
+  ["tvamb",2015,"Agents of S.H.I.E.L.D. (T2)","S","Reseña: Coulson reconstruye S.H.I.E.L.D. mientras surgen los primeros Inhumanos y Daisy Johnson descubre su origen."],
   ["tvamb",2016,"Agents of S.H.I.E.L.D. (T3 y T4)","S","Reseña: El equipo enfrenta amenazas como Hive, Ghost Rider y una realidad virtual alterada conocida como el Framework."],
-  ["tvamb",2016,"Agents of S.H.I.E.L.D.: Slingshot","S","Reseña: Miniserie digital que sigue una operación encubierta de Elena 'Yo-Yo' Rodríguez antes de firmar los Acuerdos de Sokovia."],
-  ["tvamb",2017,"Inhumans","S","Reseña: Tras un golpe de estado en la ciudad lunar de Attilan, Black Bolt y la familia real inhumana deben escapar a Hawái."],
-  ["tvamb",2017,"Runaways (T1 y T2)","S","Reseña: Seis adolescentes de Los Ángeles descubren que sus padres forman parte de una organización criminal llamada El Orgullo y deciden huir juntos."],
-  ["tvamb",2017,"Cloak & Dagger (T1 y T2)","S","Reseña: Tandy Bowen y Tyrone Johnson, dos jóvenes de orígenes muy distintos en Nueva Orleans, desarrollan poderes conectados de luz y oscuridad."],
-  ["tvamb",2018,"Runaways (T3)","S","Reseña: Los jóvenes héroes deben enfrentar el regreso de Morgan le Fay y proteger el equilibrio mágico y místico."],
+  ["tvamb",2016,"Agents of S.H.I.E.L.D.: Slingshot","S","Reseña: Miniserie digital centrada en una operación encubierta de Elena 'Yo-Yo' Rodríguez."],
+  ["tvamb",2017,"Inhumans","S","Reseña: Tras un golpe de estado en Attilan, Black Bolt y la familia real inhumana deben escapar a Hawái."],
+  ["tvamb",2017,"Runaways (T1 y T2)","S","Reseña: Seis adolescentes de Los Ángeles descubren que sus padres forman parte de El Orgullo y deciden huir juntos."],
+  ["tvamb",2017,"Cloak & Dagger (T1 y T2)","S","Reseña: Tandy Bowen y Tyrone Johnson desarrollan poderes conectados de luz y oscuridad en Nueva Orleans."],
+  ["tvamb",2018,"Runaways (T3)","S","Reseña: Los jóvenes héroes enfrentan el regreso de Morgan le Fay y protegen el equilibrio místico."],
   ["tvamb",2020,"Agents of S.H.I.E.L.D. (T5)","SB","Reseña: El equipo es enviado al futuro a una Tierra devastada y lucha por regresar y alterar un destino apocalíptico."],
   ["tvamb",2022,"Runaways (T3 - Final)","S","Reseña: Epílogo ambientado en el futuro cercano que cierra el arco de los protagonistas."],
   ["tvamb",2023,"Agents of S.H.I.E.L.D. (T6 y T7)","SB","Reseña: Los agentes recorren distintas décadas de la historia para impedir que los Chronicoms borren a S.H.I.E.L.D. y a la humanidad."],
 
   // --- RAMAS ---
   ["rama",2023,"Loki (T1 y T2)","SB","Reseña: Tras escapar con el Teseracto en 2012, Loki es capturado por la TVA y termina comprendiendo el funcionamiento del multiverso hasta sostener el árbol temporal."],
-  ["rama",2024,"What If…? (T1)","SB","Reseña: Serie animada antológica narrada por El Vigilante que explora qué pasaría si momentos clave de la historia tomaran un rumbo completamente distinto."],
-  ["rama",2025,"What If…? (T2)","SB","Reseña: Segunda temporada animada con nuevas variantes, héroes inesperados y consecuencias multiversales."],
+  ["rama",2023,"Marvel Zombies","SB","Reseña: Ambientada en 2023 en la realidad alternativa zombi derivada de What If...?, un grupo de supervivientes lucha por seguir adelante."],
+  ["rama",2024,"What If…? (T1)","SB","Reseña: Serie animada antológica narrada por El Vigilante que explora realidades alternativas."],
+  ["rama",2025,"What If…? (T2)","SB","Reseña: Segunda temporada animada con nuevas variantes y consecuencias multiversales."],
   ["rama",2026,"Your Friendly Neighborhood Spider-Man (T1)","SB","Reseña: Línea alternativa animada en la que Peter Parker recibe la mentoría de Norman Osborn en lugar de Tony Stark."],
   ["rama",2026,"What If…? (T3)","SB","Reseña: Tercera temporada de realidades alternativas observadas por El Vigilante."],
-  ["rama",2026,"Marvel Zombies","SB","Reseña: Serie animada derivada del concepto zombi donde un grupo de supervivientes lucha por seguir adelante en un mundo infectado."],
   ["rama",2027,"Your Friendly Neighborhood Spider-Man (T2)","SB","Reseña: Segunda temporada de la serie animada alternativa de Spider-Man."],
   ["rama",2028,"Your Friendly Neighborhood Spider-Man (T3)","SB","Reseña: Tercera temporada de la serie animada alternativa de Spider-Man."],
 
   // --- SPIDER-MAN (TOBEY MAGUIRE) ---
-  ["raimi",2002,"Spider-Man (Tobey)","F","Reseña: Tras la picadura de una araña genéticamente modificada, Peter Parker (Tobey Maguire) aprende que un gran poder conlleva una gran responsabilidad y enfrenta al Duende Verde."],
-  ["raimi",2004,"Spider-Man 2 (Tobey)","F","Reseña: Agobiado por su doble vida y sus problemas cotidianos, Peter Parker pierde temporalmente sus poderes y debe detener al brillante Doctor Octopus."],
-  ["raimi",2007,"Spider-Man 3 (Tobey)","F","Reseña: Peter enfrenta el rencor de Harry Osborn, al Hombre de Arena y la influencia oscura de un simbionte alienígena que potencia su ira."],
-  ["raimi",2024,"Cruce en No Way Home","FB","Reseña: El Peter Parker de Tobey Maguire cruza hacia la línea de Tom Holland para ayudar a sus variantes y sanar viejas heridas."],
+  ["raimi",2002,"Spider-Man (Tobey)","F","Reseña: Estrenada y situada en 2002, Peter Parker (Tobey Maguire) asume su responsabilidad tras obtener poderes arácnidos y enfrenta al Duende Verde."],
+  ["raimi",2004,"Spider-Man 2 (Tobey)","F","Reseña: En 2004, agobiado por su doble vida, Peter Parker debe detener al brillante Doctor Octopus."],
+  ["raimi",2007,"Spider-Man 3 (Tobey)","F","Reseña: En 2007, Peter enfrenta el rencor de Harry Osborn, al Hombre de Arena y a un simbionte alienígena."],
+  ["raimi",2024,"Cruce en No Way Home","FB","Reseña: El Peter Parker de Tobey Maguire cruza hacia la línea de Tom Holland para ayudar a sus variantes."],
 
   // --- SPIDER-MAN (ANDREW GARFIELD) ---
-  ["webb",2012,"The Amazing Spider-Man (Andrew)","F","Reseña: Peter Parker (Andrew Garfield) investiga la desaparición de sus padres y desarrolla habilidades arácnidas que lo llevan a enfrentarse al Lagarto."],
-  ["webb",2014,"The Amazing Spider-Man 2 (Andrew)","F","Reseña: Mientras intenta cumplir su promesa al padre de Gwen Stacy, Peter enfrenta a Electro y a Harry Osborn en una historia marcada por la tragedia."],
-  ["webb",2024,"Cruce en No Way Home","FB","Reseña: El Peter Parker de Andrew Garfield llega a la realidad de Tom Holland y encuentra redención al ayudar a sus otros yo."],
+  ["webb",2012,"The Amazing Spider-Man (Andrew)","F","Reseña: En 2012, Peter Parker (Andrew Garfield) investiga la desaparición de sus padres y enfrenta al Lagarto."],
+  ["webb",2014,"The Amazing Spider-Man 2 (Andrew)","F","Reseña: En 2014, Peter enfrenta a Electro y a Harry Osborn en una historia marcada por la tragedia."],
+  ["webb",2024,"Cruce en No Way Home","FB","Reseña: El Peter Parker de Andrew Garfield llega a la realidad de Tom Holland y encuentra redención."],
 
   // --- SPIDER-VERSE ---
-  ["verse",2023,"Spider-Man: Into the Spider-Verse","FB","Reseña: El adolescente Miles Morales de Brooklyn (Tierra-1610) asume el manto de Spider-Man y conoce a héroes arácnidos de otras dimensiones."],
-  ["verse",2025,"Spider-Man: Across the Spider-Verse","FB","Reseña: Miles Morales viaja a través del multiverso junto a Gwen Stacy y choca con la Sociedad Arácnida por querer desafiar su propio destino."],
-  ["verse",2025,"Spider-Man: Beyond the Spider-Verse","FB","Reseña: Conclusión de la trilogía animada centrada en Miles Morales y el choque entre dimensiones."],
+  ["verse",2018,"Spider-Man: Into the Spider-Verse","FB","Reseña: Estrenada en 2018, Miles Morales de Brooklyn (Tierra-1610) asume el manto de Spider-Man y conoce a héroes de otras dimensiones."],
+  ["verse",2023,"Spider-Man: Across the Spider-Verse","FB","Reseña: En 2023, Miles Morales viaja a través del multiverso junto a Gwen Stacy y choca con la Sociedad Arácnida."],
+  ["verse",9000,"Spider-Man: Beyond the Spider-Verse","FB","Reseña: Conclusión de la trilogía animada centrada en Miles Morales y el choque entre dimensiones."],
   ["verse",9000,"Spider-Gwen / Spider-Punk","F","Reseña: Proyectos animados ligados al universo del Spider-Verse en desarrollo."],
 
   // --- SONY (SSU) ---
-  ["ssu",1933,"Spider-Noir","S","Reseña: Historia ambientada en el Nueva York de los años 30 con estética detectivesca y de cine negro."],
-  ["ssu",2003,"Madame Web","F","Reseña: La paramédica Cassandra Webb comienza a experimentar visiones clarividentes que conectan a tres jóvenes con un futuro peligroso."],
-  ["ssu",2023,"Venom","F","Reseña: El periodista Eddie Brock se convierte en anfitrión de un simbionte alienígena llamado Venom y lucha contra los planes de Carlton Drake y Riot."],
-  ["ssu",2024,"Kraven the Hunter","F","Reseña: Relato de origen sobre Sergei Kravinoff y su relación compleja con su padre antes de convertirse en un temido cazador."],
-  ["ssu",2024,"Venom: Let There Be Carnage","FB","Reseña: Eddie Brock y Venom deben hacer frente a Cletus Kasady y al violento simbionte Carnage, con un breve salto dimensional."],
-  ["ssu",2024,"Morbius","FB","Reseña: El bioquímico Michael Morbius busca curar una rara enfermedad sanguínea y termina adquiriendo rasgos vampíricos incontrolables."],
-  ["ssu",2025,"Venom: The Last Dance","FB","Reseña: Eddie Brock y Venom huyen de fuerzas de su mundo y del planeta mientras su vínculo llega a un punto decisivo."],
+  ["ssu",2018,"Venom","F","Reseña: En 2018, el periodista Eddie Brock se convierte en anfitrión de Venom y lucha contra Carlton Drake y Riot."],
+  ["ssu",2021,"Venom: Let There Be Carnage","FB","Reseña: En 2021, Eddie Brock y Venom enfrentan a Cletus Kasady y a Carnage, con un breve salto dimensional."],
+  ["ssu",2022,"Morbius","FB","Reseña: En 2022, Michael Morbius busca curar una enfermedad sanguínea y adquiere rasgos vampíricos."],
+  ["ssu",2024,"Madame Web","F","Reseña: En 2024, Cassandra Webb experimenta visiones clarividentes que conectan a tres jóvenes con un futuro peligroso."],
+  ["ssu",2024,"Venom: The Last Dance","FB","Reseña: En 2024, Eddie Brock y Venom huyen mientras su vínculo llega a un punto decisivo."],
+  ["ssu",2024,"Kraven the Hunter","F","Reseña: Relato de origen sobre Sergei Kravinoff antes de convertirse en un temido cazador."],
+  ["ssu",2026,"Spider-Noir","S","Reseña: Serie ambientada en el Nueva York de los años 30 con estética detectivesca."],
   ["ssu",9000,"Silk / Venom Animado","S","Reseña: Proyectos derivados en desarrollo dentro del catálogo arácnido/Sony."],
 
   // --- X-MEN: LÍNEA ORIGINAL ---
-  ["xorig",1979,"X-Men Origins: Wolverine","F","Reseña: Explora el pasado de Logan y Victor Creed, su paso por el programa Equipo X y el experimento que recubrió de adamantium el esqueleto de Logan."],
-  ["xorig",1990,"X-Men","F","Reseña: En un mundo que teme a los mutantes, Charles Xavier y sus X-Men defienden a Rogue mientras Magneto planea transformar a los líderes mundiales."],
-  ["xorig",2003,"X2: X-Men United","F","Reseña: Tras un ataque a la Casa Blanca, el coronel William Stryker lanza una ofensiva contra la mansión de Xavier obligando a X-Men y Magneto a aliarse."],
-  ["xorig",2006,"X-Men: The Last Stand","F","Reseña: El descubrimiento de una supuesta 'cura' para la mutación desata un conflicto total mientras el poder de Fénix toma el control de Jean Grey."],
-  ["xorig",2013,"The Wolverine","F","Reseña: Logan viaja a Japón invitado por un antiguo conocido y se ve envuelto en intrigas familiares y corporativas que ponen a prueba su inmortalidad."],
-  ["xorig",2023,"DOFP: Futuro Apocalíptico","FB","Reseña: En un futuro apocalíptico dominado por los Centinelas, esta línea original corre hacia su extinción hasta que la conciencia de Logan es enviada a 1973 para cambiar el pasado."],
+  ["xorig",1979,"X-Men Origins: Wolverine","F","Reseña: Explora el pasado de Logan y Victor Creed, su paso por el programa Equipo X y el experimento del adamantium."],
+  ["xorig",2000,"X-Men","F","Reseña: Estrenada en 2000, Charles Xavier y sus X-Men defienden a Rogue mientras Magneto planea transformar a los líderes mundiales."],
+  ["xorig",2003,"X2: X-Men United","F","Reseña: En 2003, tras un ataque a la Casa Blanca, William Stryker lanza una ofensiva contra la mansión de Xavier."],
+  ["xorig",2006,"X-Men: The Last Stand","F","Reseña: En 2006, el debate sobre una supuesta cura mutante desata un conflicto mientras el poder de Fénix toma el control de Jean Grey."],
+  ["xorig",2013,"The Wolverine","F","Reseña: En 2013, Logan viaja a Japón y se ve envuelto en intrigas familiares y corporativas."],
+  ["xorig",2023,"DOFP: Futuro Apocalíptico","FB","Reseña: En el futuro de 2023 dominado por los Centinelas, esta línea original corre hacia su extinción hasta que la conciencia de Logan es enviada a 1973."],
 
   // --- X-MEN: LÍNEA MODIFICADA ---
-  ["xmod",1962,"X-Men: First Class","F","Reseña: En plena Guerra Fría, Charles Xavier y Erik Lehnsherr unen fuerzas para reclutar jóvenes mutantes y detener a Sebastian Shaw antes de separarse."],
-  ["xmod",1973,"X-Men: Days of Future Past","FB","Reseña: El viaje mental de Logan a 1973 evita el programa Centinela de Trask y bifurca la historia: se borra el futuro oscuro original y nace esta línea modificada."],
-  ["xmod",1983,"X-Men: Apocalypse","F","Reseña: En los años 80 despierta En Sabah Nur (Apocalipsis), un mutante ancestral que recluta a cuatro jinetes —incluido Magneto— para reiniciar la civilización."],
-  ["xmod",1992,"X-Men: Dark Phoenix","F","Reseña: Durante una misión de rescate espacial, Jean Grey absorbe una fuerza cósmica que desata su lado más oscuro y fractura a los X-Men."],
-  ["xmod",2022,"The New Mutants","F","Reseña: Cinco jóvenes mutantes permanecen encerrados en una instalación aislada donde sus poderes y traumas se manifiestan con tintes de terror."],
+  ["xmod",1962,"X-Men: First Class","F","Reseña: En 1962, durante la Guerra Fría, Charles Xavier y Erik Lehnsherr unen fuerzas para reclutar jóvenes mutantes y detener a Sebastian Shaw."],
+  ["xmod",1973,"X-Men: Days of Future Past","FB","Reseña: En 1973 se bifurca la historia: se evita el programa Centinela original y nace la línea modificada."],
+  ["xmod",1983,"X-Men: Apocalypse","F","Reseña: En 1983 despierta Apocalipsis, un mutante ancestral que recluta a cuatro jinetes para reiniciar la civilización."],
+  ["xmod",1992,"X-Men: Dark Phoenix","F","Reseña: En 1992, Jean Grey absorbe una fuerza cósmica que desata su lado más oscuro y fractura a los X-Men."],
+  ["xmod",2020,"The New Mutants","F","Reseña: Cinco jóvenes mutantes permanecen encerrados en una instalación aislada donde sus poderes y traumas se manifiestan con tintes de terror."],
 
   // --- DEADPOOL Y LOGAN ---
-  ["xdp",2016,"Deadpool","F","Reseña: Wade Wilson, un exoperativo con cáncer terminal, acepta un experimento radical que cura su enfermedad, desfigura su rostro y le otorga factor curativo como Deadpool."],
-  ["xdp",2018,"Deadpool 2","FB","Reseña: Deadpool protege a un joven mutante llamado Russell frente a Cable, un viajero del tiempo, y termina usando un dispositivo temporal para alterar eventos."],
-  ["xdp",2019,"Logan","FB","Reseña: En un futuro sombrío donde los mutantes casi han desaparecido, un Logan envejecido y debilitado protege a la joven mutante Laura en un viaje hacia la frontera."],
-  ["xdp",2026,"Deadpool & Wolverine","FB","Reseña: Wade Wilson es reclutado por la TVA y se une a una variante de Wolverine en el Vacío para salvar su mundo y conectar con el MCU."],
+  ["xdp",2016,"Deadpool","F","Reseña: En 2016, Wade Wilson acepta un experimento radical que cura su cáncer y le otorga factor curativo como Deadpool."],
+  ["xdp",2018,"Deadpool 2","FB","Reseña: En 2018, Deadpool protege a un joven mutante llamado Russell frente a Cable y usa un dispositivo temporal."],
+  ["xdp",2024,"Deadpool & Wolverine","FB","Reseña: En 2024, Wade Wilson es reclutado por la TVA y se une a una variante de Wolverine en el Vacío."],
+  ["xdp",2029,"Logan","FB","Reseña: En 2029, un Logan envejecido protege a la joven mutante Laura en un viaje hacia la frontera."],
 
   // --- 4 FANTÁSTICOS: 3 LÍNEAS SEPARADAS ---
-  ["ff2005",2005,"Fantastic Four (2005)","F","Reseña: Reed Richards, Sue Storm, Johnny Storm y Ben Grimm obtienen superpoderes tras una tormenta de radiación cósmica y deben detener a Víctor von Doom. (Línea 1 independiente)."],
-  ["ff2007",2007,"Fantastic Four: Rise of the Silver Surfer","F","Reseña: Los Cuatro Fantásticos enfrentan la llegada de Silver Surfer y la amenaza cósmica de Galactus mientras el Doctor Doom reaparece. (Continúa la Línea 1 independiente)."],
+  ["ff2005",2005,"Fantastic Four (2005)","F","Reseña: En 2005, Reed Richards, Sue Storm, Johnny Storm y Ben Grimm obtienen superpoderes tras una tormenta cósmica y enfrentan a Víctor von Doom. (Línea 1 independiente)."],
+  ["ff2007",2007,"Fantastic Four: Rise of the Silver Surfer","F","Reseña: En 2007, los Cuatro Fantásticos enfrentan la llegada de Silver Surfer y a Galactus. (Continúa la Línea 1 independiente)."],
 
-  ["ff2015",2015,"Fantastic Four (2015)","F","Reseña: Reinicio cinematográfico donde un grupo de jóvenes científicos viaja a otra dimensión llamada Planet Zero y adquiere habilidades incontrolables. (Línea 2 independiente)."],
+  ["ff2015",2015,"Fantastic Four (2015)","F","Reseña: En 2015, un grupo de jóvenes científicos viaja a Planet Zero y adquiere habilidades incontrolables. (Línea 2 independiente)."],
 
-  ["ff828",1965,"Fantastic Four: First Steps","F","Reseña: Ambientada en un mundo retrofuturista de inspiración sesentera (Tierra-828), la primera familia de Marvel enfrenta una amenaza cósmica sin interacción con las líneas de 2005 o 2015. (Línea 3 independiente)."],
-  ["ff828",2028,"Cruce hacia Avengers: Doomsday","FB","Reseña: Punto de conexión posterior de la Tierra-828 con el gran evento multiversal de Doomsday."],
+  ["ff828",1964,"Fantastic Four: First Steps","F","Reseña: Ambientada en un mundo retrofuturista de inspiración sesentera (Tierra-828, en 1964), la primera familia de Marvel enfrenta una amenaza cósmica. (Línea 3 independiente)."],
+  ["ff828",2028,"Cruce hacia Avengers: Doomsday","FB","Reseña: Conexión posterior de Tierra-828 con el evento multiversal de Doomsday en 2028."],
 
   // --- OTROS UNIVERSOS INDEPENDIENTES ---
-  ["blade",1998,"Blade","F","Reseña: Eric Brooks, un híbrido humano-vampiro inmune a la luz del sol y a la plata, libra una guerra secreta contra los vampiros y Deacon Frost."],
-  ["blade",2002,"Blade II","F","Reseña: Blade debe aliarse con un grupo de vampiros de élite y su antiguo mentor Whistler para combatir a los Segadores, una mutación vampírica que devora tanto a humanos como a vampiros."],
-  ["blade",2004,"Blade: Trinity","F","Reseña: Acusado falsamente por el FBI y cazado por los vampiros, Blade se une a los cazadores humanos Nightstalkers para derrotar al vampiro original Drácula."],
-  ["blade",2026,"Blade en El Vacío","FB","Reseña: Wesley Snipes retoma a Blade en el Vacío en Deadpool & Wolverine como uno de los luchadores que resisten allí."],
+  ["blade",1998,"Blade","F","Reseña: En 1998, Eric Brooks, un híbrido humano-vampiro, libra una guerra secreta contra los vampiros y Deacon Frost."],
+  ["blade",2002,"Blade II","F","Reseña: En 2002, Blade se alía con un grupo de vampiros de élite y Whistler para combatir a los Segadores."],
+  ["blade",2004,"Blade: Trinity","F","Reseña: En 2004, Blade se une a los cazadores humanos Nightstalkers para derrotar a Drácula."],
+  ["blade",2024,"Blade en El Vacío","FB","Reseña: Wesley Snipes retoma a Blade en el Vacío dentro de Deadpool & Wolverine (2024)."],
 
-  ["dd03",2003,"Daredevil (Ben Affleck)","F","Reseña: El abogado ciego Matt Murdock (Ben Affleck) combate el crimen de noche como Daredevil en Nueva York y se enfrenta a Kingpin y a Bullseye."],
-  ["dd03",2005,"Elektra (Jennifer Garner)","F","Reseña: Resucitada tras los eventos de Daredevil, Elektra Natchios trabaja como asesina a sueldo hasta que decide proteger a una joven y a su padre de La Mano."],
-  ["dd03",2026,"Elektra en El Vacío","FB","Reseña: Jennifer Garner reaparece como Elektra en el Vacío dentro de Deadpool & Wolverine."],
+  ["dd03",2003,"Daredevil (Ben Affleck)","F","Reseña: En 2003, el abogado ciego Matt Murdock combate el crimen de noche como Daredevil en Nueva York."],
+  ["dd03",2005,"Elektra (Jennifer Garner)","F","Reseña: En 2005, resucitada tras los eventos de Daredevil, Elektra Natchios trabaja como asesina a sueldo y protege a una joven de La Mano."],
+  ["dd03",2024,"Elektra en El Vacío","FB","Reseña: Jennifer Garner reaparece como Elektra en el Vacío dentro de Deadpool & Wolverine (2024)."],
 
-  ["pun04",2004,"The Punisher (Thomas Jane)","F","Reseña: Tras la masacre de su familia en una operación fallida, el exagente Frank Castle (Thomas Jane) inicia una guerra personal contra el empresario criminal Howard Saint."]
+  ["pun04",2004,"The Punisher (Thomas Jane)","F","Reseña: En 2004, tras la masacre de su familia, el exagente Frank Castle inicia una guerra personal contra Howard Saint."]
 ];
 
 let customCovers = {};
@@ -643,9 +675,23 @@ try {
   customCovers = {};
 }
 
+let hiddenItems = new Set();
+try {
+  const arr = JSON.parse(localStorage.getItem(HIDDEN_KEY) || "[]");
+  if(Array.isArray(arr)) hiddenItems = new Set(arr);
+} catch {
+  hiddenItems = new Set();
+}
+
 const itemKey = e => `${e[0]}::${e[1]}::${e[2]}`;
 const laneMap = Object.fromEntries(L.map(x => [x[0], x]));
 const esc = s => String(s).replace(/[&<>"']/g, m => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]));
+
+function saveHidden(){
+  try {
+    localStorage.setItem(HIDDEN_KEY, JSON.stringify([...hiddenItems]));
+  } catch {}
+}
 
 function defaultPoster(e){
   const [laneId, yr, title, kind] = e;
@@ -697,8 +743,8 @@ const forksSvg = document.getElementById("forks-svg");
 const filters = document.getElementById("filters");
 const fileInput = document.getElementById("fileInput");
 const btnClearAll = document.getElementById("btnClearAll");
+const btnShowHidden = document.getElementById("btnShowHidden");
 
-// Elementos de la mini ventana (modal)
 const modalBackdrop = document.getElementById("modalBackdrop");
 const modalBox = document.getElementById("modalBox");
 const modalImg = document.getElementById("modalImg");
@@ -706,6 +752,7 @@ const modalMeta = document.getElementById("modalMeta");
 const modalTitle = document.getElementById("modalTitle");
 const modalReview = document.getElementById("modalReview");
 const modalClose = document.getElementById("modalClose");
+const modalHide = document.getElementById("modalHide");
 const modalPaste = document.getElementById("modalPaste");
 const modalUpload = document.getElementById("modalUpload");
 const modalReset = document.getElementById("modalReset");
@@ -715,7 +762,7 @@ let selectedItem = null;
 let hoveredItem = null;
 let pendingUploadItem = null;
 
-const cardLookup = new Map(); // `${laneId}::${title}` -> card element
+const cardLookup = new Map();
 const imgsByKey = new Map();
 
 function registerImg(key, img){
@@ -839,6 +886,27 @@ document.addEventListener("paste", ev => {
   }
 });
 
+function updateHiddenButton(){
+  const count = hiddenItems.size;
+  btnShowHidden.textContent = `Mostrar ocultas (${count})`;
+  btnShowHidden.classList.toggle("hide", count === 0);
+}
+
+function hideItem(item){
+  const k = itemKey(item);
+  hiddenItems.add(k);
+  saveHidden();
+  updateHiddenButton();
+  buildMatrix();
+}
+
+btnShowHidden.onclick = () => {
+  hiddenItems.clear();
+  saveHidden();
+  updateHiddenButton();
+  buildMatrix();
+};
+
 function openReviewModal(cardEl, e){
   if(activeCard) activeCard.classList.remove("on");
   activeCard = cardEl;
@@ -860,7 +928,6 @@ function openReviewModal(cardEl, e){
   modalReset.classList.toggle("hide", !customCovers[k]);
 
   modalBackdrop.classList.remove("hide");
-  requestAnimationFrame(drawForks);
 }
 
 function closeReviewModal(){
@@ -874,6 +941,13 @@ modalBackdrop.onclick = ev => {
 document.addEventListener("keydown", ev => {
   if(ev.key === "Escape" && !modalBackdrop.classList.contains("hide")) closeReviewModal();
 });
+
+modalHide.onclick = () => {
+  if(!selectedItem) return;
+  const item = selectedItem;
+  closeReviewModal();
+  hideItem(item);
+};
 
 modalPaste.onclick = () => {
   if(selectedItem) pasteCoverFor(selectedItem);
@@ -895,85 +969,124 @@ btnClearAll.onclick = () => {
   E.forEach(item => refreshImagesForKey(itemKey(item), item));
 };
 
-// Construir cuadrícula por universo y año con cuadrados de portada
 const years = [...new Set(E.map(e => e[1]))].sort((a,b) => a - b);
-matrix.style.gridTemplateColumns = `var(--lab) repeat(${years.length}, var(--col))`;
+const activeLanes = new Set(L.map(x => x[0]));
 
-matrix.append(mk("div", "corner", "Universo / Línea"));
-years.forEach(y => {
-  const th = mk("div", "yr-head");
-  th.append(mk("span", "yr-badge", y >= 9000 ? "FUTURO" : String(y)));
-  matrix.append(th);
-});
-
-L.forEach(([id, name, sub, color]) => {
-  const lh = mk("div", "lane-head");
-  lh.dataset.lane = id;
-  lh.style.setProperty("--c", color);
-  lh.append(mk("strong", "", name), mk("small", "", sub));
-  matrix.append(lh);
-
-  const laneItems = E.filter(e => e[0] === id);
-
-  years.forEach(y => {
-    const cell = mk("div", "grid-cell");
-    cell.dataset.lane = id;
-    cell.style.setProperty("--c", color);
-
-    laneItems.filter(item => item[1] === y).forEach(item => {
-      const [, yr, title, kind] = item;
-      const k = itemKey(item);
-
-      const card = mk("button", "cover-card");
-      card.type = "button";
-      card.style.setProperty("--c", color);
-      card.onmouseenter = () => { hoveredItem = item; };
-      card.onmouseleave = () => { if(hoveredItem === item) hoveredItem = null; };
-
-      const top = mk("div", "card-top");
-      top.append(mk("span", "card-yr", yr >= 9000 ? "FUTURO" : String(yr)));
-      if(kind.includes("B")) top.append(mk("span", "card-fork", "⑂"));
-
-      const frame = mk("div", "card-frame");
-      const img = document.createElement("img");
-      img.src = getPosterSrc(item);
-      img.alt = title;
-      registerImg(k, img);
-
-      const quick = mk("span", "card-quick");
-      const qPaste = mk("span", "quick-btn", "📋");
-      qPaste.title = "Pegar portada";
-      qPaste.onclick = ev => {
-        ev.stopPropagation();
-        selectedItem = item;
-        pasteCoverFor(item);
-      };
-
-      const qCam = mk("span", "quick-btn", "🖼");
-      qCam.title = "Subir portada";
-      qCam.onclick = ev => {
-        ev.stopPropagation();
-        selectedItem = item;
-        triggerUploadFor(item);
-      };
-
-      quick.append(qPaste, qCam);
-      frame.append(img, quick);
-
-      const t = mk("div", "card-title", title);
-      const ty = mk("div", "card-kind", kind.includes("S") ? "Serie / Especial" : "Película");
-
-      card.append(top, frame, t, ty);
-      card.onclick = () => openReviewModal(card, item);
-      cell.append(card);
-
-      cardLookup.set(`${id}::${title}`, card);
+// Calcular ancho mínimo de cada columna de año según el máximo de tarjetas visibles en el mismo año y universo
+function computeColumnWidths(){
+  return years.map(y => {
+    let maxInCol = 1;
+    L.forEach(([id]) => {
+      if(!activeLanes.has(id)) return;
+      const count = E.filter(e => e[0] === id && e[1] === y && !hiddenItems.has(itemKey(e))).length;
+      if(count > maxInCol) maxInCol = count;
     });
+    // 152px por tarjeta + 10px entre tarjetas + 16px de padding lateral
+    return Math.max(176, maxInCol * 152 + (maxInCol - 1) * 10 + 18);
+  });
+}
 
-    matrix.append(cell);
+function buildMatrix(){
+  cardLookup.clear();
+  imgsByKey.clear();
+  activeCard = null;
+  matrix.innerHTML = "";
+
+  const colWidths = computeColumnWidths();
+  matrix.style.gridTemplateColumns = `var(--lab) ${colWidths.map(w => `${w}px`).join(" ")}`;
+
+  matrix.append(mk("div", "corner", "Universo / Línea"));
+  years.forEach((y, idx) => {
+    const th = mk("div", "yr-head");
+    th.style.width = `${colWidths[idx]}px`;
+    th.append(mk("span", "yr-badge", y >= 9000 ? "FUTURO" : String(y)));
+    matrix.append(th);
   });
 
-  // Filtro por universo
+  L.forEach(([id, name, sub, color]) => {
+    const visibleLane = activeLanes.has(id);
+    const lh = mk("div", "lane-head" + (visibleLane ? "" : " hide"));
+    lh.dataset.lane = id;
+    lh.style.setProperty("--c", color);
+    lh.append(mk("strong", "", name), mk("small", "", sub));
+    matrix.append(lh);
+
+    const laneItems = E.filter(e => e[0] === id && !hiddenItems.has(itemKey(e)));
+
+    years.forEach((y, idx) => {
+      const cell = mk("div", "grid-cell" + (visibleLane ? "" : " hide"));
+      cell.dataset.lane = id;
+      cell.style.setProperty("--c", color);
+      cell.style.width = `${colWidths[idx]}px`;
+
+      laneItems.filter(item => item[1] === y).forEach(item => {
+        const [, yr, title, kind] = item;
+        const k = itemKey(item);
+
+        const card = mk("button", "cover-card");
+        card.type = "button";
+        card.style.setProperty("--c", color);
+        card.onmouseenter = () => { hoveredItem = item; };
+        card.onmouseleave = () => { if(hoveredItem === item) hoveredItem = null; };
+
+        const top = mk("div", "card-top");
+        const topLeft = mk("div", "card-top-left");
+        topLeft.append(mk("span", "card-yr", yr >= 9000 ? "FUTURO" : String(yr)));
+        if(kind.includes("B")) topLeft.append(mk("span", "card-fork", "⑂"));
+
+        const hideBtn = mk("span", "hide-btn", "🙈");
+        hideBtn.title = "Ocultar este título";
+        hideBtn.onclick = ev => {
+          ev.stopPropagation();
+          hideItem(item);
+        };
+
+        top.append(topLeft, hideBtn);
+
+        const frame = mk("div", "card-frame");
+        const img = document.createElement("img");
+        img.src = getPosterSrc(item);
+        img.alt = title;
+        registerImg(k, img);
+
+        const quick = mk("span", "card-quick");
+        const qPaste = mk("span", "quick-btn", "📋");
+        qPaste.title = "Pegar portada";
+        qPaste.onclick = ev => {
+          ev.stopPropagation();
+          selectedItem = item;
+          pasteCoverFor(item);
+        };
+
+        const qCam = mk("span", "quick-btn", "🖼");
+        qCam.title = "Subir portada";
+        qCam.onclick = ev => {
+          ev.stopPropagation();
+          selectedItem = item;
+          triggerUploadFor(item);
+        };
+
+        quick.append(qPaste, qCam);
+        frame.append(img, quick);
+
+        const t = mk("div", "card-title", title);
+        const ty = mk("div", "card-kind", kind.includes("S") ? "Serie / Especial" : "Película");
+
+        card.append(top, frame, t, ty);
+        card.onclick = () => openReviewModal(card, item);
+        cell.append(card);
+
+        cardLookup.set(`${id}::${title}`, card);
+      });
+
+      matrix.append(cell);
+    });
+  });
+
+  requestAnimationFrame(drawForks);
+}
+
+L.forEach(([id, name, sub, color]) => {
   const fBtn = mk("button", "", name);
   fBtn.type = "button";
   fBtn.title = sub;
@@ -982,8 +1095,9 @@ L.forEach(([id, name, sub, color]) => {
   fBtn.onclick = () => {
     const next = fBtn.getAttribute("aria-pressed") !== "true";
     fBtn.setAttribute("aria-pressed", String(next));
-    document.querySelectorAll(`[data-lane="${id}"]`).forEach(el => el.classList.toggle("hide", !next));
-    requestAnimationFrame(drawForks);
+    if(next) activeLanes.add(id);
+    else activeLanes.delete(id);
+    buildMatrix();
   };
   filters.append(fBtn);
 });
@@ -998,7 +1112,6 @@ function drawForks(){
     const srcEl = cardLookup.get(`${fk.fromLane}::${fk.fromTitle}`);
     const dstEl = cardLookup.get(`${fk.toLane}::${fk.toTitle}`);
     if(!srcEl || !dstEl) return;
-    if(srcEl.closest(".grid-cell")?.classList.contains("hide") || dstEl.closest(".grid-cell")?.classList.contains("hide")) return;
 
     const r1 = srcEl.getBoundingClientRect();
     const r2 = dstEl.getBoundingClientRect();
@@ -1022,6 +1135,8 @@ function drawForks(){
   });
 }
 
+updateHiddenButton();
+buildMatrix();
 window.addEventListener("load", () => setTimeout(drawForks, 60));
 window.addEventListener("resize", drawForks);
 </script>
