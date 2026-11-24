@@ -7,11 +7,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0b0b0d;--panel:#141418;--fg:#ececf0;--mut:#9a9aa8;--red:#d6202b;--col:148px;--lab:186px}
+:root{--bg:#0b0b0d;--panel:#141418;--fg:#ececf0;--mut:#9a9aa8;--red:#d6202b;--col:148px;--lab:190px}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
 header{padding:18px 20px 6px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px}
-.head-txt{max-width:75ch}
+.head-txt{max-width:78ch}
 h1{margin:0;font:700 26px/1.1 Oswald,Impact,sans-serif;letter-spacing:.02em}
 header p{margin:6px 0 0;color:var(--mut)}
 .view-switch{display:flex;gap:6px}
@@ -23,7 +23,7 @@ header p{margin:6px 0 0;color:var(--mut)}
 #filters button:focus-visible,.chip:focus-visible,.v-card:focus-visible,.view-btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
 #info{margin:0 20px 10px;padding:10px 14px;background:var(--panel);border-left:3px solid var(--red);min-height:44px;color:var(--mut)}
 #info b{color:var(--fg)}
-#wrap{overflow:auto;max-height:calc(100vh - 225px);min-height:430px;border-top:1px solid #26262e}
+#wrap{overflow:auto;max-height:calc(100vh - 225px);min-height:460px;border-top:1px solid #26262e}
 
 /* VISTA CUADRÍCULA */
 #grid{display:grid;width:max-content;min-width:100%}
@@ -42,21 +42,26 @@ header p{margin:6px 0 0;color:var(--mut)}
 .chip.b .tag-b::after{content:" ⑂";color:#ffc233;font-weight:700}
 .chip:hover,.chip.on{background:color-mix(in srgb,var(--k) 45%,#0b0b0d)}
 
-/* VISTA VISUAL TIPO INFOGRAFÍA (TARJETAS CON IMAGEN) */
-#visual{display:flex;align-items:stretch;width:max-content;padding:24px 20px 32px;gap:0;background:radial-gradient(circle at top,#181820 0%,#0b0b0d 70%)}
-.v-card{--k:var(--c);width:210px;flex:0 0 210px;display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer;background:transparent;border:0;color:var(--fg);padding:0 6px}
-.v-top{min-height:66px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:6px}
-.v-year{font:700 18px/1 Oswald,sans-serif;color:#fff;letter-spacing:.03em}
-.v-earth{margin-top:3px;font:700 11px/1.1 Oswald,sans-serif;letter-spacing:.05em;padding:2px 6px;border-radius:3px;background:#facc15;color:#000}
-.v-earth.alt{background:#38bdf8;color:#051018}
-.v-stem{width:2px;height:14px;background:rgba(255,255,255,.45)}
-.v-media{width:100%;height:118px;position:relative;overflow:hidden;border-radius:6px;border:2px solid color-mix(in srgb,var(--k) 70%,#fff);box-shadow:0 8px 20px rgba(0,0,0,.55);background:#15151a}
+/* VISTA INFOGRAFÍA POR UNIVERSO (CADA REALIDAD EN SU PROPIA FILA) */
+#visual{display:flex;flex-direction:column;width:max-content;min-width:100%;background:radial-gradient(circle at top,#181820 0%,#0b0b0d 70%)}
+.v-lane{display:flex;align-items:stretch;border-bottom:1px solid #22222b;position:relative}
+.v-lane-head{position:sticky;left:0;z-index:3;width:190px;flex:0 0 190px;background:rgba(11,11,13,.96);backdrop-filter:blur(4px);padding:16px 12px 16px 18px;border-left:5px solid var(--c);border-right:1px solid #22222b;display:flex;flex-direction:column;justify-content:center}
+.v-lane-head strong{font:700 15px/1.2 Oswald,sans-serif;color:#fff;letter-spacing:.02em}
+.v-lane-head span{font-size:12px;color:var(--c);margin-top:3px;font-weight:600}
+.v-lane-track{display:flex;align-items:stretch;padding:18px 16px;gap:4px;position:relative}
+.v-lane-track::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--c);opacity:.22;pointer-events:none}
+
+.v-card{--k:var(--c);width:205px;flex:0 0 205px;display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer;background:transparent;border:0;color:var(--fg);padding:0 6px;position:relative;z-index:1}
+.v-top{min-height:58px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:5px}
+.v-year{font:700 17px/1 Oswald,sans-serif;color:#fff;letter-spacing:.03em}
+.v-earth{margin-top:3px;font:700 10px/1.1 Oswald,sans-serif;letter-spacing:.05em;padding:2px 6px;border-radius:3px;background:var(--k);color:#05070c}
+.v-stem{width:2px;height:12px;background:rgba(255,255,255,.45)}
+.v-media{width:100%;height:112px;position:relative;overflow:hidden;border-radius:6px;border:2px solid color-mix(in srgb,var(--k) 75%,#fff);box-shadow:0 8px 20px rgba(0,0,0,.6);background:#15151a}
 .v-media img{width:100%;height:100%;object-fit:cover;display:block}
-.v-badge{position:absolute;top:6px;left:6px;background:rgba(11,11,13,.82);color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;border:1px solid rgba(255,255,255,.15)}
+.v-badge{position:absolute;top:6px;left:6px;background:rgba(11,11,13,.84);color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;border:1px solid rgba(255,255,255,.15)}
 .v-branch{position:absolute;top:6px;right:6px;background:#ffc233;color:#000;font-weight:700;font-size:11px;padding:1px 5px;border-radius:4px}
-.v-bottom{min-height:74px;display:flex;flex-direction:column;align-items:center;padding-top:0}
-.v-title{margin-top:6px;font:700 14px/1.15 Oswald,sans-serif;letter-spacing:.02em;text-transform:uppercase;color:#fff}
-.v-sub{margin-top:2px;font-size:11px;color:var(--mut)}
+.v-bottom{min-height:66px;display:flex;flex-direction:column;align-items:center;padding-top:0}
+.v-title{margin-top:5px;font:700 13px/1.15 Oswald,sans-serif;letter-spacing:.02em;text-transform:uppercase;color:#fff}
 .v-card.on .v-media{outline:3px solid #fff;transform:translateY(-3px);transition:.15s}
 .v-card:hover .v-media{transform:translateY(-2px);transition:.15s}
 
@@ -68,41 +73,43 @@ footer{padding:12px 20px 28px;color:var(--mut);font-size:12px;max-width:98ch}
 <header>
   <div class="head-txt">
     <h1>Marvel: línea de tiempo del multiverso</h1>
-    <p>Tierra-616 reúne las producciones canon del MCU (cine, Disney+, Netflix y Agent Carter), mientras que la fila de estatus ambiguo agrupa otras series de TV y One-Shots. El símbolo ⑂ indica ramas y cruces entre universos.</p>
+    <p>Cada realidad y universo tiene su propia línea independiente. Usa los botones superiores para filtrar universos o alternar entre la vista de tarjetas y la cuadrícula por años. El símbolo ⑂ indica ramas y cruces entre universos.</p>
   </div>
   <div class="view-switch" role="group" aria-label="Cambiar vista">
     <button id="btnGrid" class="view-btn" type="button" aria-pressed="false">Vista cuadrícula</button>
-    <button id="btnVisual" class="view-btn" type="button" aria-pressed="true">Vista infografía (tarjetas)</button>
+    <button id="btnVisual" class="view-btn" type="button" aria-pressed="true">Vista infografía (por universo)</button>
   </div>
 </header>
 <div id="filters" role="group" aria-label="Mostrar u ocultar líneas"></div>
 <div id="info" aria-live="polite">Toca cualquier tarjeta o película/serie para ver los detalles cronológicos.</div>
 <div id="wrap">
-  <div id="visual" class=""></div>
+  <div id="visual"></div>
   <div id="grid" class="hide"></div>
 </div>
 <footer>Consejo: en el arreglo <code>E</code>, el 5.º elemento es la descripción y el 6.º elemento (opcional) es la URL de una imagen personalizada (<code>"https://..."</code>). Si se deja vacío, se genera automáticamente una portada con el título, año y universo.</footer>
 
 <script>
 const L=[
-["mcu","MCU · Tierra-616","Canon principal (Cine, D+, Netflix, Carter)","#a78bfa"],
-["tvamb","MCU · TV / Ambiguo","Estatus ambiguo (S.H.I.E.L.D., TV y One-Shots)","#818cf8"],
+["mcu","MCU · Tierra-616","Sagrada Línea (Canon principal)","#a78bfa"],
+["tvamb","MCU · TV / Ambiguo","Estatus ambiguo (S.H.I.E.L.D. / TV)","#818cf8"],
 ["rama","Ramas Marvel Studios","Multiverso / Ramas","#e879f9"],
-["xo","X-Men Fox","Tierra-10005 (Original)","#14b8a6"],
-["xn","X-Men Fox","Tierra-10005 (Nueva línea)","#67e8f9"],
+["xo","X-Men Fox (Original)","Tierra-10005 (Línea original)","#14b8a6"],
+["xn","X-Men Fox (Nueva línea)","Tierra-10005 (Tras DOFP)","#67e8f9"],
 ["xd","Deadpool y Logan","Tierra-10005 / Variantes","#fb923c"],
 ["raimi","Spider-Man Raimi","Tierra-96283","#ef4444"],
 ["webb","Spider-Man Webb","Tierra-120703","#60a5fa"],
-["ssu","Universo Sony","Universo Sony","#a3e635"],
+["ssu","Universo Sony","Universo Sony (SSU)","#a3e635"],
 ["verse","Spider-Verse","Tierra-1610","#f472b6"],
 ["ffox","4 Fantásticos Fox","Tierra-121698","#34d399"],
 ["f828","4 Fantásticos MCU","Tierra-828","#facc15"],
-["legado","Otros universos (Vacío)","Universos de legado","#f87171"]
+["blade","Universo Blade","Tierra-26320 (Wesley Snipes)","#f87171"],
+["dd03","Universo Daredevil / Elektra","Tierra-701306 (2003–2005)","#fb7185"],
+["pun04","Universo Punisher (2004)","Tierra-58732 (Thomas Jane)","#94a3b8"]
 ];
 
 // Formato: [lane, year, title, kind, desc, imgUrl]
 const E=[
-// --- MCU TIERRA-616 (CANON PRINCIPAL: CINE, DISNEY+, NETFLIX Y AGENT CARTER) ---
+// --- MCU TIERRA-616 ---
 ["mcu",1942,"Captain America: The First Avenger","F","Steve Rogers se convierte en el Capitán América durante la Segunda Guerra Mundial."],
 ["mcu",1946,"Agent Carter (T1 y T2)","S","Peggy Carter trabaja en la SSR y combate amenazas de Leviathan."],
 ["mcu",1995,"Captain Marvel","F","Carol Danvers descubre sus poderes y el conflicto entre Kree y Skrulls."],
@@ -264,14 +271,19 @@ const E=[
 ["f828",1965,"Fantastic Four: First Steps","F","Tierra-828 retrofuturista de los años 60."],
 ["f828",2028,"Cruce hacia Avengers: Doomsday","FB","Conexión de los 4 Fantásticos con Doomsday."],
 
-// --- OTROS UNIVERSOS DE LEGADO ---
-["legado",1998,"Blade","F","Eric Brooks lucha contra los vampiros."],
-["legado",2002,"Blade II","F","Blade forma una tregua temporal contra los Segadores."],
-["legado",2003,"Daredevil (Ben Affleck)","F","Versión cinematográfica de Matt Murdock."],
-["legado",2004,"The Punisher (Thomas Jane)","F","Frank Castle inicia su venganza."],
-["legado",2004,"Blade: Trinity","F","Blade enfrenta a Drácula junto a los Nightstalkers."],
-["legado",2005,"Elektra","F","Elektra Natchios enfrenta a La Mano."],
-["legado",2026,"Resistencia en El Vacío","FB","Blade y Elektra reaparecen en Deadpool & Wolverine."]
+// --- UNIVERSO BLADE (TIERRA-26320) ---
+["blade",1998,"Blade","F","Eric Brooks lucha contra Deacon Frost y los vampiros."],
+["blade",2002,"Blade II","F","Blade forma una tregua temporal contra los Segadores."],
+["blade",2004,"Blade: Trinity","F","Blade enfrenta a Drácula junto a los Nightstalkers."],
+["blade",2026,"Blade en El Vacío","FB","Wesley Snipes reaparece como Blade en Deadpool & Wolverine."],
+
+// --- UNIVERSO DAREDEVIL / ELEKTRA (TIERRA-701306) ---
+["dd03",2003,"Daredevil (Ben Affleck)","F","Matt Murdock enfrenta a Bullseye y Kingpin en Hell's Kitchen."],
+["dd03",2005,"Elektra (Jennifer Garner)","F","Elektra Natchios protege a una joven de La Mano."],
+["dd03",2026,"Elektra en El Vacío","FB","Jennifer Garner regresa como Elektra en Deadpool & Wolverine."],
+
+// --- UNIVERSO THE PUNISHER (TIERRA-58732) ---
+["pun04",2004,"The Punisher (Thomas Jane)","F","Frank Castle inicia su venganza contra Howard Saint."]
 ];
 
 const laneMap=Object.fromEntries(L.map(x=>[x[0],x]));
@@ -319,6 +331,7 @@ function selectItem(el, e, y){
 }
 
 L.forEach(([id,n,s,c])=>{
+  // 1. FILA EN VISTA CUADRÍCULA
   const row=[];
   const lab=mk("div","lab");lab.style.setProperty("--c",c);lab.append(mk("span","",n),mk("small","",s));row.push(lab);
   years.forEach(y=>{
@@ -336,6 +349,52 @@ L.forEach(([id,n,s,c])=>{
   });
   row.forEach(el=>{el.dataset.lane=id;g.append(el)});
 
+  // 2. FILA INDEPENDIENTE EN VISTA INFOGRAFÍA (TARJETAS)
+  const vLane=mk("div","v-lane");
+  vLane.dataset.lane=id;
+  vLane.style.setProperty("--c",c);
+
+  const vHead=mk("div","v-lane-head");
+  vHead.append(mk("strong","",n),mk("span","",s));
+
+  const vTrack=mk("div","v-lane-track");
+  const laneItems=E.filter(e=>e[0]===id).sort((a,b)=>a[1]-b[1]);
+
+  laneItems.forEach(e=>{
+    const [, y, title, kind] = e;
+    const card=mk("button","v-card");
+    card.type="button";
+    card.style.setProperty("--c",c);
+
+    const top=mk("div","v-top");
+    top.append(mk("div","v-year",y>=9000?"FUTURO":String(y)));
+    top.append(mk("div","v-earth",s.toUpperCase()));
+
+    const stemTop=mk("div","v-stem");
+
+    const media=mk("div","v-media");
+    const img=document.createElement("img");
+    img.src=getPoster(e);
+    img.alt=title;
+    img.loading="lazy";
+    media.append(img);
+    media.append(mk("span","v-badge",kind.includes("S")?"SERIE/ESP":"PELÍCULA"));
+    if(kind.includes("B")) media.append(mk("span","v-branch","⑂"));
+
+    const stemBot=mk("div","v-stem");
+
+    const bot=mk("div","v-bottom");
+    bot.append(mk("div","v-title",title));
+
+    card.append(top, stemTop, media, stemBot, bot);
+    card.onclick=()=>selectItem(card,e,y);
+    vTrack.append(card);
+  });
+
+  vLane.append(vHead, vTrack);
+  vis.append(vLane);
+
+  // 3. BOTÓN DE FILTRO
   const f=mk("button","",n);f.title=s;f.style.setProperty("--c",c);f.type="button";f.setAttribute("aria-pressed","true");
   f.onclick=()=>{
     const on=f.getAttribute("aria-pressed")!=="true";
@@ -343,42 +402,6 @@ L.forEach(([id,n,s,c])=>{
     document.querySelectorAll(`[data-lane="${id}"]`).forEach(el=>el.classList.toggle("hide",!on));
   };
   fl.append(f);
-});
-
-const sortedE=[...E].sort((a,b)=>a[1]-b[1]);
-sortedE.forEach(e=>{
-  const [id, y, title, kind] = e;
-  const [, , earthLabel, c] = laneMap[id] || ["","","Tierra","#a78bfa"];
-  const card=mk("button","v-card");
-  card.type="button";
-  card.dataset.lane=id;
-  card.style.setProperty("--c",c);
-
-  const top=mk("div","v-top");
-  top.append(mk("div","v-year",y>=9000?"FUTURO":String(y)));
-  const isAlt = id!=="mcu";
-  top.append(mk("div","v-earth"+(isAlt?" alt":""),earthLabel.toUpperCase()));
-
-  const stemTop=mk("div","v-stem");
-
-  const media=mk("div","v-media");
-  const img=document.createElement("img");
-  img.src=getPoster(e);
-  img.alt=title;
-  img.loading="lazy";
-  media.append(img);
-  media.append(mk("span","v-badge",kind.includes("S")?"SERIE/ESP":"PELÍCULA"));
-  if(kind.includes("B")) media.append(mk("span","v-branch","⑂"));
-
-  const stemBot=mk("div","v-stem");
-
-  const bot=mk("div","v-bottom");
-  bot.append(mk("div","v-title",title));
-  bot.append(mk("div","v-sub",laneMap[id]?.[1]||""));
-
-  card.append(top, stemTop, media, stemBot, bot);
-  card.onclick=()=>selectItem(card,e,y);
-  vis.append(card);
 });
 
 const btnGrid=document.getElementById("btnGrid"), btnVisual=document.getElementById("btnVisual");
