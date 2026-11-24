@@ -30,7 +30,7 @@ header{
   align-items:flex-end;
   gap:12px;
 }
-.head-txt{max-width:82ch}
+.head-txt{max-width:84ch}
 h1{
   margin:0;
   font:700 28px/1.1 Oswald,Impact,sans-serif;
@@ -57,6 +57,12 @@ header p{margin:6px 0 0;color:var(--mut)}
   color:#fff;
   box-shadow:0 0 14px rgba(59,130,246,.45);
 }
+.action-btn.paste{
+  background:#1e3a8a;
+  border-color:#60a5fa;
+  color:#eff6ff;
+}
+.action-btn.paste:hover{background:#1d4ed8}
 .action-btn.upload{
   background:#14532d;
   border-color:#4ade80;
@@ -105,7 +111,7 @@ header p{margin:6px 0 0;color:var(--mut)}
 }
 #info b{color:#fff}
 .info-text{flex:1 1 320px}
-.info-actions{display:flex;gap:8px;align-items:center}
+.info-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 
 #wrap{
   position:relative;
@@ -245,11 +251,15 @@ header p{margin:6px 0 0;color:var(--mut)}
   object-fit:cover;
   display:block;
 }
-.pick-cover{
+.card-tools{
   position:absolute;
   right:5px;
   bottom:5px;
-  background:rgba(6,7,12,.86);
+  display:flex;
+  gap:4px;
+}
+.pick-cover{
+  background:rgba(6,7,12,.88);
   color:#fff;
   border:1px solid rgba(255,255,255,.35);
   border-radius:5px;
@@ -257,7 +267,7 @@ header p{margin:6px 0 0;color:var(--mut)}
   line-height:1;
   padding:4px 6px;
   cursor:pointer;
-  opacity:.85;
+  opacity:.88;
   transition:.12s;
 }
 .pick-cover:hover{
@@ -301,8 +311,12 @@ header p{margin:6px 0 0;color:var(--mut)}
   gap:6px;
 }
 .g-chip img{width:28px;height:20px;object-fit:cover;border-radius:2px;flex:0 0 auto}
-.g-chip .mini-cam{
+.g-chip .mini-tools{
   margin-left:auto;
+  display:flex;
+  gap:3px;
+}
+.g-chip .mini-cam{
   background:rgba(30,41,59,.95);
   border:1px solid rgba(148,163,184,.35);
   color:#e2e8f0;
@@ -322,7 +336,7 @@ footer{padding:12px 22px 28px;color:var(--mut);font-size:12px;max-width:98ch}
 <header>
   <div class="head-txt">
     <h1>Marvel: Árbol del Multiverso y Líneas Temporales</h1>
-    <p>Haz clic en el icono <strong>🖼 Portada</strong> de cualquier película o serie (o selecciona una y usa el botón superior) para subir una imagen desde tu dispositivo sin editar el código.</p>
+    <p>Selecciona una película o serie y haz clic en <strong>📋 Pegar portada</strong> o pulsa <strong>Ctrl+V / Cmd+V</strong> para pegar una imagen o enlace de imagen desde el portapapeles (también puedes usar <strong>🖼 Portada</strong> para subir un archivo).</p>
   </div>
   <div class="controls-bar">
     <div class="view-switch" role="group" aria-label="Cambiar vista">
@@ -340,7 +354,8 @@ footer{padding:12px 22px 28px;color:var(--mut);font-size:12px;max-width:98ch}
 <div id="info" aria-live="polite">
   <div id="infoText" class="info-text">Haz clic en cualquier película o serie para ver su línea temporal, bifurcación o cruce.</div>
   <div id="infoActions" class="info-actions hide">
-    <button id="btnUploadSelected" class="action-btn upload" type="button">Subir portada</button>
+    <button id="btnPasteSelected" class="action-btn paste" type="button">📋 Pegar portada</button>
+    <button id="btnUploadSelected" class="action-btn upload" type="button">🖼 Subir archivo</button>
     <button id="btnResetSelected" class="action-btn" type="button">Restaurar portada</button>
   </div>
 </div>
@@ -353,7 +368,7 @@ footer{padding:12px 22px 28px;color:var(--mut);font-size:12px;max-width:98ch}
   <div id="grid" class="hide"></div>
 </div>
 
-<footer>Las portadas subidas se guardan en el almacenamiento local de tu navegador (<code>localStorage</code>) para conservarlas al recargar. Usa imágenes ligeras (JPG/PNG/WebP) para no llenar el espacio local.</footer>
+<footer>Las portadas pegadas o subidas se guardan en <code>localStorage</code>. Al pegar con <code>Ctrl+V</code> / <code>Cmd+V</code> o con el botón <strong>📋 Pegar portada</strong> se admiten tanto imágenes copiadas como URLs de imagen.</footer>
 
 <script>
 const STORAGE_KEY = "marvel_multiverse_custom_covers_v1";
@@ -599,6 +614,71 @@ function saveCovers(){
   }
 }
 
+function applyCoverData(target, dataOrUrl){
+  if(!target || !dataOrUrl) return;
+  const k = itemKey(target);
+  customCovers[k] = dataOrUrl;
+  saveCovers();
+  refreshImagesForKey(k, target);
+  if(selectedItem && itemKey(selectedItem) === k) renderInfo();
+}
+
+function isValidImageUrl(str){
+  const trimmed = String(str || "").trim();
+  if(!trimmed) return false;
+  if(/^data:image\//i.test(trimmed)) return true;
+  try {
+    const u = new URL(trimmed);
+    return u.protocol === "http:" || u.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+async function pasteCoverFor(target){
+  if(!target) return;
+  if(navigator.clipboard && navigator.clipboard.read){
+    try {
+      const items = await navigator.clipboard.read();
+      for(const item of items){
+        const imgType = item.types.find(t => t.startsWith("image/"));
+        if(imgType){
+          const blob = await item.getType(imgType);
+          const reader = new FileReader();
+          reader.onload = () => applyCoverData(target, String(reader.result));
+          reader.readAsDataURL(blob);
+          return;
+        }
+        if(item.types.includes("text/plain")){
+          const blob = await item.getType("text/plain");
+          const txt = (await blob.text()).trim();
+          if(isValidImageUrl(txt)){
+            applyCoverData(target, txt);
+            return;
+          }
+        }
+      }
+    } catch {
+      // Si el navegador exige permiso o no permite clipboard.read(), probamos readText o prompt
+    }
+  }
+  if(navigator.clipboard && navigator.clipboard.readText){
+    try {
+      const txt = (await navigator.clipboard.readText()).trim();
+      if(isValidImageUrl(txt)){
+        applyCoverData(target, txt);
+        return;
+      }
+    } catch {}
+  }
+  const manual = prompt("Pega aquí la URL de la imagen (o haz clic en la ficha y pulsa Ctrl+V / Cmd+V para pegar una imagen copiada):");
+  if(manual && isValidImageUrl(manual)){
+    applyCoverData(target, manual.trim());
+  } else if(manual !== null){
+    alert("No se detectó una URL válida. También puedes copiar una imagen y pulsar Ctrl+V / Cmd+V sobre la ficha.");
+  }
+}
+
 const mk = (t, c, x) => {
   const el = document.createElement(t);
   if(c) el.className = c;
@@ -612,6 +692,7 @@ const treeStage = document.getElementById("tree-stage");
 const grid = document.getElementById("grid");
 const infoText = document.getElementById("infoText");
 const infoActions = document.getElementById("infoActions");
+const btnPasteSelected = document.getElementById("btnPasteSelected");
 const btnUploadSelected = document.getElementById("btnUploadSelected");
 const btnResetSelected = document.getElementById("btnResetSelected");
 const btnClearAll = document.getElementById("btnClearAll");
@@ -620,6 +701,7 @@ const filters = document.getElementById("filters");
 
 let activeEl = null;
 let selectedItem = null;
+let hoveredItem = null;
 let pendingUploadItem = null;
 
 const nodeLookup = new Map();
@@ -643,7 +725,7 @@ function renderInfo(){
   infoText.append(
     mk("b", "", `${e[2]} · ${yrStr} — ${name} (${sub})`),
     document.createTextNode(e[4] ? ` — ${e[4]}` : ""),
-    document.createTextNode(hasCustom ? " [Portada personalizada]" : "")
+    document.createTextNode(hasCustom ? " [Portada personalizada — Ctrl+V para cambiar]" : " [Ctrl+V para pegar portada]")
   );
   infoActions.classList.remove("hide");
   btnResetSelected.classList.toggle("hide", !hasCustom);
@@ -669,15 +751,42 @@ fileInput.addEventListener("change", () => {
   const target = pendingUploadItem;
   const reader = new FileReader();
   reader.onload = () => {
-    const k = itemKey(target);
-    customCovers[k] = String(reader.result);
-    saveCovers();
-    refreshImagesForKey(k, target);
-    if(selectedItem && itemKey(selectedItem) === k) renderInfo();
+    applyCoverData(target, String(reader.result));
     pendingUploadItem = null;
   };
   reader.readAsDataURL(file);
 });
+
+document.addEventListener("paste", ev => {
+  const target = hoveredItem || selectedItem;
+  if(!target) return;
+  const activeTag = document.activeElement && document.activeElement.tagName;
+  if(activeTag === "INPUT" || activeTag === "TEXTAREA") return;
+
+  const cd = ev.clipboardData;
+  if(!cd) return;
+
+  if(cd.files && cd.files.length > 0){
+    const imgFile = [...cd.files].find(f => f.type && f.type.startsWith("image/"));
+    if(imgFile){
+      ev.preventDefault();
+      const reader = new FileReader();
+      reader.onload = () => applyCoverData(target, String(reader.result));
+      reader.readAsDataURL(imgFile);
+      return;
+    }
+  }
+
+  const text = (cd.getData("text/plain") || "").trim();
+  if(isValidImageUrl(text)){
+    ev.preventDefault();
+    applyCoverData(target, text);
+  }
+});
+
+btnPasteSelected.onclick = () => {
+  if(selectedItem) pasteCoverFor(selectedItem);
+};
 
 btnUploadSelected.onclick = () => {
   if(selectedItem) triggerUploadFor(selectedItem);
@@ -731,6 +840,8 @@ L.forEach(([id, name, sub, color]) => {
     const btn = mk("button", "node");
     btn.type = "button";
     btn.style.setProperty("--c", color);
+    btn.onmouseenter = () => { hoveredItem = e; };
+    btn.onmouseleave = () => { if(hoveredItem === e) hoveredItem = null; };
 
     const top = mk("div", "node-top");
     top.append(mk("span", "node-yr", yr >= 9000 ? "FUTURO" : String(yr)));
@@ -742,15 +853,26 @@ L.forEach(([id, name, sub, color]) => {
     img.alt = title;
     registerImg(k, img);
 
-    const cam = mk("span", "pick-cover", "🖼 Portada");
-    cam.title = "Subir portada manual";
+    const tools = mk("span", "card-tools");
+
+    const pasteBtn = mk("span", "pick-cover", "📋");
+    pasteBtn.title = "Pegar portada desde portapapeles";
+    pasteBtn.onclick = ev => {
+      ev.stopPropagation();
+      selectNode(btn, e);
+      pasteCoverFor(e);
+    };
+
+    const cam = mk("span", "pick-cover", "🖼");
+    cam.title = "Subir archivo de portada";
     cam.onclick = ev => {
       ev.stopPropagation();
       selectNode(btn, e);
       triggerUploadFor(e);
     };
 
-    box.append(img, cam);
+    tools.append(pasteBtn, cam);
+    box.append(img, tools);
 
     const t = mk("div", "node-title", title);
     const ty = mk("div", "node-type", kind.includes("S") ? "Serie / Especial" : "Película");
@@ -779,20 +901,34 @@ L.forEach(([id, name, sub, color]) => {
       const chip = mk("button", "g-chip");
       chip.type = "button";
       chip.style.setProperty("--c", color);
+      chip.onmouseenter = () => { hoveredItem = item; };
+      chip.onmouseleave = () => { if(hoveredItem === item) hoveredItem = null; };
+
       const im = document.createElement("img");
       im.src = getPosterSrc(item);
       im.alt = "";
       registerImg(k, im);
 
+      const miniTools = mk("span", "mini-tools");
+
+      const miniPaste = mk("span", "mini-cam", "📋");
+      miniPaste.title = "Pegar portada desde portapapeles";
+      miniPaste.onclick = ev => {
+        ev.stopPropagation();
+        selectNode(chip, item);
+        pasteCoverFor(item);
+      };
+
       const mini = mk("span", "mini-cam", "🖼");
-      mini.title = "Subir portada manual";
+      mini.title = "Subir archivo de portada";
       mini.onclick = ev => {
         ev.stopPropagation();
         selectNode(chip, item);
         triggerUploadFor(item);
       };
 
-      chip.append(im, mk("span", "", item[2] + (item[3].includes("B") ? " ⑂" : "")), mini);
+      miniTools.append(miniPaste, mini);
+      chip.append(im, mk("span", "", item[2] + (item[3].includes("B") ? " ⑂" : "")), miniTools);
       chip.onclick = () => selectNode(chip, item);
       gCell.append(chip);
     });
