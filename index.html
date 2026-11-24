@@ -425,7 +425,7 @@ footer{padding:12px 22px 28px;color:var(--mut);font-size:12px;max-width:98ch}
 <header>
   <div class="head-txt">
     <h1>Marvel: Cuadrícula Cronológica del Multiverso</h1>
-    <p>Cada título está en su año cronológico con su fila por universo. Haz clic en una portada para ver su reseña, pegar/escribir una URL, pegar una imagen con <code>Ctrl+V</code> / <code>Cmd+V</code> o subir un archivo.</p>
+    <p>Cada título está ordenado según su época o año cronológico dentro de la historia en su fila por universo. Haz clic en una portada para ver su reseña, pegar/escribir una URL, pegar una imagen con <code>Ctrl+V</code> / <code>Cmd+V</code> o subir un archivo.</p>
   </div>
   <div class="controls-bar">
     <button id="btnShowHidden" class="action-btn show-hidden hide" type="button">Mostrar ocultas (0)</button>
@@ -504,6 +504,7 @@ const FORKS = [
 ];
 
 // Formato: [lane, year, title, kind, review, imgUrl]
+// year representa la época o año cronológico en la historia (no la fecha de estreno cuando difieren).
 const E = [
   // --- MCU · SAGRADA LÍNEA ---
   ["mcu",1943,"Captain America: The First Avenger","F","Reseña: Steve Rogers, un joven frágil de Brooklyn, se somete a un experimento con el suero del supersoldado para combatir a Hydra y a Cráneo Rojo durante la Segunda Guerra Mundial, convirtiéndose en el primer Vengador."],
@@ -574,8 +575,8 @@ const E = [
   ["mcu",2027,"Daredevil: Born Again (T2)","S","Reseña: Continúa el pulso entre la ley, la justicia vigilante y el poder en Nueva York."],
   ["mcu",2027,"The Punisher: One Last Kill","S","Reseña: Especial en Disney+ protagonizado por Frank Castle (Jon Bernthal) en una nueva misión implacable dentro del UCM."],
   ["mcu",2027,"VisionQuest","S","Reseña: Serie centrada en el camino y la identidad de Visión."],
-  ["mcu",2028,"Spider-Man: Brand New Day","FB","Reseña: Peter Parker (Tom Holland) continúa su camino en la pantalla grande junto a Frank Castle (Jon Bernthal)."],
-  ["mcu",2028,"Avengers: Doomsday","FB","Reseña: Gran evento multiversal ambientado en 2028 con la llegada del Doctor Doom y el choque entre distintas realidades."],
+  ["mcu",2028,"Spider-Man: Brand New Day","FB","Reseña: Situada en la franja cronológica reciente de 2028 tras No Way Home, Peter Parker continúa su camino junto a Frank Castle (Jon Bernthal)."],
+  ["mcu",2028,"Avengers: Doomsday","FB","Reseña: Gran evento multiversal ambientado en 2028 tras Brand New Day y Thunderbolts*, con la llegada del Doctor Doom y el choque entre realidades."],
   ["mcu",9000,"Avengers: Secret Wars","FB","Reseña: Clímax de la Saga del Multiverso donde convergen héroes y mundos de diferentes líneas temporales."],
   ["mcu",9000,"Armor Wars / Blade Reboot / Shang-Chi 2","F","Reseña: Próximos largometrajes previstos en la planificación de Marvel Studios."],
   ["mcu",9000,"Black Panther 3 / Doctor Strange 3 / Eternals 2 / X-Men","F","Reseña: Futuras películas anunciadas o en planificación dentro del universo cinematográfico de Marvel."],
@@ -627,13 +628,13 @@ const E = [
   ["verse",9000,"Spider-Gwen / Spider-Punk","F","Reseña: Proyectos animados ligados al universo del Spider-Verse en desarrollo."],
 
   // --- SONY (SSU) ---
+  ["ssu",1933,"Spider-Noir","S","Reseña: Ambientada en la época de los años 1930 (en 1933, tras el pasado de Ben Reilly en los años 20), en un Nueva York alternativo en blanco y negro."],
   ["ssu",2018,"Venom","F","Reseña: En 2018, el periodista Eddie Brock se convierte en anfitrión de Venom y lucha contra Carlton Drake y Riot."],
   ["ssu",2021,"Venom: Let There Be Carnage","FB","Reseña: En 2021, Eddie Brock y Venom enfrentan a Cletus Kasady y a Carnage, con un breve salto dimensional."],
   ["ssu",2022,"Morbius","FB","Reseña: En 2022, Michael Morbius busca curar una enfermedad sanguínea y adquiere rasgos vampíricos."],
   ["ssu",2024,"Madame Web","F","Reseña: En 2024, Cassandra Webb experimenta visiones clarividentes que conectan a tres jóvenes con un futuro peligroso."],
   ["ssu",2024,"Venom: The Last Dance","FB","Reseña: En 2024, Eddie Brock y Venom huyen mientras su vínculo llega a un punto decisivo."],
   ["ssu",2024,"Kraven the Hunter","F","Reseña: Relato de origen sobre Sergei Kravinoff antes de convertirse en un temido cazador."],
-  ["ssu",2026,"Spider-Noir","S","Reseña: Serie ambientada en el Nueva York de los años 30 con estética detectivesca."],
   ["ssu",9000,"Silk / Venom Animado","S","Reseña: Proyectos derivados en desarrollo dentro del catálogo arácnido/Sony."],
 
   // --- UNIVERSO X-MEN (TRONCO COMÚN HASTA 1973) ---
