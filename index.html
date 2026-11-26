@@ -14,7 +14,7 @@
   --mut:#94a3b8;
   --lab:196px;
   --card-w:152px;
-  --gap-x:34px;
+  --gap-x:54px;
 }
 *{box-sizing:border-box}
 body{
@@ -542,6 +542,7 @@ const FORKS = [
 
 // Formato: [lane, year, title, kind, review, imgUrl]
 // year representa la época o año cronológico en la historia (no la fecha de estreno cuando difieren).
+// 9001 se muestra como "SALTO" para los saltos al Vacío ubicados tras la última película de cada línea.
 const E = [
   // --- MCU · SAGRADA LÍNEA ---
   ["mcu",1943,"Captain America: The First Avenger","F","Reseña: Steve Rogers, un joven frágil de Brooklyn, se somete a un experimento con el suero del supersoldado para combatir a Hydra y a Cráneo Rojo durante la Segunda Guerra Mundial, convirtiéndose en el primer Vengador.","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDauD1MA-G-Wct0Jktq02DIOWQ0oSJ97HzyBRwnVblpw&s=10"],
@@ -699,7 +700,7 @@ const E = [
   // --- 4 FANTÁSTICOS: 3 LÍNEAS SEPARADAS ---
   ["ff2005",2005,"Fantastic Four (2005)","F","Reseña: En 2005, Reed Richards, Sue Storm, Johnny Storm y Ben Grimm obtienen superpoderes tras una tormenta cósmica y enfrentan a Víctor von Doom. (Línea 1 independiente)."],
   ["ff2005",2007,"Fantastic Four: Rise of the Silver Surfer","F","Reseña: En 2007, los Cuatro Fantásticos enfrentan la llegada de Silver Surfer y a Galactus. (Continúa la Línea 1 independiente)."],
-  ["ff2005",2024,"Antorcha Humana en El Vacío","FB","Reseña: Chris Evans retoma a Johnny Storm / Antorcha Humana (de la película de 2005) en El Vacío dentro de Deadpool & Wolverine (2024)."],
+  ["ff2005",9001,"Antorcha Humana en El Vacío","FB","Reseña: Salto posterior a Fantastic Four: Rise of the Silver Surfer: Chris Evans retoma a Johnny Storm / Antorcha Humana (de la película de 2005) en El Vacío dentro de Deadpool & Wolverine."],
 
   ["ff2015",2015,"Fantastic Four (2015)","F","Reseña: En 2015, un grupo de jóvenes científicos viaja a Planet Zero y adquiere habilidades incontrolables. (Línea 2 independiente)."],
 
@@ -710,12 +711,18 @@ const E = [
   ["blade",1998,"Blade","F","Reseña: En 1998, Eric Brooks, un híbrido humano-vampiro, libra una guerra secreta contra los vampiros y Deacon Frost."],
   ["blade",2002,"Blade II","F","Reseña: En 2002, Blade se alía con un grupo de vampiros de élite y Whistler para combatir a los Segadores."],
   ["blade",2004,"Blade: Trinity","F","Reseña: En 2004, Blade se une a los cazadores humanos Nightstalkers para derrotar a Drácula."],
-  ["blade",2024,"Blade en El Vacío","FB","Reseña: Wesley Snipes retoma a Blade en el Vacío dentro de Deadpool & Wolverine (2024)."],
+  ["blade",9001,"Blade en El Vacío","FB","Reseña: Salto posterior a Blade: Trinity: Wesley Snipes retoma a Blade en el Vacío dentro de Deadpool & Wolverine."],
 
   ["dd03",2003,"Daredevil (Ben Affleck)","F","Reseña: En 2003, el abogado ciego Matt Murdock combate el crimen de noche como Daredevil en Nueva York."],
   ["dd03",2005,"Elektra (Jennifer Garner)","F","Reseña: En 2005, resucitada tras los eventos de Daredevil, Elektra Natchios trabaja como asesina a sueldo y protege a una joven de La Mano."],
-  ["dd03",2024,"Elektra en El Vacío","FB","Reseña: Jennifer Garner reaparece como Elektra en el Vacío dentro de Deadpool & Wolverine (2024)."]
+  ["dd03",9001,"Elektra en El Vacío","FB","Reseña: Salto posterior a Elektra (Jennifer Garner): reaparece como Elektra en el Vacío dentro de Deadpool & Wolverine."]
 ];
+
+function formatYearLabel(yr){
+  if(yr === 9001) return "SALTO";
+  if(yr >= 9000) return "FUTURO";
+  return String(yr);
+}
 
 let customCovers = {};
 try {
@@ -745,7 +752,7 @@ function saveHidden(){
 function defaultPoster(e){
   const [laneId, yr, title, kind] = e;
   const [, laneName, , color] = laneMap[laneId] || ["","","","#60a5fa"];
-  const yrTxt = yr >= 9000 ? "FUTURO" : String(yr);
+  const yrTxt = formatYearLabel(yr);
   const shortT = title.length > 24 ? title.slice(0,22) + "…" : title;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200">
     <defs>
@@ -1004,7 +1011,7 @@ function openReviewModal(cardEl, e){
   const [laneId, yr, title, kind, review] = e;
   const [, laneName, sub, color] = laneMap[laneId] || ["","","","#60a5fa"];
   const k = itemKey(e);
-  const yrLabel = yr >= 9000 ? "Próximamente" : String(yr);
+  const yrLabel = yr === 9001 ? "Salto al Vacío" : (yr >= 9000 ? "Próximamente" : String(yr));
   const typeLabel = kind.includes("S") ? "Serie / Especial" : "Película";
   const currentUrl = customCovers[k] || e[5] || "";
   const isOff = hiddenImages.has(k);
@@ -1065,7 +1072,7 @@ const activeLanes = new Set(L.map(x => x[0]));
 
 function computeColumnWidths(){
   const cardW = 152;
-  const gapX = 34;
+  const gapX = 54;
   return years.map(y => {
     let maxInCol = 1;
     L.forEach(([id]) => {
@@ -1073,7 +1080,7 @@ function computeColumnWidths(){
       const count = E.filter(e => e[0] === id && e[1] === y).length;
       if(count > maxInCol) maxInCol = count;
     });
-    return Math.max(196, maxInCol * cardW + (maxInCol - 1) * gapX + 28);
+    return Math.max(210, maxInCol * cardW + (maxInCol - 1) * gapX + 28);
   });
 }
 
@@ -1092,7 +1099,7 @@ function buildMatrix(){
   years.forEach((y, idx) => {
     const th = mk("div", "yr-head");
     th.style.width = `${colWidths[idx]}px`;
-    th.append(mk("span", "yr-badge", y >= 9000 ? "FUTURO" : String(y)));
+    th.append(mk("span", "yr-badge", formatYearLabel(y)));
     matrix.append(th);
   });
 
@@ -1125,7 +1132,7 @@ function buildMatrix(){
 
         const top = mk("div", "card-top");
         const topLeft = mk("div", "card-top-left");
-        topLeft.append(mk("span", "card-yr", yr >= 9000 ? "FUTURO" : String(yr)));
+        topLeft.append(mk("span", "card-yr", formatYearLabel(yr)));
         if(kind.includes("B")) topLeft.append(mk("span", "card-fork", "⑂"));
 
         const hideBtn = mk("span", "hide-btn" + (isOff ? " img-hidden" : ""), isOff ? "👁" : "🙈");
