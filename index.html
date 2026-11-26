@@ -265,6 +265,11 @@ header p{margin:6px 0 0;color:var(--mut)}
   border-color:#fca5a5;
   color:#fff;
 }
+.hide-btn.img-hidden{
+  background:#1e3a8a;
+  border-color:#93c5fd;
+  color:#eff6ff;
+}
 .card-frame{
   position:relative;
   width:100%;
@@ -278,6 +283,20 @@ header p{margin:6px 0 0;color:var(--mut)}
   height:100%;
   object-fit:cover;
   display:block;
+}
+.card-frame.img-off img{
+  display:none;
+}
+.card-frame.img-off::before{
+  content:"Portada oculta";
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:10px;
+  color:var(--mut);
+  background:#0b1020;
 }
 .card-quick{
   position:absolute;
@@ -329,25 +348,40 @@ header p{margin:6px 0 0;color:var(--mut)}
 #modalBox{
   width:100%;
   max-width:560px;
+  max-height:92vh;
+  overflow-y:auto;
   background:#0d1322;
   border:1.5px solid var(--accent,#60a5fa);
   border-radius:14px;
   box-shadow:0 24px 60px rgba(0,0,0,.75), 0 0 28px color-mix(in srgb,var(--accent,#60a5fa) 35%,transparent);
-  overflow:hidden;
 }
 .modal-hero{
   position:relative;
   width:100%;
-  aspect-ratio:16 / 9;
-  max-height:250px;
+  min-height:160px;
+  max-height:55vh;
   background:#060811;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   overflow:hidden;
 }
 .modal-hero img{
   width:100%;
-  height:100%;
-  object-fit:cover;
+  height:auto;
+  max-height:55vh;
+  object-fit:contain;
   display:block;
+}
+.modal-hero.img-off img{
+  display:none;
+}
+.modal-hero.img-off::before{
+  content:"Imagen oculta — pulsa 'Mostrar imagen' para verla";
+  color:var(--mut);
+  font-size:13px;
+  padding:24px;
+  text-align:center;
 }
 .modal-close{
   position:absolute;
@@ -428,7 +462,7 @@ footer{padding:12px 22px 28px;color:var(--mut);font-size:12px;max-width:98ch}
     <p>Cada título está ordenado según su época o año cronológico dentro de la historia en su fila por universo. Haz clic en una portada para ver su reseña, pegar/escribir una URL, pegar una imagen con <code>Ctrl+V</code> / <code>Cmd+V</code> o subir un archivo.</p>
   </div>
   <div class="controls-bar">
-    <button id="btnShowHidden" class="action-btn show-hidden hide" type="button">Mostrar ocultas (0)</button>
+    <button id="btnShowHidden" class="action-btn show-hidden hide" type="button">Mostrar imágenes ocultas (0)</button>
     <button id="btnClearAll" class="action-btn danger" type="button">Borrar portadas guardadas</button>
   </div>
 </header>
@@ -447,7 +481,7 @@ footer{padding:12px 22px 28px;color:var(--mut);font-size:12px;max-width:98ch}
 <!-- MINI VENTANA (MODAL) -->
 <div id="modalBackdrop" class="hide" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div id="modalBox">
-    <div class="modal-hero">
+    <div id="modalHero" class="modal-hero">
       <img id="modalImg" src="" alt="">
       <button id="modalClose" class="modal-close" type="button" aria-label="Cerrar ventana">✕</button>
     </div>
@@ -460,7 +494,7 @@ footer{padding:12px 22px 28px;color:var(--mut);font-size:12px;max-width:98ch}
         <button id="modalSaveUrl" class="action-btn" type="button">Guardar URL</button>
       </div>
       <div class="modal-actions">
-        <button id="modalHide" class="action-btn" type="button">🙈 Ocultar título</button>
+        <button id="modalHide" class="action-btn" type="button">🙈 Ocultar imagen</button>
         <button id="modalPaste" class="action-btn paste" type="button">📋 Pegar portada</button>
         <button id="modalUpload" class="action-btn upload" type="button">🖼 Subir archivo</button>
         <button id="modalReset" class="action-btn hide" type="button">Restaurar portada</button>
@@ -473,7 +507,7 @@ footer{padding:12px 22px 28px;color:var(--mut);font-size:12px;max-width:98ch}
 
 <script>
 const STORAGE_KEY = "marvel_multiverse_custom_covers_v1";
-const HIDDEN_KEY = "marvel_multiverse_hidden_items_v1";
+const HIDDEN_KEY = "marvel_multiverse_hidden_images_v1";
 
 const L = [
   ["rama",     "AVT",                               "Fuera del espacio y del tiempo",                   "#e879f9"],
@@ -523,62 +557,62 @@ const E = [
   ["mcu",2014,"Guardians of the Galaxy","F","Reseña: En 2014, Peter Quill forma una alianza improbable con Gamora, Drax, Rocket y Groot para evitar que Ronan el Acusador use una Gema del Infinito para destruir Xandar.","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4_XRjC9fZAHUS_FvkFsMOGht9VAoZ-zurwJv8amrmWw&s=10"],
   ["mcu",2014,"Guardians of the Galaxy Vol. 2","F","Reseña: También en 2014, mientras los Guardianes recorren el cosmos, Peter Quill conoce a su padre celestial Ego y el grupo debe afrontar secretos familiares y traiciones.","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHq2itHZ2x1fBTXvW8smKd6ZzQwp8UMwON_FvYF7LkwA&s=10"],
   ["mcu",2014,"I Am Groot","S","Reseña: Colección de cortos protagonizados por Baby Groot en situaciones cotidianas y disparatadas a lo largo de sus viajes cósmicos.","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToCCibYep9WAxh2-3Du5m8IZj0Q1KhFt_585_0VGbwBQ&s=10"],
-  ["mcu",2014,"Daredevil (T1)","S","Reseña: El abogado ciego Matt Murdock patrulla de noche Hell's Kitchen como Daredevil para frenar el ascenso criminal de Wilson Fisk.","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVrEisu43CuI2MM8jI9CExZGM3XdDMUwEAGhTru3I9oQ&s=10"],
+  ["mcu",2014,"Daredevil (T1)","S","Reseña: El abogado ciego Matt Murdock patrulla de noche Hell's Kitchen como Daredevil para frenar el ascenso criminal de Wilson Fisk.","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVrEisu43CuI2MM8jI9CExZGM3XdlDMUwEAGhTru3I9oQ&s=10"],
   ["mcu",2014,"Jessica Jones (T1)","S","Reseña: La investigadora privada Jessica Jones, con fuerza sobrehumana y un pasado traumático, intenta sobreponerse al control psicológico del manipulador Kilgrave.","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZBW3peNYcEeAq5o5VnINEZAtvoeX1gRW7uld33ZUZTg&s=10"],
   ["mcu",2015,"Avengers: Age of Ultron","F","Reseña: En 2015, un intento de Tony Stark y Bruce Banner por crear una defensa global automatizada da origen a Ultron, una inteligencia artificial que amenaza la supervivencia de la humanidad.","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyLtTOZ-jG3Qi9tnjIW3hBzP9ZOktnfgnDGMMNFB960g&s=10"],
-  ["mcu",2015,"Ant-Man","F","Reseña: En 2015, el ladrón reformado Scott Lang recibe el traje que permite encogerse y multiplicar su fuerza para ayudar al doctor Hank Pym a evitar que una tecnología similar caiga en malas manos."],
-  ["mcu",2015,"Daredevil (T2)","S","Reseña: Matt Murdock choca con los métodos letales de Frank Castle (Punisher) mientras reaparece Elektra y La Mano amplía su presencia en la ciudad."],
-  ["mcu",2015,"Luke Cage (T1)","S","Reseña: Dotado de piel irrompible y gran fuerza tras un experimento, Luke Cage intenta llevar una vida discreta en Harlem hasta que la corrupción local lo obliga a defender el barrio."],
-  ["mcu",2016,"Captain America: Civil War","F","Reseña: En 2016, las consecuencias de las misiones de los Vengadores provocan los Acuerdos de Sokovia y dividen al equipo en dos bandos liderados por Capitán América e Iron Man."],
-  ["mcu",2016,"Black Widow","F","Reseña: Tras los sucesos de Civil War en 2016, Natasha Romanoff regresa a su pasado en la Habitación Roja para reunirse con su familia adoptiva y detener a Dreykov."],
-  ["mcu",2016,"Black Panther","F","Reseña: En 2016, T'Challa vuelve a Wakanda para asumir el trono como rey y Black Panther, pero su liderazgo y la política de aislamiento del país son desafiados por Erik Killmonger."],
-  ["mcu",2016,"Spider-Man: Homecoming","FB","Reseña: En 2016, Peter Parker (Tom Holland) intenta demostrar que está listo para ser más que un héroe local bajo la supervisión de Tony Stark mientras enfrenta al Buitre."],
-  ["mcu",2016,"Doctor Strange","F","Reseña: Entre finales de 2016 y 2017, tras un accidente que arruina su carrera como neurocirujano, Stephen Strange viaja a Kamar-Taj y descubre las artes místicas."],
-  ["mcu",2016,"Iron Fist (T1)","S","Reseña: Danny Rand regresa a Nueva York quince años después de ser dado por muerto, portando el poder del Puño de Hierro para reclamar su legado y combatir a La Mano."],
-  ["mcu",2016,"The Defenders","S","Reseña: Daredevil, Jessica Jones, Luke Cage e Iron Fist unen fuerzas en Nueva York para frustrar los planes de La Mano."],
-  ["mcu",2016,"The Punisher (T1)","S","Reseña: Frank Castle (Jon Bernthal) destapa una conspiración militar y gubernamental vinculada con la emboscada en la que perdió a su familia dentro de la cronología oficial del UCM."],
-  ["mcu",2016,"Jessica Jones (T2)","S","Reseña: Jessica investiga el origen de sus habilidades y los experimentos que la transformaron."],
-  ["mcu",2017,"Eyes of Wakanda","S","Reseña: Serie animada oficial de Marvel Studios que sigue a guerreros de Wakanda a través de distintas épocas en misiones para recuperar artefactos de vibranium."],
-  ["mcu",2017,"Thor: Ragnarok","F","Reseña: En 2017, atrapado en el planeta Sakaar sin su martillo, Thor debe aliarse con Hulk y Valquiria para regresar a Asgard y detener a su hermana Hela antes del Ragnarok."],
-  ["mcu",2017,"Luke Cage (T2)","S","Reseña: Convertido en figura pública en Harlem, Luke Cage se enfrenta a nuevos rivales como Mariah Dillard y Bushmaster."],
-  ["mcu",2017,"Iron Fist (T2)","S","Reseña: Con Danny Rand centrado en nuevas responsabilidades, Colleen Wing asume un papel clave en la protección de la ciudad."],
-  ["mcu",2017,"Daredevil (T3)","S","Reseña: Matt Murdock se enfrenta al regreso calculador de Wilson Fisk mientras lucha por recuperar su identidad como Daredevil."],
-  ["mcu",2017,"The Punisher (T2)","S","Reseña: Frank Castle (Jon Bernthal) se ve arrastrado a una nueva cacería cuando protege a una joven con información comprometedora."],
-  ["mcu",2018,"Ant-Man and the Wasp","F","Reseña: En 2018, Scott Lang y Hope van Dyne colaboran con Hank Pym para abrir un túnel cuántico estable y rescatar a Janet van Dyne del Reino Cuántico."],
-  ["mcu",2018,"Avengers: Infinity War","FB","Reseña: En 2018, Thanos recorre el universo para reunir las seis Gemas del Infinito, obligando a los Vengadores y a los Guardianes de la Galaxia a una batalla desesperada."],
-  ["mcu",2018,"Jessica Jones (T3)","S","Reseña: Jessica Jones y Trish Walker toman caminos divergentes mientras investigan a un asesino metahumano."],
-  ["mcu",2023,"Avengers: Endgame","FB","Reseña: En 2023, cinco años después del chasquido de Thanos, los Vengadores restantes emprenden un atraco en el tiempo para recuperar las Gemas del Infinito y revertir lo ocurrido."],
-  ["mcu",2023,"WandaVision","S","Reseña: Tres semanas después de Endgame en 2023, Wanda Maximoff y Visión viven en un pueblo idílico que imita distintas épocas de la comedia televisiva."],
-  ["mcu",2024,"Shang-Chi and the Legend of the Ten Rings","F","Reseña: En 2024, Shang-Chi se ve obligado a confrontar el pasado que intentó dejar atrás cuando es arrastrado de nuevo a la organización de los Diez Anillos."],
-  ["mcu",2024,"The Falcon and the Winter Soldier","S","Reseña: En 2024, seis meses después de Endgame, Sam Wilson y Bucky Barnes colaboran mientras el legado del escudo del Capitán América queda en el centro del conflicto."],
-  ["mcu",2024,"Peter's To-Do List","S","Reseña: Cortometraje que muestra los preparativos de Peter Parker antes de partir de viaje escolar a Europa en Far From Home."],
-  ["mcu",2024,"Spider-Man: Far From Home","F","Reseña: En 2024, durante un viaje escolar por Europa, Peter Parker (Tom Holland) es reclutado para enfrentar amenazas elementales y a Mysterio."],
-  ["mcu",2024,"Eternals","F","Reseña: En 2024, un grupo de seres inmortales enviados a la Tierra hace milenios debe reunirse para detener a los Desviantes."],
-  ["mcu",2024,"Spider-Man: No Way Home","FB","Reseña: A finales de 2024, tras revelarse la identidad de Peter Parker, un hechizo altera el multiverso atrayendo a los Spider-Man de Tobey Maguire y Andrew Garfield."],
-  ["mcu",2024,"Doctor Strange in the Multiverse of Madness","FB","Reseña: Tras No Way Home en 2024, Stephen Strange y America Chavez huyen a través de distintas realidades para proteger el poder del multiverso."],
-  ["mcu",2024,"Hawkeye","S","Reseña: En la Navidad de 2024, Clint Barton intenta pasar las fiestas en Nueva York con su familia pero debe aliarse con Kate Bishop."],
-  ["mcu",2025,"Moon Knight","S","Reseña: En 2025, Steven Grant descubre que comparte cuerpo con el mercenario Marc Spector y que ambos están ligados al dios lunar Khonshu."],
-  ["mcu",2025,"Black Panther: Wakanda Forever","F","Reseña: Tras la muerte del rey T'Challa, Shuri y los líderes de Wakanda deben proteger su nación cuando surge una amenaza submarina liderada por Namor."],
-  ["mcu",2025,"Echo","S","Reseña: Maya Lopez regresa a su ciudad natal en Oklahoma para reconectar con sus raíces y su familia."],
-  ["mcu",2025,"She-Hulk: Attorney at Law","S","Reseña: La abogada Jennifer Walters obtiene poderes gamma similares a los de Hulk y encabeza una división legal de casos sobrehumanos."],
-  ["mcu",2025,"Ms. Marvel","S","Reseña: Kamala Khan, una joven fanática de los superhéroes en Jersey City, descubre un brazalete místico que despierta sus propios poderes."],
-  ["mcu",2025,"Ironheart","S","Reseña: Riri Williams regresa a Chicago y perfecciona una armadura de alta tecnología inspirada en el legado de Tony Stark."],
-  ["mcu",2025,"Werewolf by Night","S","Reseña: Especial en blanco y negro ambientado en una reunión secreta de cazadores de monstruos."],
-  ["mcu",2025,"Thor: Love and Thunder","F","Reseña: Thor emprende un viaje para detener a Gorr el Carnicero de Dioses, reencontrándose con Jane Foster convertida en Mighty Thor."],
-  ["mcu",2025,"Secret Invasion","S","Reseña: Nick Fury regresa a la Tierra para desarticular una infiltración encubierta de facciones Skrull."],
-  ["mcu",2025,"The Guardians of the Galaxy Holiday Special","S","Reseña: Mantis y Drax viajan a la Tierra en Navidad para conseguir un regalo que anime a Peter Quill."],
-  ["mcu",2026,"The Marvels","FB","Reseña: Carol Danvers, Kamala Khan y Monica Rambeau quedan entrelazadas cuánticamente al usar sus poderes y deben formar equipo."],
-  ["mcu",2026,"Ant-Man and the Wasp: Quantumania","F","Reseña: Scott Lang, Hope, Hank, Janet y Cassie son arrastrados al Reino Cuántico, donde enfrentan a Kang el Conquistador."],
-  ["mcu",2026,"Guardians of the Galaxy Vol. 3","F","Reseña: Peter Quill reúne a los Guardianes en una misión crítica para salvar la vida de Rocket y enfrentar el pasado de su creador."],
-  ["mcu",2026,"Agatha All Along","S","Reseña: Privada de su magia, Agatha Harkness reúne a un aquelarre de brujas para recorrer la Senda de las Brujas."],
-  ["mcu",2027,"Captain America: Brave New World","F","Reseña: Sam Wilson asume el manto del Capitán América en medio de tensiones geopolíticas y una conspiración global."],
-  ["mcu",2027,"Daredevil: Born Again (T1)","S","Reseña: Matt Murdock y Wilson Fisk vuelven a enfrentarse en un choque político y callejero por Nueva York, con el regreso oficial de Frank Castle (Jon Bernthal)."],
-  ["mcu",2027,"Thunderbolts*","F","Reseña: Un grupo de antihéroes y exoperativos es reunido en una misión de alto riesgo bajo el control de Valentina Allegra de Fontaine."],
-  ["mcu",2027,"Wonder Man (T1)","S","Reseña: Simon Williams persigue su sueño como actor en Hollywood mientras lidia con habilidades extraordinarias."],
-  ["mcu",2027,"Daredevil: Born Again (T2)","S","Reseña: Continúa el pulso entre la ley, la justicia vigilante y el poder en Nueva York."],
-  ["mcu",2027,"The Punisher: One Last Kill","S","Reseña: Especial en Disney+ protagonizado por Frank Castle (Jon Bernthal) en una nueva misión implacable dentro del UCM."],
-  ["mcu",2027,"VisionQuest","S","Reseña: Serie centrada en el camino y la identidad de Visión."],
-  ["mcu",2028,"Spider-Man: Brand New Day","FB","Reseña: Situada en la franja cronológica reciente de 2028 tras No Way Home, Peter Parker continúa su camino junto a Frank Castle (Jon Bernthal)."],
+  ["mcu",2015,"Ant-Man","F","Reseña: En 2015, el ladrón reformado Scott Lang recibe el traje que permite encogerse y multiplicar su fuerza para ayudar al doctor Hank Pym a evitar que una tecnología similar caiga en malas manos.","https://imgs.search.brave.com/oBDQkbROKrqbktLw76pFWQoJDhBo6NXyKj8Okigug_Q/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL3FEZkJNZDRr/QnBQeDM1TEVnV0t2/UzFKVktCeS5qcGc"],
+  ["mcu",2015,"Daredevil (T2)","S","Reseña: Matt Murdock choca con los métodos letales de Frank Castle (Punisher) mientras reaparece Elektra y La Mano amplía su presencia en la ciudad.","https://imgs.search.brave.com/6ncVFP18FtJ8bLNZbyMeZL418oN_tq2WcEgwH1AJLWY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9wcmV2/aWV3LnJlZGQuaXQv/b2ZmaWNpYWwtcG9z/dGVyLWZvci1kYXJl/ZGV2aWwtYm9ybi1h/Z2Fpbi1zZWFzb24t/Mi12MC11d3p6Z3F4/ZXF3ZmcxLmpwZWc_/d2lkdGg9NjQwJmNy/b3A9c21hcnQmYXV0/bz13ZWJwJnM9NmJm/ZTgwNmU4OTM2NDcw/YmJjZmIwYjk1N2Ex/YTAyOTk4YTRmOTA5/MQ"],
+  ["mcu",2015,"Luke Cage (T1)","S","Reseña: Dotado de piel irrompible y gran fuerza tras un experimento, Luke Cage intenta llevar una vida discreta en Harlem hasta que la corrupción local lo obliga a defender el barrio.","https://imgs.search.brave.com/eUVMqbnBDuytJS77eZtAac3_NjSq3ZWWDWeL-nJDFSw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/ZXNwYWNpb21hcnZl/bGl0YS5jb20vaW1h/Z2VzL2ZpY2hhcy9s/dWtlLWNhZ2UtdGVt/cG9yYWRhLTEtcG9z/dGVyLndlYnA"],
+  ["mcu",2016,"Captain America: Civil War","F","Reseña: En 2016, las consecuencias de las misiones de los Vengadores provocan los Acuerdos de Sokovia y dividen al equipo en dos bandos liderados por Capitán América e Iron Man.","https://imgs.search.brave.com/raltGSRBLFUkCnt_J2eWvKzFkTAIBmb5OXazynR5njU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90aHVt/Yi53aWtpbWVkaWEu/b3JnL3dpa2lwZWRp/YS9lbi90aHVtYi81/LzUzL0NhcHRhaW5f/QW1lcmljYV9DaXZp/bF9XYXJfcG9zdGVy/LmpwZy8yNTBweC1D/YXB0YWluX0FtZXJp/Y2FfQ2l2aWxfV2Fy/X3Bvc3Rlci5qcGc_/dXRtX3NvdXJjZT1l/bi53aWtpcGVkaWEu/b3JnJnV0bV9jYW1w/YWlnbj1wYXJzZXIm/dXRtX2NvbnRlbnQ9/dGh1bWJuYWls"],
+  ["mcu",2016,"Black Widow","F","Reseña: Tras los sucesos de Civil War en 2016, Natasha Romanoff regresa a su pasado en la Habitación Roja para reunirse con su familia adoptiva y detener a Dreykov.","https://imgs.search.brave.com/2tD6KOmcjku0LCmLYMuLLR4BI5jydlwgpnInmJJdj_g/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90aHVt/Yi53aWtpbWVkaWEu/b3JnL3dpa2lwZWRp/YS9lbi90aHVtYi9l/L2U5L0JsYWNrX1dp/ZG93XygyMDIxX2Zp/bG0pX3Bvc3Rlci5q/cGcvMjUwcHgtQmxh/Y2tfV2lkb3dfKDIw/MjFfZmlsbSlfcG9z/dGVyLmpwZz91dG1f/c291cmNlPWVuLndp/a2lwZWRpYS5vcmcm/dXRtX2NhbXBhaWdu/PXBhcnNlciZ1dG1f/Y29udGVudD10aHVt/Ym5haWw"],
+  ["mcu",2016,"Black Panther","F","Reseña: En 2016, T'Challa vuelve a Wakanda para asumir el trono como rey y Black Panther, pero su liderazgo y la política de aislamiento del país son desafiados por Erik Killmonger.","https://imgs.search.brave.com/BLVshkiUdWHhLgiYR6bBwM-YMf9aDofX6URXUYI0Yuw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvZW4vZC9kNi9C/bGFja19QYW50aGVy/XyhmaWxtKV9wb3N0/ZXIuanBnP3V0bV9z/b3VyY2U9ZW4ud2lr/aXBlZGlhLm9yZyZ1/dG1fY2FtcGFpZ249/cGFyc2VyJnV0bV9j/b250ZW50PXRodW1i/bmFpbF91bnNjYWxl/ZA"],
+  ["mcu",2016,"Spider-Man: Homecoming","FB","Reseña: En 2016, Peter Parker (Tom Holland) intenta demostrar que está listo para ser más que un héroe local bajo la supervisión de Tony Stark mientras enfrenta al Buitre.","https://imgs.search.brave.com/DUKmlDnoNVxPUF8-QhM7arzcJY23XXZ70B-0DRxco-c/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2I5L2Jk/L2YwL2I5YmRmMGU1/NDZjNjQxMzU0ZDc3/MmViMGY1ZmE5NGM4/LmpwZw"],
+  ["mcu",2016,"Doctor Strange","F","Reseña: Entre finales de 2016 y 2017, tras un accidente que arruina su carrera como neurocirujano, Stephen Strange viaja a Kamar-Taj y descubre las artes místicas.","https://imgs.search.brave.com/Ft8E74U_hiLPoMGujIqqjpVKsCHtMqGuFer4IE2HX24/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL00v/TVY1Qk5qZ3dOekF6/TmprMU5sNUJNbDVC/YW5CblhrRnRaVGd3/TXpRMk5qSTFPVEVA/LmpwZw"],
+  ["mcu",2016,"Iron Fist (T1)","S","Reseña: Danny Rand regresa a Nueva York quince años después de ser dado por muerto, portando el poder del Puño de Hierro para reclamar su legado y combatir a La Mano.","https://imgs.search.brave.com/XzsSnIM1H6-o53SqBSHzR8ZhOnriSbBYVM5zzJMrOqQ/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/ZWNhcnRlbGVyYS5j/b20vY2FydGVsZXMt/c2VyaWVzLzAwMC82/NS8wMDNfcC5qcGc"],
+  ["mcu",2016,"The Defenders","S","Reseña: Daredevil, Jessica Jones, Luke Cage e Iron Fist unen fuerzas en Nueva York para frustrar los planes de La Mano.","https://imgs.search.brave.com/YvS_1_OmJSlKVEA5SfK1-vVtMUihsYTY2eRzsToW9A8/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzU5LzZm/L2NkLzU5NmZjZDk0/NzUxNjIzZGNjMjVl/Y2E5NDE0Mzc0ZjI5/LmpwZw"],
+  ["mcu",2016,"The Punisher (T1)","S","Reseña: Frank Castle (Jon Bernthal) destapa una conspiración militar y gubernamental vinculada con la emboscada en la que perdió a su familia dentro de la cronología oficial del UCM.","https://imgs.search.brave.com/S91qFiq_f8G95wTASf_fa-gFJHUCnhw_PtSP7dIAYw4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9ub2Vz/Y2luZXRvZG9sb3F1/ZXJlbHVjZS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzIwMTcv/MTAvcHVuaXNoZXIt/Mi5qcGc"],
+  ["mcu",2016,"Jessica Jones (T2)","S","Reseña: Jessica investiga el origen de sus habilidades y los experimentos que la transformaron.","https://imgs.search.brave.com/ByiWtM6Cc-LHfeXnZmiVG7_Ye4zzendn3niv7cQgVtE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9wcmV2/aWV3LnJlZGQuaXQv/dW5zdjNtcWdreGhl/MS5qcGVnP2F1dG89/d2VicCZzPTlhOTZi/YTdkOTlkOWVkNTIy/NjYyMWY1MDhjNDdl/MzYwNWY0ZGM1N2U"],
+  ["mcu",2017,"Eyes of Wakanda","S","Reseña: Serie animada oficial de Marvel Studios que sigue a guerreros de Wakanda a través de distintas épocas en misiones para recuperar artefactos de vibranium.","https://imgs.search.brave.com/7ElLQCiCIiRV49O3vCDo7gEwBiI89am7feC4BbPkVWc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9hcnR3/b3Jrcy50aGV0dmRi/LmNvbS9iYW5uZXJz/L3Y0L3Nlcmllcy80/NDMzNTgvcG9zdGVy/cy82ODhkZmVjMzdl/MzgxLmpwZw"],
+  ["mcu",2017,"Thor: Ragnarok","F","Reseña: En 2017, atrapado en el planeta Sakaar sin su martillo, Thor debe aliarse con Hulk y Valquiria para regresar a Asgard y detener a su hermana Hela antes del Ragnarok.","https://imgs.search.brave.com/-_6f1SsXibHZXPn2EMg4YHh14-IqPwWCLMchQL55Caw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/OTFVajNnU25kYUwu/anBn"],
+  ["mcu",2017,"Luke Cage (T2)","S","Reseña: Convertido en figura pública en Harlem, Luke Cage se enfrenta a nuevos rivales como Mariah Dillard y Bushmaster.","https://imgs.search.brave.com/3enpNnRoHI-sQgJ61oduozVq_t-ijbWi8tu6nBCSKZo/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/Zm9ybXVsYXR2LmNv/bS9pbWFnZXMvc2Vy/aWVzL3Bvc3RlcnMv/MTAwMC8xMDA4LzJf/bTMuanBn"],
+  ["mcu",2017,"Iron Fist (T2)","S","Reseña: Con Danny Rand centrado en nuevas responsabilidades, Colleen Wing asume un papel clave en la protección de la ciudad.","https://imgs.search.brave.com/o0wZ0DstuNdxHXZsgTGyWsvrCKdOtC_mlyrj8DHWYEc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuanVzdHdhdGNo/LmNvbS9wb3N0ZXIv/ODA2ODc3NTAvczE2/Ni90ZW1wb3JhZGEt/Mi5qcGc"],
+  ["mcu",2017,"Daredevil (T3)","S","Reseña: Matt Murdock se enfrenta al regreso calculador de Wilson Fisk mientras lucha por recuperar su identidad como Daredevil.","https://imgs.search.brave.com/Cs0s1EdYqPGzabu8RR_hK7zmlrN4UrurB1lBPwxuUdk/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/c2xhc2hmaWxtLmNv/bS93cC93cC1jb250/ZW50L2ltYWdlcy9k/YXJlZGV2aWwtc2Vh/c29uLTMtcG9zdGVy/LTcwMHgxMDM3Lmpw/Zw"],
+  ["mcu",2017,"The Punisher (T2)","S","Reseña: Frank Castle (Jon Bernthal) se ve arrastrado a una nueva cacería cuando protege a una joven con información comprometedora.","https://imgs.search.brave.com/wefrnBFzGoUlDQe0bfcddiLSln0j9PIku2PNvcuQFPc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9oaXBz/LmhlYXJzdGFwcHMu/Y29tL2htZy1wcm9k/L2ltYWdlcy9wdW5z/aWhlci1zZWFzb24t/Mi1wb3N0ZXItMTU0/NzEzMzM0My5qcGVn/P2Nyb3A9MXh3OjF4/aDtjZW50ZXIsdG9w/JnJlc2l6ZT05ODA6/Kg"],
+  ["mcu",2018,"Ant-Man and the Wasp","F","Reseña: En 2018, Scott Lang y Hope van Dyne colaboran con Hank Pym para abrir un túnel cuántico estable y rescatar a Janet van Dyne del Reino Cuántico.","https://imgs.search.brave.com/fBhvUvY5dW0D3-8x9blkwtGm7XbaPjIh7IXkwlrFRNU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2FhL2My/L2E3L2FhYzJhNzg2/ZjE4M2IwNmY0ODZi/NDBkMThhYjFiNGQy/LmpwZw"],
+  ["mcu",2018,"Avengers: Infinity War","FB","Reseña: En 2018, Thanos recorre el universo para reunir las seis Gemas del Infinito, obligando a los Vengadores y a los Guardianes de la Galaxia a una batalla desesperada.","https://imgs.search.brave.com/48nWjYylS5jya5FXWqAlraMQEVnirLil41k4Ook5SxA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL2hET0d4SUtB/WmJuRjcxb08wc1pH/N3JKdUpadC5qcGc"],
+  ["mcu",2018,"Jessica Jones (T3)","S","Reseña: Jessica Jones y Trish Walker toman caminos divergentes mientras investigan a un asesino metahumano.","https://imgs.search.brave.com/49xD66yQ2dKduRiQunobSBP77N1zmNk_96J9Bj6v_KI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL2J6ZnU3Uk41/bmNKSnFOYkMwNEo5/Vm9HcFZ5cC5qcGc"],
+  ["mcu",2023,"Avengers: Endgame","FB","Reseña: En 2023, cinco años después del chasquido de Thanos, los Vengadores restantes emprenden un atraco en el tiempo para recuperar las Gemas del Infinito y revertir lo ocurrido.","https://imgs.search.brave.com/WRZtwdnclACngWnSU5HM4r1ISQBilExUKuDQJrXsL_M/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL2ZURlJZNlJK/VHB3a3JZeWJ3ajRX/ZGY1bmZnbi5qcGc"],
+  ["mcu",2023,"WandaVision","S","Reseña: Tres semanas después de Endgame en 2023, Wanda Maximoff y Visión viven en un pueblo idílico que imita distintas épocas de la comedia televisiva.","https://imgs.search.brave.com/5FGxrjiYkGpoqposgY4FyVWjUjm8SY5_dR_jrrFaD8o/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zdGF0/aWMwLmNvbGxpZGVy/aW1hZ2VzLmNvbS93/b3JkcHJlc3Mvd3At/Y29udGVudC91cGxv/YWRzLzIwMjAvMDkv/d2FuZGF2aXNpb24t/cG9zdGVyLTQwNXg2/MDAuanBnP3E9NTAm/Zml0PWNyb3Amdz00/MDUmZHByPTEuNQ"],
+  ["mcu",2024,"Shang-Chi and the Legend of the Ten Rings","F","Reseña: En 2024, Shang-Chi se ve obligado a confrontar el pasado que intentó dejar atrás cuando es arrastrado de nuevo a la organización de los Diez Anillos.","https://imgs.search.brave.com/1a_DPpr3sgfuTpB2sNRl6e5ccard0AkTy7YpruhN3bk/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/ODFiKy1pZWVPS0wu/anBn"],
+  ["mcu",2024,"The Falcon and the Winter Soldier","S","Reseña: En 2024, seis meses después de Endgame, Sam Wilson y Bucky Barnes colaboran mientras el legado del escudo del Capitán América queda en el centro del conflicto.","https://imgs.search.brave.com/rOXsAk4omL3mcLpPfeRWdYw2-1mzQYE8WplkOdb0usc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2JiLzZh/LzE1L2JiNmExNTZk/OTk4ZTdkY2ZiYThm/ZDRkMmFkYzk4M2Qw/LmpwZw"],
+  ["mcu",2024,"Peter's To-Do List","S","Reseña: Cortometraje que muestra los preparativos de Peter Parker antes de partir de viaje escolar a Europa en Far From Home.","https://imgs.search.brave.com/ipgoRXtmZn7MFzhYtQ8XR47cvu7X9_SYlnW2KzYaBMU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZS50bWRiLm9yZy90/L3AvdzUwMC85T09o/cU9WbzM3RFFuUTZP/VVB6MFFsZWs1VXYu/anBn"],
+  ["mcu",2024,"Spider-Man: Far From Home","F","Reseña: En 2024, durante un viaje escolar por Europa, Peter Parker (Tom Holland) es reclutado para enfrentar amenazas elementales y a Mysterio.","https://imgs.search.brave.com/MMma2X8tJ8UbsZYDdvfLm0VdHjdBihW3rFEaYtgFI6g/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL2hhQ0tLdEhH/OE5sVWZUS1cyQ3Z4/MHM2R3RwaC5qcGc"],
+  ["mcu",2024,"Eternals","F","Reseña: En 2024, un grupo de seres inmortales enviados a la Tierra hace milenios debe reunirse para detener a los Desviantes.","https://imgs.search.brave.com/9bqvChqGb8BCuDhjnMYwrBPpihRNc5HVvka55rsrvUc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9wcmV2/aWV3LnJlZGQuaXQv/dGhlLW9mZmljaWFs/LXBvc3Rlci1mb3It/bWFydmVsLXN0dWRp/b3MtZXRlcm5hbHMt/djAtNjBnd3dxcnps/OWk3MS5qcGc_d2lk/dGg9NjQwJmNyb3A9/c21hcnQmYXV0bz13/ZWJwJnM9YmQyZjA3/OTQ0OTg2MzJhODE1/MWZlZWIzYjVlNjk4/ZmJmMzZlZWIzMA"],
+  ["mcu",2024,"Spider-Man: No Way Home","FB","Reseña: A finales de 2024, tras revelarse la identidad de Peter Parker, un hechizo altera el multiverso atrayendo a los Spider-Man de Tobey Maguire y Andrew Garfield.","https://imgs.search.brave.com/lOZmfDIfz42tKciQ7OkCZE2hmWGmNnyWh0xeTg7KLqc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL3VKWVlpelN1/QTlZM0RDczBxUzRx/V3ZIZlpnNC5qcGc"],
+  ["mcu",2024,"Doctor Strange in the Multiverse of Madness","FB","Reseña: Tras No Way Home en 2024, Stephen Strange y America Chavez huyen a través de distintas realidades para proteger el poder del multiverso.","https://imgs.search.brave.com/ax5guK3ySoRJPSC1bBoSzZvyqZEve6reVYpNxNa_BzA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9wcmV2/aWV3LnJlZGQuaXQv/b2ZmaWNpYWwtcG9z/dGVyLWZvci1kb2N0/b3Itc3RyYW5nZS1p/bi10aGUtbXVsdGl2/ZXJzZS1vZi12MC1n/OGdlaWcxb25vaDgx/LmpwZz93aWR0aD02/NDAmY3JvcD1zbWFy/dCZhdXRvPXdlYnAm/cz1hNGRlN2ZhY2Q3/YzU2ZDBhNzQxNjhh/YjMzODJmMGE0YzZh/ZGMyY2Y1"],
+  ["mcu",2024,"Hawkeye","S","Reseña: En la Navidad de 2024, Clint Barton intenta pasar las fiestas en Nueva York con su familia pero debe aliarse con Kate Bishop.","https://imgs.search.brave.com/23J1mQpR0V8P-05mhJvY0iiXK0atX8bp6HO8ZWDIgRo/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL2NWU1NiaFBH/ZFZxVzNZVmxrMld1/UU44dFUxRC5qcGc"],
+  ["mcu",2025,"Moon Knight","S","Reseña: En 2025, Steven Grant descubre que comparte cuerpo con el mercenario Marc Spector y que ambos están ligados al dios lunar Khonshu.","https://imgs.search.brave.com/XV_QRCw1wu4pXfuZQVjFFC35KGBdLsqHKt00Z8uhIOI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/c3VwZXJoZXJvaHlw/ZS5jb20vd3AtY29u/dGVudC91cGxvYWRz/L3NpdGVzLzQvMjAy/Mi8wNS9tb29uLWtu/aWdodC1wb3N0ZXIu/anBn"],
+  ["mcu",2025,"Black Panther: Wakanda Forever","F","Reseña: Tras la muerte del rey T'Challa, Shuri y los líderes de Wakanda deben proteger su nación cuando surge una amenaza submarina liderada por Namor.","https://imgs.search.brave.com/O-18C8v98YF_50RQeU9i4zeDDHrCJu-qPXFk5fwAigA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9wcmV2/aWV3LnJlZGQuaXQv/b2ZmaWNpYWwtcG9z/dGVyLWZvci1ibGFj/ay1wYW50aGVyLXdh/a2FuZGEtZm9yZXZl/ci12MC1zdnNkZjZv/cTlscjkxLmpwZz93/aWR0aD02NDAmY3Jv/cD1zbWFydCZhdXRv/PXdlYnAmcz01MWE1/NzU4YjkwYWFiODI3/Yjc0ZjM3Njc2YjRj/OTYzOWJkZjQxYjNl"],
+  ["mcu",2025,"Echo","S","Reseña: Maya Lopez regresa a su ciudad natal en Oklahoma para reconectar con sus raíces y su familia.","https://imgs.search.brave.com/VezAiGTTIclAdcVMnSGbccfaX6kKq02-wZnN6wvHf0M/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9wcmV2/aWV3LnJlZGQuaXQv/b2ZmaWNpYWwtcG9z/dGVyLWZvci1tYXJ2/ZWwtc3R1ZGlvcy1l/Y2hvLXYwLW1uNmg5/NG1pcDV5YjEuanBn/P3dpZHRoPTY0MCZj/cm9wPXNtYXJ0JmF1/dG89d2VicCZzPWIy/MmRmNGIwNjRhZjZj/N2FiYjllODExNDgz/NmNkMDg0N2M2YTEy/YzI"],
+  ["mcu",2025,"She-Hulk: Attorney at Law","S","Reseña: La abogada Jennifer Walters obtiene poderes gamma similares a los de Hulk y encabeza una división legal de casos sobrehumanos.","https://imgs.search.brave.com/Fy3WzT2cai72WCmjP7bT8ZTXvekGCFv0Jm1I5mjgOAI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9wcmV2/aWV3LnJlZGQuaXQv/b2ZmaWNpYWwtcG9z/dGVyLWZvci1zaGUt/aHVsay1hdHRvcm5l/eS1hdC1sYXctdjAt/aGppd3dqejd6MzA5/MS5qcGc_d2lkdGg9/NjQwJmNyb3A9c21h/cnQmYXV0bz13ZWJw/JnM9MTJlYjFjZmQy/NWZlZjUzZjU5YzRh/MGU1ZmJjNGQxZTVh/MTJkNjE4NA"],
+  ["mcu",2025,"Ms. Marvel","S","Reseña: Kamala Khan, una joven fanática de los superhéroes en Jersey City, descubre un brazalete místico que despierta sus propios poderes.","https://imgs.search.brave.com/Ff8Vj8eGtDrVJU1E6pVIo2cJjnuWj8BrcB9w3zlY4PI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9wcmV2/aWV3LnJlZGQuaXQv/b2ZmaWNpYWwtcG9z/dGVyLWZvci1tcy1t/YXJ2ZWwtdjAtbTl2/b2w1c3QyaXU4MS5q/cGc_d2lkdGg9NjQw/JmNyb3A9c21hcnQm/YXV0bz13ZWJwJnM9/NTJhZjJkNWYxYzZj/M2NhYjg0OTAzMjRj/MGExZWVlMTM1M2Jj/MTQ2Zg"],
+  ["mcu",2025,"Ironheart","S","Reseña: Riri Williams regresa a Chicago y perfecciona una armadura de alta tecnología inspirada en el legado de Tony Stark.","https://imgs.search.brave.com/Ff8Vj8eGtDrVJU1E6pVIo2cJjnuWj8BrcB9w3zlY4PI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9wcmV2/aWV3LnJlZGQuaXQv/b2ZmaWNpYWwtcG9z/dGVyLWZvci1tcy1t/YXJ2ZWwtdjAtbTl2/b2w1c3QyaXU4MS5q/cGc_d2lkdGg9NjQw/JmNyb3A9c21hcnQm/YXV0bz13ZWJwJnM9/NTJhZjJkNWYxYzZj/M2NhYjg0OTAzMjRj/MGExZWVlMTM1M2Jj/MTQ2Zg"],
+  ["mcu",2025,"Werewolf by Night","S","Reseña: Especial en blanco y negro ambientado en una reunión secreta de cazadores de monstruos.","https://imgs.search.brave.com/5gNZRCTsinP7to8ET4N_X7pvnCqC4j2AiOZArATuRAc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zdGF0/aWMwLmNvbGxpZGVy/aW1hZ2VzLmNvbS93/b3JkcHJlc3Mvd3At/Y29udGVudC91cGxv/YWRzLzIwMjIvMDkv/d2VyZXdvbGYtYnkt/bmlnaHQtcG9zdGVy/LmpwZWc_cT01MCZm/aXQ9Y3JvcCZ3PTc1/MCZkcHI9MS41"],
+  ["mcu",2025,"Thor: Love and Thunder","F","Reseña: Thor emprende un viaje para detener a Gorr el Carnicero de Dioses, reencontrándose con Jane Foster convertida en Mighty Thor.","https://imgs.search.brave.com/T5APxc9MqBPrULOb0kyWEUVb4GODJCHBcdh3NOI5Nak/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9wcmV2/aWV3LnJlZGQuaXQv/b2ZmaWNpYWwtcG9z/dGVyLWZvci10aG9y/LWxvdmUtYW5kLXRo/dW5kZXItdjAtNzZn/OTl5eTl4YjE5MS5q/cGc_d2lkdGg9NjQw/JmNyb3A9c21hcnQm/YXV0bz13ZWJwJnM9/NGU4ODI5MjRkNGM0/OTY0YmQ0NmQwYWVm/NzUzODVlNDRiMzZh/MGVjNw"],
+  ["mcu",2025,"Secret Invasion","S","Reseña: Nick Fury regresa a la Tierra para desarticular una infiltración encubierta de facciones Skrull.","https://imgs.search.brave.com/E9EDGfYMSEG_95DiZLV4qU-8x3FURiMg-sJ2UgE7WSQ/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL2ppY2pud1lW/c3RmbjVTemhBOGlj/VkY4S3lqTi5qcGc"],
+  ["mcu",2025,"The Guardians of the Galaxy Holiday Special","S","Reseña: Mantis y Drax viajan a la Tierra en Navidad para conseguir un regalo que anime a Peter Quill.","https://imgs.search.brave.com/IBUkLnUlbg9STdg26rypHl78GTpk8iZ3j1vV62a4Eh8/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL3dCYU9qWW9B/bVQ3aFZaRUt5WnNr/aGlkUjBaSi5qcGc"],
+  ["mcu",2026,"The Marvels","FB","Reseña: Carol Danvers, Kamala Khan y Monica Rambeau quedan entrelazadas cuánticamente al usar sus poderes y deben formar equipo.","https://imgs.search.brave.com/d1zgx6CvCvPgTh9cw7kc32okDeVV_dMBYrRi59JZi5A/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL2pMQ1NkNHlk/aXo0MnB5SnFCNXBj/U003OWl2My5qcGc"],
+  ["mcu",2026,"Ant-Man and the Wasp: Quantumania","F","Reseña: Scott Lang, Hope, Hank, Janet y Cassie son arrastrados al Reino Cuántico, donde enfrentan a Kang el Conquistador.","https://imgs.search.brave.com/QGj6eG58xBSwNGMSNaXWAnBxclA7Kiq_5FSFAj8Icbc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL25LVjZ4cTNy/SzNUQ1FjbW9DTkZM/cVYwVXZsNS5qcGc"],
+  ["mcu",2026,"Guardians of the Galaxy Vol. 3","F","Reseña: Peter Quill reúne a los Guardianes en una misión crítica para salvar la vida de Rocket y enfrentar el pasado de su creador.","https://imgs.search.brave.com/OWuxoWS0nC5DswSpFgm5mmZOclKMGFp0BK6S2Q7ddJM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzhmLzVi/LzA5LzhmNWIwOTBj/ZjNmMGNhODFlYzI5/OTIyMzY4N2JhMmNk/LmpwZw"],
+  ["mcu",2026,"Agatha All Along","S","Reseña: Privada de su magia, Agatha Harkness reúne a un aquelarre de brujas para recorrer la Senda de las Brujas.","https://imgs.search.brave.com/s7JcdoYgz9_SMaRD3kbaAQ_C-jkGlEHbPJzvHiJfiPc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL29SZGVHM1VC/QXk0V0E2SkRNc0xt/Tk1BTjhScy5qcGc"],
+  ["mcu",2027,"Captain America: Brave New World","F","Reseña: Sam Wilson asume el manto del Capitán América en medio de tensiones geopolíticas y una conspiración global.","https://imgs.search.brave.com/boFdEwY5AZpcLLv8wUWnFizs7xgbjWciZ1GoDVJ3mvs/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlLzVmdHVUdXRq/aHBQcDdNYWVjT29F/MmNteVlTVC5qcGc"],
+  ["mcu",2027,"Daredevil: Born Again (T1)","S","Reseña: Matt Murdock y Wilson Fisk vuelven a enfrentarse en un choque político y callejero por Nueva York, con el regreso oficial de Frank Castle (Jon Bernthal).","https://imgs.search.brave.com/tflMpWomwFnU_D45BZMaJ84exRmEwkthrec2uzwY85o/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlLzlsTHVoVjcw/M0hHQ2JuejZGeG5x/Q3dJd3pBWi5qcGc"],
+  ["mcu",2027,"Thunderbolts*","F","Reseña: Un grupo de antihéroes y exoperativos es reunido en una misión de alto riesgo bajo el control de Valentina Allegra de Fontaine.","https://imgs.search.brave.com/SthvsbDjQdF2ZXAy0uX6j7ywFAz2eiR4_Pl0b-xybdA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4u/ZGlzcGxhdGUuY29t/L2FydHdvcmsvMjAy/NS0wNi0xMS8wMGI2/NGUzNjk5OTJlNDVh/ZmYyMDZmNjllM2I5/NGUwNl80NTM2ODhk/ZmU4MzE1ZjM5MjQ5/YWE5OWI5MTQzMzVl/My5qcGc_c3BlZWRz/aXplPXdfNjgx"],
+  ["mcu",2027,"Wonder Man (T1)","S","Reseña: Simon Williams persigue su sueño como actor en Hollywood mientras lidia con habilidades extraordinarias.","https://imgs.search.brave.com/xd6bwcu5iAwKSna78F5DBw-f3DjIF0xrAWZYDOsWr8Q/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlLzZPc3Qyekpx/eWNvMTJwcTJZelB1/WXBHd0Y4dy5qcGc"],
+  ["mcu",2027,"Daredevil: Born Again (T2)","S","Reseña: Continúa el pulso entre la ley, la justicia vigilante y el poder en Nueva York.","https://imgs.search.brave.com/CRIeh-HLj9HIsPE5Js-oPHVpr8XkJK-aA-7Az_ZPp6E/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL2RuNWFkVFhV/cFhQc1RvTFJMeVhW/eURrRXdWeC5qcGc"],
+  ["mcu",2027,"The Punisher: One Last Kill","S","Reseña: Especial en Disney+ protagonizado por Frank Castle (Jon Bernthal) en una nueva misión implacable dentro del UCM.","https://imgs.search.brave.com/_EI5Gv_pv_5omhwaVJZH0i4uALsa2Qj-YMoYnPoqzbc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL3k5T0RtSHZr/aTdtOUh6OElCNmho/ZzNWZ1NxZy5qcGc"],
+  ["mcu",2027,"VisionQuest","S","Reseña: Serie centrada en el camino y la identidad de Visión.","https://imgs.search.brave.com/fFz8CFqGiLqC4HICuwP7AeofSXLsougrtmxHz1S1thE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL3hLMjdsNXV3/YVZ5WlNsRU5Xbm1M/bFd3RFFOUy5qcGc"],
+  ["mcu",2028,"Spider-Man: Brand New Day","FB","Reseña: Situada en la franja cronológica reciente de 2028 tras No Way Home, Peter Parker continúa su camino junto a Frank Castle (Jon Bernthal).","https://imgs.search.brave.com/WLq8gqOD_LB7URIm73HzwJvfvKJd467rbTsOrV7P3SY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlLzVlSEoyUEV2/anhkVnQ0OWtETkxh/Z1BKYmZZNC5qcGc"],
   ["mcu",2028,"Avengers: Doomsday","FB","Reseña: Gran evento multiversal ambientado en 2028 tras Brand New Day y Thunderbolts*, con la llegada del Doctor Doom y el choque entre realidades, incluyendo a los X-Men de Tierra-10005 y Tierra-828."],
   ["mcu",9000,"Avengers: Secret Wars","FB","Reseña: Clímax de la Saga del Multiverso donde convergen héroes y mundos de diferentes líneas temporales."],
   ["mcu",9000,"Armor Wars / Blade Reboot / Shang-Chi 2","F","Reseña: Próximos largometrajes previstos en la planificación de Marvel Studios."],
@@ -690,12 +724,12 @@ try {
   customCovers = {};
 }
 
-let hiddenItems = new Set();
+let hiddenImages = new Set();
 try {
   const arr = JSON.parse(localStorage.getItem(HIDDEN_KEY) || "[]");
-  if(Array.isArray(arr)) hiddenItems = new Set(arr);
+  if(Array.isArray(arr)) hiddenImages = new Set(arr);
 } catch {
-  hiddenItems = new Set();
+  hiddenImages = new Set();
 }
 
 const itemKey = e => `${e[0]}::${e[1]}::${e[2]}`;
@@ -704,7 +738,7 @@ const esc = s => String(s).replace(/[&<>"']/g, m => ({ "&":"&amp;","<":"&lt;",">
 
 function saveHidden(){
   try {
-    localStorage.setItem(HIDDEN_KEY, JSON.stringify([...hiddenItems]));
+    localStorage.setItem(HIDDEN_KEY, JSON.stringify([...hiddenImages]));
   } catch {}
 }
 
@@ -762,6 +796,7 @@ const btnShowHidden = document.getElementById("btnShowHidden");
 
 const modalBackdrop = document.getElementById("modalBackdrop");
 const modalBox = document.getElementById("modalBox");
+const modalHero = document.getElementById("modalHero");
 const modalImg = document.getElementById("modalImg");
 const modalMeta = document.getElementById("modalMeta");
 const modalTitle = document.getElementById("modalTitle");
@@ -781,10 +816,22 @@ let pendingUploadItem = null;
 
 const cardLookup = new Map();
 const imgsByKey = new Map();
+const framesByKey = new Map();
+const toggleBtnsByKey = new Map();
 
 function registerImg(key, img){
   if(!imgsByKey.has(key)) imgsByKey.set(key, []);
   imgsByKey.get(key).push(img);
+}
+
+function registerFrame(key, frame){
+  if(!framesByKey.has(key)) framesByKey.set(key, []);
+  framesByKey.get(key).push(frame);
+}
+
+function registerToggleBtn(key, btn){
+  if(!toggleBtnsByKey.has(key)) toggleBtnsByKey.set(key, []);
+  toggleBtnsByKey.get(key).push(btn);
 }
 
 function refreshImagesForKey(key, item){
@@ -913,21 +960,36 @@ modalSaveUrl.onclick = () => {
 };
 
 function updateHiddenButton(){
-  const count = hiddenItems.size;
-  btnShowHidden.textContent = `Mostrar ocultas (${count})`;
+  const count = hiddenImages.size;
+  btnShowHidden.textContent = `Mostrar imágenes ocultas (${count})`;
   btnShowHidden.classList.toggle("hide", count === 0);
 }
 
-function hideItem(item){
+function syncImageVisibilityUI(key){
+  const isOff = hiddenImages.has(key);
+  (framesByKey.get(key) || []).forEach(fr => fr.classList.toggle("img-off", isOff));
+  (toggleBtnsByKey.get(key) || []).forEach(btn => {
+    btn.textContent = isOff ? "👁" : "🙈";
+    btn.title = isOff ? "Mostrar imagen" : "Ocultar imagen";
+    btn.classList.toggle("img-hidden", isOff);
+  });
+  if(selectedItem && itemKey(selectedItem) === key){
+    modalHero.classList.toggle("img-off", isOff);
+    modalHide.textContent = isOff ? "👁 Mostrar imagen" : "🙈 Ocultar imagen";
+  }
+}
+
+function toggleItemImage(item){
   const k = itemKey(item);
-  hiddenItems.add(k);
+  if(hiddenImages.has(k)) hiddenImages.delete(k);
+  else hiddenImages.add(k);
   saveHidden();
   updateHiddenButton();
-  buildMatrix();
+  syncImageVisibilityUI(k);
 }
 
 btnShowHidden.onclick = () => {
-  hiddenItems.clear();
+  hiddenImages.clear();
   saveHidden();
   updateHiddenButton();
   buildMatrix();
@@ -945,10 +1007,13 @@ function openReviewModal(cardEl, e){
   const yrLabel = yr >= 9000 ? "Próximamente" : String(yr);
   const typeLabel = kind.includes("S") ? "Serie / Especial" : "Película";
   const currentUrl = customCovers[k] || e[5] || "";
+  const isOff = hiddenImages.has(k);
 
   modalBox.style.setProperty("--accent", color);
   modalImg.src = getPosterSrc(e);
   modalImg.alt = title;
+  modalHero.classList.toggle("img-off", isOff);
+  modalHide.textContent = isOff ? "👁 Mostrar imagen" : "🙈 Ocultar imagen";
   modalMeta.textContent = `${yrLabel} · ${typeLabel} · ${laneName} (${sub})`;
   modalTitle.textContent = title;
   modalReview.textContent = review || "Sin reseña disponible.";
@@ -972,9 +1037,7 @@ document.addEventListener("keydown", ev => {
 
 modalHide.onclick = () => {
   if(!selectedItem) return;
-  const item = selectedItem;
-  closeReviewModal();
-  hideItem(item);
+  toggleItemImage(selectedItem);
 };
 
 modalPaste.onclick = () => {
@@ -1005,7 +1068,7 @@ function computeColumnWidths(){
     let maxInCol = 1;
     L.forEach(([id]) => {
       if(!activeLanes.has(id)) return;
-      const count = E.filter(e => e[0] === id && e[1] === y && !hiddenItems.has(itemKey(e))).length;
+      const count = E.filter(e => e[0] === id && e[1] === y).length;
       if(count > maxInCol) maxInCol = count;
     });
     return Math.max(176, maxInCol * 152 + (maxInCol - 1) * 10 + 18);
@@ -1015,6 +1078,8 @@ function computeColumnWidths(){
 function buildMatrix(){
   cardLookup.clear();
   imgsByKey.clear();
+  framesByKey.clear();
+  toggleBtnsByKey.clear();
   activeCard = null;
   matrix.innerHTML = "";
 
@@ -1037,7 +1102,7 @@ function buildMatrix(){
     lh.append(mk("strong", "", name), mk("small", "", sub));
     matrix.append(lh);
 
-    const laneItems = E.filter(e => e[0] === id && !hiddenItems.has(itemKey(e)));
+    const laneItems = E.filter(e => e[0] === id);
 
     years.forEach((y, idx) => {
       const cell = mk("div", "grid-cell" + (visibleLane ? "" : " hide"));
@@ -1048,6 +1113,7 @@ function buildMatrix(){
       laneItems.filter(item => item[1] === y).forEach(item => {
         const [, yr, title, kind] = item;
         const k = itemKey(item);
+        const isOff = hiddenImages.has(k);
 
         const card = mk("button", "cover-card");
         card.type = "button";
@@ -1060,16 +1126,18 @@ function buildMatrix(){
         topLeft.append(mk("span", "card-yr", yr >= 9000 ? "FUTURO" : String(yr)));
         if(kind.includes("B")) topLeft.append(mk("span", "card-fork", "⑂"));
 
-        const hideBtn = mk("span", "hide-btn", "🙈");
-        hideBtn.title = "Ocultar este título";
+        const hideBtn = mk("span", "hide-btn" + (isOff ? " img-hidden" : ""), isOff ? "👁" : "🙈");
+        hideBtn.title = isOff ? "Mostrar imagen" : "Ocultar imagen";
+        registerToggleBtn(k, hideBtn);
         hideBtn.onclick = ev => {
           ev.stopPropagation();
-          hideItem(item);
+          toggleItemImage(item);
         };
 
         top.append(topLeft, hideBtn);
 
-        const frame = mk("div", "card-frame");
+        const frame = mk("div", "card-frame" + (isOff ? " img-off" : ""));
+        registerFrame(k, frame);
         const img = document.createElement("img");
         img.src = getPosterSrc(item);
         img.alt = title;
