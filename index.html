@@ -540,9 +540,8 @@ const FORKS = [
   { fromLane:"ff828", fromTitle:"Cruce hacia Avengers: Doomsday", toLane:"mcu", toTitle:"Avengers: Doomsday" }
 ];
 
-// Formato: [lane, year, title, kind, review, imgUrl]
-// year representa la época o año cronológico en la historia (no la fecha de estreno cuando difieren).
-// 9001 se muestra como "SALTO" para los saltos al Vacío ubicados tras la última película de cada línea.
+// Formato: [lane, year, title, kind, review, imgUrl, hideYearInBadge]
+// hideYearInBadge = true coloca el cuadrado justo tras la última película correspondiente sin mostrar el año en la tarjeta.
 const E = [
   // --- MCU · SAGRADA LÍNEA ---
   ["mcu",1943,"Captain America: The First Avenger","F","Reseña: Steve Rogers, un joven frágil de Brooklyn, se somete a un experimento con el suero del supersoldado para combatir a Hydra y a Cráneo Rojo durante la Segunda Guerra Mundial, convirtiéndose en el primer Vengador.","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDauD1MA-G-Wct0Jktq02DIOWQ0oSJ97HzyBRwnVblpw&s=10"],
@@ -565,7 +564,7 @@ const E = [
   ["mcu",2015,"Daredevil (T2)","S","Reseña: Matt Murdock choca con los métodos letales de Frank Castle (Punisher) mientras reaparece Elektra y La Mano amplía su presencia en la ciudad.","https://imgs.search.brave.com/WW59mBheCFnXFrWeS26iNf7QiU7UsxLqRS9xBeCjf_Q/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2EzLzM3/LzgzL2EzMzc4MzIy/ODU3NjUzMjVlYWU2/ZjhmNDQ3MjkwZjJj/LmpwZw"],
   ["mcu",2015,"Luke Cage (T1)","S","Reseña: Dotado de piel irrompible y gran fuerza tras un experimento, Luke Cage intenta llevar una vida discreta en Harlem hasta que la corrupción local lo obliga a defender el barrio.","https://imgs.search.brave.com/eUVMqbnBDuytJS77eZtAac3_NjSq3ZWWDWeL-nJDFSw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/ZXNwYWNpb21hcnZl/bGl0YS5jb20vaW1h/Z2VzL2ZpY2hhcy9s/dWtlLWNhZ2UtdGVt/cG9yYWRhLTEtcG9z/dGVyLndlYnA"],
   ["mcu",2016,"Captain America: Civil War","F","Reseña: En 2016, las consecuencias de las misiones de los Vengadores provocan los Acuerdos de Sokovia y dividen al equipo en dos bandos liderados por Capitán América e Iron Man.","https://imgs.search.brave.com/raltGSRBLFUkCnt_J2eWvKzFkTAIBmb5OXazynR5njU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90aHVt/Yi53aWtpbWVkaWEu/b3JnL3dpa2lwZWRp/YS9lbi90aHVtYi81/LzUzL0NhcHRhaW5f/QW1lcmljYV9DaXZp/bF9XYXJfcG9zdGVy/LmpwZy8yNTBweC1D/YXB0YWluX0FtZXJp/Y2FfQ2l2aWxfV2Fy/X3Bvc3Rlci5qcGc_/dXRtX3NvdXJjZT1l/bi53aWtpcGVkaWEu/b3JnJnV0bV9jYW1w/YWlnbj1wYXJzZXIm/dXRtX2NvbnRlbnQ9/dGh1bWJuYWls"],
-  ["mcu",2016,"Black Widow","F","Reseña: Tras los sucesos de Civil War en 2016, Natasha Romanoff regresa a su pasado en la Habitación Roja para reunirse con su familia adoptiva y detener a Dreykov.","https://imgs.search.brave.com/2tD6KOmcjku0LCmLYMuLLR4BI5jydlwgpnInmJJdj_g/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90aHVt/Yi53aWtpbWVkaWEu/b3JnL3dpa2lwZWRp/YS9lbi90aHVtYi9l/L2U5L0JsYWNrX1dp/ZG93XygyMDIxX2Zp/bG0pX3Bvc3Rlci5q/cGcvMjUwcHgtQmxh/Y2tfV2lkb3dfKDIw/MjFfZmlsbSlfcG9z/dGVyLmpwZz91dG1f/c291cmNlPWVuLndp/a2lwZWRpYS5vcmcm/dXRtX2NhbXBhaWdu/PXBhcnNlciZ1dG1f/Y29udGVudD10aHVt/Ym5haWw"],
+  ["mcu",2016,"Black Widow","F","Reseña: Tras los sucesos de Civil War en 2016, Natasha Romanoff regresa a su pasado en la Habitación Roja para reunirse con su familia adoptiva y detener a Dreykov.","https://imgs.search.brave.com/2tD6KOmcjku0LCmLYMuLLR4BI5jydlwgpnInmJJdj_g/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90aHVt/Yi53aWtpbWVkaWEu/b3JnL3dpa2lwZWRp/YS9lbi90aHVtYi9l/L2U5L0JsYWNrX1dp/ZG93XygyMDIxX2Zp/bG0pX3Bvc3Rlci5q/cGcvMjUwcHgtQmxh/Y2tfV2lkb3dfKDIw/MjFfZmlsbSlfcG9z/dGVyLmpwZz91dG1f/c291cmNlPWVuLndp/a2lwZWRpYS5vcmcm/dXRtX2NhbXBhaWduPXBhcnNlciZ1dG1f/Y29udGVudD10aHVt/Ym5haWw"],
   ["mcu",2016,"Black Panther","F","Reseña: En 2016, T'Challa vuelve a Wakanda para asumir el trono como rey y Black Panther, pero su liderazgo y la política de aislamiento del país son desafiados por Erik Killmonger.","https://imgs.search.brave.com/BLVshkiUdWHhLgiYR6bBwM-YMf9aDofX6URXUYI0Yuw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvZW4vZC9kNi9C/bGFja19QYW50aGVy/XyhmaWxtKV9wb3N0/ZXIuanBnP3V0bV9z/b3VyY2U9ZW4ud2lr/aXBlZGlhLm9yZyZ1/dG1fY2FtcGFpZ249/cGFyc2VyJnV0bV9j/b250ZW50PXRodW1i/bmFpbF91bnNjYWxl/ZA"],
   ["mcu",2016,"Spider-Man: Homecoming","F","Reseña: En 2016, Peter Parker (Tom Holland) intenta demostrar que está listo para ser más que un héroe local bajo la supervisión de Tony Stark mientras enfrenta al Buitre.","https://imgs.search.brave.com/DUKmlDnoNVxPUF8-QhM7arzcJY23XXZ70B-0DRxco-c/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2I5L2Jk/L2YwL2I5YmRmMGU1/NDZjNjQxMzU0ZDc3/MmViMGY1ZmE5NGM4/LmpwZw"],
   ["mcu",2016,"Doctor Strange","F","Reseña: Entre finales de 2016 y 2017, tras un accidente que arruina su carrera como neurocirujano, Stephen Strange viaja a Kamar-Taj y descubre las artes místicas.","https://imgs.search.brave.com/Ft8E74U_hiLPoMGujIqqjpVKsCHtMqGuFer4IE2HX24/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL00v/TVY1Qk5qZ3dOekF6/TmprMU5sNUJNbDVC/YW5CblhrRnRaVGd3/TXpRMk5qSTFPVEVA/LmpwZw"],
@@ -700,7 +699,7 @@ const E = [
   // --- 4 FANTÁSTICOS: 3 LÍNEAS SEPARADAS ---
   ["ff2005",2005,"Fantastic Four (2005)","F","Reseña: En 2005, Reed Richards, Sue Storm, Johnny Storm y Ben Grimm obtienen superpoderes tras una tormenta cósmica y enfrentan a Víctor von Doom. (Línea 1 independiente)."],
   ["ff2005",2007,"Fantastic Four: Rise of the Silver Surfer","F","Reseña: En 2007, los Cuatro Fantásticos enfrentan la llegada de Silver Surfer y a Galactus. (Continúa la Línea 1 independiente)."],
-  ["ff2005",9001,"Antorcha Humana en El Vacío","FB","Reseña: Salto posterior a Fantastic Four: Rise of the Silver Surfer: Chris Evans retoma a Johnny Storm / Antorcha Humana (de la película de 2005) en El Vacío dentro de Deadpool & Wolverine."],
+  ["ff2005",2009,"Antorcha Humana en El Vacío","FB","Reseña: Salto posterior a Fantastic Four: Rise of the Silver Surfer: Chris Evans retoma a Johnny Storm / Antorcha Humana (de la película de 2005) en El Vacío dentro de Deadpool & Wolverine.",undefined,true],
 
   ["ff2015",2015,"Fantastic Four (2015)","F","Reseña: En 2015, un grupo de jóvenes científicos viaja a Planet Zero y adquiere habilidades incontrolables. (Línea 2 independiente)."],
 
@@ -711,16 +710,24 @@ const E = [
   ["blade",1998,"Blade","F","Reseña: En 1998, Eric Brooks, un híbrido humano-vampiro, libra una guerra secreta contra los vampiros y Deacon Frost."],
   ["blade",2002,"Blade II","F","Reseña: En 2002, Blade se alía con un grupo de vampiros de élite y Whistler para combatir a los Segadores."],
   ["blade",2004,"Blade: Trinity","F","Reseña: En 2004, Blade se une a los cazadores humanos Nightstalkers para derrotar a Drácula."],
-  ["blade",9001,"Blade en El Vacío","FB","Reseña: Salto posterior a Blade: Trinity: Wesley Snipes retoma a Blade en el Vacío dentro de Deadpool & Wolverine."],
+  ["blade",2005,"Blade en El Vacío","FB","Reseña: Salto posterior a Blade: Trinity: Wesley Snipes retoma a Blade en el Vacío dentro de Deadpool & Wolverine.",undefined,true],
 
   ["dd03",2003,"Daredevil (Ben Affleck)","F","Reseña: En 2003, el abogado ciego Matt Murdock combate el crimen de noche como Daredevil en Nueva York."],
   ["dd03",2005,"Elektra (Jennifer Garner)","F","Reseña: En 2005, resucitada tras los eventos de Daredevil, Elektra Natchios trabaja como asesina a sueldo y protege a una joven de La Mano."],
-  ["dd03",9001,"Elektra en El Vacío","FB","Reseña: Salto posterior a Elektra (Jennifer Garner): reaparece como Elektra en el Vacío dentro de Deadpool & Wolverine."]
+  ["dd03",2006,"Elektra en El Vacío","FB","Reseña: Salto posterior a Elektra (Jennifer Garner): reaparece como Elektra en el Vacío dentro de Deadpool & Wolverine.",undefined,true]
 ];
 
-function formatYearLabel(yr){
-  if(yr === 9001) return "SALTO";
+function getCardBadge(e){
+  if(e[6]) return "SALTO";
+  const yr = e[1];
+  return yr >= 9000 ? "FUTURO" : String(yr);
+}
+
+function getColumnHeaderLabel(yr, laneId){
   if(yr >= 9000) return "FUTURO";
+  const hasJumpHere = E.some(item => item[1] === yr && item[6] && (!laneId || item[0] === laneId));
+  const hasNormalHere = E.some(item => item[1] === yr && !item[6] && (!laneId || item[0] === laneId));
+  if(hasJumpHere && !hasNormalHere) return "⑂";
   return String(yr);
 }
 
@@ -752,7 +759,7 @@ function saveHidden(){
 function defaultPoster(e){
   const [laneId, yr, title, kind] = e;
   const [, laneName, , color] = laneMap[laneId] || ["","","","#60a5fa"];
-  const yrTxt = formatYearLabel(yr);
+  const yrTxt = getCardBadge(e);
   const shortT = title.length > 24 ? title.slice(0,22) + "…" : title;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200">
     <defs>
@@ -1011,7 +1018,7 @@ function openReviewModal(cardEl, e){
   const [laneId, yr, title, kind, review] = e;
   const [, laneName, sub, color] = laneMap[laneId] || ["","","","#60a5fa"];
   const k = itemKey(e);
-  const yrLabel = yr === 9001 ? "Salto al Vacío" : (yr >= 9000 ? "Próximamente" : String(yr));
+  const yrLabel = e[6] ? "Salto al Vacío" : (yr >= 9000 ? "Próximamente" : String(yr));
   const typeLabel = kind.includes("S") ? "Serie / Especial" : "Película";
   const currentUrl = customCovers[k] || e[5] || "";
   const isOff = hiddenImages.has(k);
@@ -1099,7 +1106,7 @@ function buildMatrix(){
   years.forEach((y, idx) => {
     const th = mk("div", "yr-head");
     th.style.width = `${colWidths[idx]}px`;
-    th.append(mk("span", "yr-badge", formatYearLabel(y)));
+    th.append(mk("span", "yr-badge", getColumnHeaderLabel(y)));
     matrix.append(th);
   });
 
@@ -1120,7 +1127,7 @@ function buildMatrix(){
       cell.style.width = `${colWidths[idx]}px`;
 
       laneItems.filter(item => item[1] === y).forEach(item => {
-        const [, yr, title, kind] = item;
+        const [, , title, kind] = item;
         const k = itemKey(item);
         const isOff = hiddenImages.has(k);
 
@@ -1132,7 +1139,7 @@ function buildMatrix(){
 
         const top = mk("div", "card-top");
         const topLeft = mk("div", "card-top-left");
-        topLeft.append(mk("span", "card-yr", formatYearLabel(yr)));
+        topLeft.append(mk("span", "card-yr", getCardBadge(item)));
         if(kind.includes("B")) topLeft.append(mk("span", "card-fork", "⑂"));
 
         const hideBtn = mk("span", "hide-btn" + (isOff ? " img-hidden" : ""), isOff ? "👁" : "🙈");
