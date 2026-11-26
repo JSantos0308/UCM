@@ -541,7 +541,6 @@ const FORKS = [
 ];
 
 // Formato: [lane, year, title, kind, review, imgUrl, hideYearInBadge]
-// hideYearInBadge = true coloca el cuadrado justo tras la última película correspondiente sin mostrar el año en la tarjeta.
 const E = [
   // --- MCU · SAGRADA LÍNEA ---
   ["mcu",1943,"Captain America: The First Avenger","F","Reseña: Steve Rogers, un joven frágil de Brooklyn, se somete a un experimento con el suero del supersoldado para combatir a Hydra y a Cráneo Rojo durante la Segunda Guerra Mundial, convirtiéndose en el primer Vengador.","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDauD1MA-G-Wct0Jktq02DIOWQ0oSJ97HzyBRwnVblpw&s=10"],
@@ -1219,12 +1218,15 @@ function drawForks(){
   forksSvg.innerHTML = "";
 
   FORKS.forEach(fk => {
+    if(!activeLanes.has(fk.fromLane) || !activeLanes.has(fk.toLane)) return;
+
     const srcEl = cardLookup.get(`${fk.fromLane}::${fk.fromTitle}`);
     const dstEl = cardLookup.get(`${fk.toLane}::${fk.toTitle}`);
     if(!srcEl || !dstEl) return;
 
     const r1 = srcEl.getBoundingClientRect();
     const r2 = dstEl.getBoundingClientRect();
+    if(r1.width === 0 || r1.height === 0 || r2.width === 0 || r2.height === 0) return;
 
     const x1 = r1.right - boardRect.left;
     const y1 = r1.top + r1.height / 2 - boardRect.top;
