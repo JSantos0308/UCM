@@ -202,6 +202,30 @@ header p{margin:6px 0 0;color:var(--mut)}
   pointer-events:none;
 }
 
+/* Indicador de rama creada tras Days of Future Past */
+.branch-marker{
+  position:relative;
+  z-index:4;
+  width:168px;
+  flex:0 0 168px;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1.5px dashed #22d3ee;
+  background:rgba(8,24,38,.92);
+  box-shadow:0 0 18px rgba(34,211,238,.22);
+  color:#cffafe;
+  font-size:11px;
+  line-height:1.35;
+}
+.branch-marker strong{
+  display:block;
+  font:700 12px/1.2 Oswald,sans-serif;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+  color:#22d3ee;
+  margin-bottom:4px;
+}
+
 .cover-card{
   --k:var(--c);
   position:relative;
@@ -519,7 +543,7 @@ const L = [
   ["yfnsm",    "Your Friendly Neighborhood Spider-Man","Tierra-86445",                                    "#fb923c"],
   ["ssu",      "Universo Sony (SSU)",               "Tierra-688 (Venom, Morbius, Kraven)",              "#a3e635"],
   ["xorig",    "X-Men · Línea original",            "Tierra-41578",                                     "#2dd4bf"],
-  ["xmod",     "X-Men · Línea Modificada",          "Tierra-10005 (Línea luego de Days of Futur Past)", "#22d3ee"],
+  ["xmod",     "X-Men · Línea Modificada",          "Tierra-10005 (Línea luego de Days of Future Past)", "#22d3ee"],
   ["ff2005",   "4 Fantásticos (2005)",              "Tierra-121698",                                    "#34d399"],
   ["ff2015",   "4 Fantásticos (2015)",              "Tierra-15866",                                     "#4ade80"],
   ["ff828",    "4 Fantásticos (2025)",              "Tierra-828",                                       "#facc15"],
@@ -563,7 +587,7 @@ const E = [
   ["mcu",2015,"Daredevil (T2)","S","Reseña: Matt Murdock choca con los métodos letales de Frank Castle (Punisher) mientras reaparece Elektra y La Mano amplía su presencia en la ciudad.","https://imgs.search.brave.com/WW59mBheCFnXFrWeS26iNf7QiU7UsxLqRS9xBeCjf_Q/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2EzLzM3/LzgzL2EzMzc4MzIy/ODU3NjUzMjVlYWU2/ZjhmNDQ3MjkwZjJj/LmpwZw"],
   ["mcu",2015,"Luke Cage (T1)","S","Reseña: Dotado de piel irrompible y gran fuerza tras un experimento, Luke Cage intenta llevar una vida discreta en Harlem hasta que la corrupción local lo obliga a defender el barrio.","https://imgs.search.brave.com/eUVMqbnBDuytJS77eZtAac3_NjSq3ZWWDWeL-nJDFSw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/ZXNwYWNpb21hcnZl/bGl0YS5jb20vaW1h/Z2VzL2ZpY2hhcy9s/dWtlLWNhZ2UtdGVt/cG9yYWRhLTEtcG9z/dGVyLndlYnA"],
   ["mcu",2016,"Captain America: Civil War","F","Reseña: En 2016, las consecuencias de las misiones de los Vengadores provocan los Acuerdos de Sokovia y dividen al equipo en dos bandos liderados por Capitán América e Iron Man.","https://imgs.search.brave.com/raltGSRBLFUkCnt_J2eWvKzFkTAIBmb5OXazynR5njU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90aHVt/Yi53aWtpbWVkaWEu/b3JnL3dpa2lwZWRp/YS9lbi90aHVtYi81/LzUzL0NhcHRhaW5f/QW1lcmljYV9DaXZp/bF9XYXJfcG9zdGVy/LmpwZy8yNTBweC1D/YXB0YWluX0FtZXJp/Y2FfQ2l2aWxfV2Fy/X3Bvc3Rlci5qcGc_/dXRtX3NvdXJjZT1l/bi53aWtpcGVkaWEu/b3JnJnV0bV9jYW1w/YWlnbj1wYXJzZXIm/dXRtX2NvbnRlbnQ9/dGh1bWJuYWls"],
-  ["mcu",2016,"Black Widow","F","Reseña: Tras los sucesos de Civil War en 2016, Natasha Romanoff regresa a su pasado en la Habitación Roja para reunirse con su familia adoptiva y detener a Dreykov.","https://imgs.search.brave.com/2tD6KOmcjku0LCmLYMuLLR4BI5jydlwgpnInmJJdj_g/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90aHVt/Yi53aWtpbWVkaWEu/b3JnL3dpa2lwZWRp/YS9lbi90aHVtYi9l/L2U5L0JsYWNrX1dp/ZG93XygyMDIxX2Zp/bG0pX3Bvc3Rlci5q/cGcvMjUwcHgtQmxh/Y2tfV2lkb3dfKDIw/MjFfZmlsbSlfcG9z/dGVyLmpwZz91dG1f/c291cmNlPWVuLndp/a2lwZWRpYS5vcmcm/dXRtX2NhbXBhaWduPXBhcnNlciZ1dG1f/Y29udGVudD10aHVt/Ym5haWw"],
+  ["mcu",2016,"Black Widow","F","Reseña: Tras los sucesos de Civil War en 2016, Natasha Romanoff regresa a su pasado en la Habitación Roja para reunirse con su familia adoptiva y detener a Dreykov.","https://imgs.search.brave.com/2tD6KOmcjku0LCmLYMuLLR4BI5jydlwgpnInmJJdj_g/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90aHVt/Yi53aWtpbWVkaWEu/b3JnL3dpa2lwZWRp/YS9lbi90aHVtYi9l/L2U5L0JsYWNrX1dp/ZG93XygyMDIxX2Zp/bG0pX3Bvc3Rlci5q/cGcvMjUwcHgtQmxh/Y2tfV2lkb3dfKDIw/MjFfZmlsbSlfcG9z/dGVyLmpwZz91dG1f/c291cmNlPWVuLndp/a2lwZWRpYS5vcmcm/dXRtX2NhbXBhaWdu/PXBhcnNlciZ1dG1f/Y29udGVudD10aHVt/Ym5haWw"],
   ["mcu",2016,"Black Panther","F","Reseña: En 2016, T'Challa vuelve a Wakanda para asumir el trono como rey y Black Panther, pero su liderazgo y la política de aislamiento del país son desafiados por Erik Killmonger.","https://imgs.search.brave.com/BLVshkiUdWHhLgiYR6bBwM-YMf9aDofX6URXUYI0Yuw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvZW4vZC9kNi9C/bGFja19QYW50aGVy/XyhmaWxtKV9wb3N0/ZXIuanBnP3V0bV9z/b3VyY2U9ZW4ud2lr/aXBlZGlhLm9yZyZ1/dG1fY2FtcGFpZ249/cGFyc2VyJnV0bV9j/b250ZW50PXRodW1i/bmFpbF91bnNjYWxl/ZA"],
   ["mcu",2016,"Spider-Man: Homecoming","F","Reseña: En 2016, Peter Parker (Tom Holland) intenta demostrar que está listo para ser más que un héroe local bajo la supervisión de Tony Stark mientras enfrenta al Buitre.","https://imgs.search.brave.com/DUKmlDnoNVxPUF8-QhM7arzcJY23XXZ70B-0DRxco-c/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2I5L2Jk/L2YwL2I5YmRmMGU1/NDZjNjQxMzU0ZDc3/MmViMGY1ZmE5NGM4/LmpwZw"],
   ["mcu",2016,"Doctor Strange","F","Reseña: Entre finales de 2016 y 2017, tras un accidente que arruina su carrera como neurocirujano, Stephen Strange viaja a Kamar-Taj y descubre las artes místicas.","https://imgs.search.brave.com/Ft8E74U_hiLPoMGujIqqjpVKsCHtMqGuFer4IE2HX24/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL00v/TVY1Qk5qZ3dOekF6/TmprMU5sNUJNbDVC/YW5CblhrRnRaVGd3/TXpRMk5qSTFPVEVA/LmpwZw"],
@@ -675,18 +699,17 @@ const E = [
   ["ssu",2024,"Kraven the Hunter","F","Reseña: Relato de origen sobre Sergei Kravinoff antes de convertirse en un temido cazador."],
   ["ssu",9000,"Silk / Venom Animado","S","Reseña: Proyectos derivados en desarrollo dentro del catálogo arácnido/Sony."],
 
-  // --- UNIVERSO X-MEN (TRONCO COMÚN HASTA 1973) ---
+  // --- UNIVERSO X-MEN · LÍNEA ORIGINAL ---
   ["xorig",1962,"X-Men: First Class","F","Reseña: En 1962, durante la Guerra Fría, Charles Xavier y Erik Lehnsherr unen fuerzas para reclutar jóvenes mutantes y detener a Sebastian Shaw."],
-  ["xorig",1973,"X-Men: Days of Future Past","FB","Reseña: En 1973 la conciencia de Logan viaja al pasado: aquí se bifurca la línea temporal y nace la línea modificada."],
   ["xorig",1979,"X-Men Origins: Wolverine","F","Reseña: Explora el pasado de Logan y Victor Creed, su paso por el programa Equipo X y el experimento del adamantium."],
   ["xorig",2000,"X-Men","F","Reseña: Estrenada en 2000, Charles Xavier y sus X-Men defienden a Rogue mientras Magneto planea transformar a los líderes mundiales."],
   ["xorig",2003,"X2: X-Men United","F","Reseña: En 2003, tras un ataque a la Casa Blanca, William Stryker lanza una ofensiva contra la mansión de Xavier."],
   ["xorig",2006,"X-Men: The Last Stand","F","Reseña: En 2006, el debate sobre una supuesta cura mutante desata un conflicto mientras el poder de Fénix toma el control de Jean Grey."],
   ["xorig",2013,"The Wolverine","F","Reseña: En 2013, Logan viaja a Japón y se ve envuelto en intrigas familiares y corporativas."],
-  ["xorig",2023,"DOFP: Futuro Apocalíptico","FB","Reseña: En el futuro de 2023 dominado por los Centinelas, esta rama corre hacia su extinción hasta que la conciencia de Logan es enviada a 1973."],
+  ["xorig",2023,"X-Men: Days of Future Past","FB","Reseña: En el futuro de 2023 dominado por los Centinelas, los mutantes supervivientes envían la conciencia de Logan a 1973 para evitar el desastre, dando origen a la nueva línea modificada.","https://imgs.search.brave.com/L8i193judVquh1nAzDojawjs_11Yq6-yZqKgVHB9qCE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL3gzR0ltOEdh/dmxCWVV5MWx6aEdv/ZFV4YUZicy5qcGc"],
 
   // --- X-MEN · LÍNEA MODIFICADA (INCLUYE DEADPOOL Y LOGAN) ---
-  ["xmod",1983,"X-Men: Apocalypse","F","Reseña: En 1983, en la línea modificada tras 1973, despierta Apocalipsis y se consolida el nuevo elenco joven de los X-Men."],
+  ["xmod",1983,"X-Men: Apocalypse","F","Reseña: En 1983, en la línea modificada creada tras el viaje temporal de Days of Future Past, despierta Apocalipsis y se consolida el nuevo elenco joven de los X-Men."],
   ["xmod",1992,"X-Men: Dark Phoenix","F","Reseña: En 1992, Jean Grey absorbe una fuerza cósmica que desata su lado más oscuro dentro de la línea modificada."],
   ["xmod",2016,"Deadpool","F","Reseña: En 2016, dentro de la línea modificada, Wade Wilson obtiene factor curativo y se convierte en Deadpool."],
   ["xmod",2018,"Deadpool 2","FB","Reseña: En 2018, en la misma línea modificada, Wade visita la Mansión X y cruza caminos con los jóvenes X-Men, además de involucrarse con el futuro de Cable."],
@@ -1124,6 +1147,16 @@ function buildMatrix(){
       cell.dataset.lane = id;
       cell.style.setProperty("--c", color);
       cell.style.width = `${colWidths[idx]}px`;
+
+      // Cartel indicador justo antes de X-Men: Apocalypse (1983) en la línea modificada
+      if(id === "xmod" && y === 1979){
+        const marker = mk("div", "branch-marker");
+        marker.append(
+          mk("strong", "", "⑂ Nueva rama creada"),
+          document.createTextNode("Esta rama es creada luego de X-Men: Days of Future Past (2023 → 1973).")
+        );
+        cell.append(marker);
+      }
 
       laneItems.filter(item => item[1] === y).forEach(item => {
         const [, , title, kind] = item;
