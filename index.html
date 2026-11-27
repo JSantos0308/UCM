@@ -201,6 +201,9 @@ header p{margin:6px 0 0;color:var(--mut)}
   opacity:.24;
   pointer-events:none;
 }
+.grid-cell.no-line::before{
+  display:none;
+}
 
 /* Indicador de rama creada tras Days of Future Past */
 .branch-marker{
@@ -699,17 +702,17 @@ const E = [
   ["ssu",9000,"Silk / Venom Animado","S","Reseña: Proyectos derivados en desarrollo dentro del catálogo arácnido/Sony."],
 
   // --- UNIVERSO X-MEN · LÍNEA ORIGINAL ---
-  ["xorig",1962,"X-Men: First Class","F","Reseña: En 1962, durante la Guerra Fría, Charles Xavier y Erik Lehnsherr unen fuerzas para reclutar jóvenes mutantes y detener a Sebastian Shaw."],
-  ["xorig",1979,"X-Men Origins: Wolverine","F","Reseña: Explora el pasado de Logan y Victor Creed, su paso por el programa Equipo X y el experimento del adamantium."],
-  ["xorig",2000,"X-Men","F","Reseña: Estrenada en 2000, Charles Xavier y sus X-Men defienden a Rogue mientras Magneto planea transformar a los líderes mundiales."],
-  ["xorig",2003,"X2: X-Men United","F","Reseña: En 2003, tras un ataque a la Casa Blanca, William Stryker lanza una ofensiva contra la mansión de Xavier."],
-  ["xorig",2006,"X-Men: The Last Stand","F","Reseña: En 2006, el debate sobre una supuesta cura mutante desata un conflicto mientras el poder de Fénix toma el control de Jean Grey."],
-  ["xorig",2013,"The Wolverine","F","Reseña: En 2013, Logan viaja a Japón y se ve envuelto en intrigas familiares y corporativas."],
-  ["xorig",2023,"X-Men: Days of Future Past","FB","Reseña: En el futuro de 2023 dominado por los Centinelas, los mutantes supervivientes envían la conciencia de Logan a 1973 para evitar el desastre, dando origen a la nueva línea modificada.","https://imgs.search.brave.com/L8i193judVquh1nAzDojawjs_11Yq6-yZqKgVHB9qCE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL3gzR0ltOEdh/dmxCWVV5MWx6aEdv/ZFV4YUZicy5qcGc"],
+  ["xorig",1962,"X-Men: First Class","F","Reseña: En 1962, durante la Guerra Fría, Charles Xavier y Erik Lehnsherr unen fuerzas para reclutar jóvenes mutantes y detener a Sebastian Shaw.","https://imgs.search.brave.com/7NT0umSMr9WW8T1S6zdViXjoV987YbHB-ckyB81uRG4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlLzZmVVprTzQx/SzlLcmxaQnllUHF6/S2RKUWQ0NS5qcGc"],
+  ["xorig",1979,"X-Men Origins: Wolverine","F","Reseña: Explora el pasado de Logan y Victor Creed, su paso por el programa Equipo X y el experimento del adamantium.","https://imgs.search.brave.com/YLm9r30jl4DvQVHNzesrfMv-J5Ha_v1YR8aIW2Ruz6U/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL2psWFd6UFk5/a3BiVHpST2VYbHdy/UE1pb3EzbS5qcGc"],
+  ["xorig",2000,"X-Men","F","Reseña: Estrenada en 2000, Charles Xavier y sus X-Men defienden a Rogue mientras Magneto planea transformar a los líderes mundiales.","https://imgs.search.brave.com/Y7vZHC7INHNcfrWLVaY1uiTPpQagBURQ72efSnAhRxI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtd2l4bXAtZWQz/MGE4NmI4YzRjYTg4/Nzc3MzU5NGMyLndp/eG1wLmNvbS9mLzQx/MTRmYzE2LWQ0N2Yt/NGM0NC1hMTk3LTg2/YjIwNGMyMTIzOS9k/ZXluNHZ3LTA0OGMw/NTUzLTdjOGYtNDky/Yy1hM2Q2LWQ1YjFh/ZDVlMTcxOS5wbmcv/djEvZmlsbC93XzEy/ODAsaF8xOTAwLHFf/ODAsc3RycC8xX194/X21lbl9fMjAwMF9f/b2ZmaWNpYWxfcG9z/dGVyX2J5X3Nkc3Rh/cmtfZGV5bjR2dy1m/dWxsdmlldy5qcGc_/dG9rZW49ZXlKMGVY/QWlPaUpLVjFRaUxD/SmhiR2NpT2lKSVV6/STFOaUo5LmV5Snpk/V0lpT2lKMWNtNDZZ/WEJ3T2pkbE1HUXhP/RGc1T0RJeU5qUXpO/ek5oTldZd1pEUXhO/V1ZoTUdReU5tVXdJ/aXdpYVhOeklqb2lk/WEp1T21Gd2NEbzNa/VEJrTVRnNE9UZ3lN/alkwTXpjellUVm1N/R1EwTVRWbFlUQmtN/alpsTUNJc0ltOWlh/aUk2VzF0N0ltaGxh/V2RvZENJNklqdzlN/VGt3TUNJc0luQmhk/R2dpT2lJdlppODBN/VEUwWm1NeE5pMWtO/RGRtTFRSak5EUXRZ/VEU1TnkwNE5tSXlN/RFJqTWpFeU16a3Za/R1Y1YmpSMmR5MHdO/RGhqTURVMU15MDNZ/emhtTFRRNU1tTXRZ/VE5rTmkxa05XSXhZ/V1ExWlRFM01Ua3Vj/RzVuSWl3aWQybGtk/R2dpT2lJOFBURXlP/REFpZlYxZExDSmhk/V1FpT2xzaWRYSnVP/bk5sY25acFkyVTZh/VzFoWjJVdWIzQmxj/bUYwYVc5dWN5SmRm/US5PQ1Z2THdVd1M2/Qk9fN0NDLUk5YTRq/OGNYMk50WTB6elly/V19RdnhQS1RN"],
+  ["xorig",2003,"X2: X-Men United","F","Reseña: En 2003, tras un ataque a la Casa Blanca, William Stryker lanza una ofensiva contra la mansión de Xavier.","https://imgs.search.brave.com/QaO7XpnM6UU1Vum0x3NArfNdnjn-_iiA46sMnSuUDSU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL21aRlZ0WmFI/TkNBZVh6dEFmWHI0/d1BCUmRJRS5qcGc"],
+  ["xorig",2006,"X-Men: The Last Stand","F","Reseña: En 2006, el debate sobre una supuesta cura mutante desata un conflicto mientras el poder de Fénix toma el control de Jean Grey.","https://imgs.search.brave.com/MJA0y2L14uiSh3FlF5b515Fhj4Rrzqk92qU6yAtH30M/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlLzRXS05qOFhK/NzZraXFVUHd3aWdz/UHhORnFJaS5qcGc"],
+  ["xorig",2013,"The Wolverine","F","Reseña: En 2013, Logan viaja a Japón y se ve envuelto en intrigas familiares y corporativas.","https://imgs.search.brave.com/jWZr8dgLRWreUDS59rAUIP8sBG8zOleKiz1qxcUY4QE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlLzExTGQxdTZS/cWhDcGYyYTFiaUE5/bkVJdTZtSy5qcGc"],
+  ["xorig",2023,"X-Men: Days of Future Past","FB","Reseña: En el futuro de 2023 dominado por los Centinelas, los mutantes supervivientes envían la conciencia de Logan a 1973 para evitar el desastre, dando origen a la nueva línea modificada.","https://imgs.search.brave.com/Z-b54taZT6UxWqiyrsmHlJw6YuD1jbZS0P_Ydz9gSAc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL3c3a05QZGlq/UVZ0TnNiVTZYVnBW/M215d09xTy5qcGc"],
 
   // --- X-MEN · LÍNEA MODIFICADA (INCLUYE DEADPOOL Y LOGAN) ---
-  ["xmod",1983,"X-Men: Apocalypse","F","Reseña: En 1983, en la línea modificada creada tras el viaje temporal de Days of Future Past, despierta Apocalipsis y se consolida el nuevo elenco joven de los X-Men."],
-  ["xmod",1992,"X-Men: Dark Phoenix","F","Reseña: En 1992, Jean Grey absorbe una fuerza cósmica que desata su lado más oscuro dentro de la línea modificada."],
+  ["xmod",1983,"X-Men: Apocalypse","F","Reseña: En 1983, en la línea modificada creada tras el viaje temporal de Days of Future Past, despierta Apocalipsis y se consolida el nuevo elenco joven de los X-Men.","https://imgs.search.brave.com/ZHMAmQlaHMbe_v3EpCDVlkw0GJZ7hG5wqxtABTGLuI0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL3hldUl6cDVT/Q3l5YVVvYmJZbUtx/RnRLTzBpLmpwZw"],
+  ["xmod",1992,"X-Men: Dark Phoenix","F","Reseña: En 1992, Jean Grey absorbe una fuerza cósmica que desata su lado más oscuro dentro de la línea modificada.","https://imgs.search.brave.com/_aE4sMgpODgNC3tNZ-KWhMAMEfOQOQVuy-9PqHyvJpA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS50aGVtb3ZpZWRi/Lm9yZy90L3AvdzIy/MF9hbmRfaDMzMF9m/YWNlL2tOSFM0aHF6/U0xvb3pjdFlEbHBi/UTNxVzdYcS5qcGc"],
   ["xmod",2016,"Deadpool","F","Reseña: En 2016, dentro de la línea modificada, Wade Wilson obtiene factor curativo y se convierte en Deadpool."],
   ["xmod",2018,"Deadpool 2","FB","Reseña: En 2018, en la misma línea modificada, Wade visita la Mansión X y cruza caminos con los jóvenes X-Men, además de involucrarse con el futuro de Cable."],
   ["xmod",2020,"The New Mutants","F","Reseña: Cinco jóvenes mutantes permanecen encerrados en una instalación aislada dentro de esta rama."],
@@ -1147,13 +1150,13 @@ function buildMatrix(){
     const laneItems = E.filter(e => e[0] === id);
 
     years.forEach((y, idx) => {
-      const cell = mk("div", "grid-cell" + (visibleLane ? "" : " hide"));
+      const noLineClass = (id === "xmod" && y < 1979) ? " no-line" : "";
+      const cell = mk("div", "grid-cell" + noLineClass + (visibleLane ? "" : " hide"));
       cell.dataset.lane = id;
       cell.style.setProperty("--c", color);
       cell.style.width = `${colWidths[idx]}px`;
       cellLookup.set(`${id}::${y}`, cell);
 
-      // Cartel indicador justo antes de X-Men: Apocalypse (1983) en la línea modificada
       if(id === "xmod" && y === 1979){
         const marker = mk("div", "branch-marker");
         marker.append(
@@ -1285,7 +1288,6 @@ function drawForks(){
     forksSvg.append(path);
   });
 
-  // Línea punteada desde el rectángulo de Nueva Rama hacia 1973 en X-Men · Línea original
   if(activeLanes.has("xmod") && activeLanes.has("xorig") && branchMarkerEl){
     const mRect = branchMarkerEl.getBoundingClientRect();
     const firstClassCard = cardLookup.get("xorig::X-Men: First Class");
@@ -1300,7 +1302,6 @@ function drawForks(){
       const startX = mRect.left - boardRect.left;
       const startY = mRect.top + mRect.height / 2 - boardRect.top;
 
-      // Interpolación aproximada entre 1962 y 1979 para ubicar 1973 a su altura/posición cronológica
       const t = (1973 - 1962) / (1979 - 1962);
       const targetX = (r1962.right - boardRect.left) + t * ((r1979.left - boardRect.left) - (r1962.right - boardRect.left));
       const targetY = cRect.top + cRect.height / 2 - boardRect.top;
@@ -1320,7 +1321,6 @@ function drawForks(){
       path.setAttribute("opacity", "0.95");
       forksSvg.append(path);
 
-      // Punta de flecha apuntando hacia 1973
       const arrow = document.createElementNS("http://www.w3.org/2000/svg", "path");
       arrow.setAttribute("d", `M ${targetX - 7} ${targetY + 8} L ${targetX} ${targetY} L ${targetX + 8} ${targetY + 7}`);
       arrow.setAttribute("fill", "none");
@@ -1330,7 +1330,6 @@ function drawForks(){
       arrow.setAttribute("stroke-linejoin", "round");
       forksSvg.append(arrow);
 
-      // Etiqueta "1973" en el punto de llegada
       const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
       label.setAttribute("x", targetX - 18);
       label.setAttribute("y", targetY - 12);
